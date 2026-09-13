@@ -1,0 +1,134 @@
+.groups {
+  display: grid;
+  gap: clamp(36px, 6vw, 56px);
+}
+
+.groupTitle {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 1.25rem;
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+}
+
+.groupTitle::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--border);
+}
+
+.timeline {
+  display: grid;
+  gap: 1.25rem;
+  list-style: none;
+}
+
+.job {
+  display: grid;
+  grid-template-columns: 170px minmax(0, 1fr);
+  gap: 1.5rem;
+}
+
+.period {
+  padding-top: 1.2rem;
+  font-family: var(--font-mono);
+  font-size: 0.82rem;
+  color: var(--text-dim);
+}
+
+.card {
+  padding: 1.15rem 1.25rem 1.25rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--surface);
+}
+
+.role {
+  font-size: 1.15rem;
+}
+
+.company {
+  color: var(--accent);
+}
+
+.bullets {
+  display: grid;
+  gap: 0.35rem;
+  margin-top: 0.85rem;
+  padding-left: 1.1rem;
+  font-size: 0.94rem;
+  color: var(--text-muted);
+}
+
+.bullets li::marker {
+  color: var(--accent);
+}
+
+.highlight {
+  display: grid;
+  gap: 0.25rem;
+  margin-top: 1rem;
+  padding: 0.85rem 1rem;
+  border: 1px solid rgb(245 220 107 / 0.3);
+  border-radius: var(--radius-sm);
+  background: rgb(245 220 107 / 0.07);
+}
+
+.highlight strong {
+  font-size: 0.92rem;
+  font-weight: 600;
+  color: var(--yellow);
+}
+
+.highlight span {
+  font-size: 0.82rem;
+  color: var(--text-muted);
+}
+
+.meta {
+  display: grid;
+  gap: 0.35rem;
+  margin: 1rem 0 0;
+  font-size: 0.82rem;
+}
+
+.meta div {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.2rem 0.6rem;
+}
+
+.meta dt {
+  padding-top: 0.12rem;
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+}
+
+.meta dd {
+  margin: 0;
+  color: var(--text-muted);
+}
+
+.earlier {
+  margin-top: -1rem;
+}
+
+@media (max-width: 720px) {
+  .job {
+    grid-template-columns: 1fr;
+    gap: 0.5rem;
+  }
+
+  .period {
+    padding-top: 0;
+  }
+}

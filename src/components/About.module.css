@@ -1,0 +1,16 @@
+.body {
+  display: grid;
+  gap: 1.1rem;
+  max-width: 75ch;
+  color: var(--text-muted);
+}
+
+.lead {
+  font-size: clamp(1.05rem, 2vw, 1.2rem);
+  color: var(--text);
+}
+
+.body strong {
+  color: var(--accent);
+  font-weight: 600;
+}

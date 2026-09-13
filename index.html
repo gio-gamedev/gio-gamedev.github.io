@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Giovanni S. Mariano — Game QA Analyst</title>
+    <meta
+      name="description"
+      content="QA Analyst specialized in Game QA — 4 years in game studios, 50+ projects tested across Mobile, PC, Fortnite/UEFN and Roblox. Projects, QA work samples and resume."
+    />
+    <meta name="theme-color" content="#0b0d12" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="canonical" href="https://gio-gamedev.github.io/" />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://gio-gamedev.github.io/" />
+    <meta property="og:title" content="Giovanni S. Mariano — Game QA Analyst" />
+    <meta
+      property="og:description"
+      content="Game QA across Mobile, PC, Fortnite/UEFN and Roblox. 50+ projects tested, bug reports, test plans and compliance checklists."
+    />
+    <meta property="og:image" content="https://gio-gamedev.github.io/og-image.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta name="twitter:card" content="summary_large_image" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap"
+    />
+
+    <script>
+      // Pick the language before React renders: saved choice, then browser language.
+      (function () {
+        var lang;
+        try {
+          lang = localStorage.getItem('lang');
+        } catch (e) {}
+        if (lang !== 'en' && lang !== 'pt') {
+          lang = (navigator.language || '').toLowerCase().indexOf('pt') === 0 ? 'pt' : 'en';
+        }
+        document.documentElement.lang = lang === 'pt' ? 'pt-BR' : 'en';
+      })();
+    </script>
+  </head>
+  <body>
+    <noscript>
+      <p>
+        Giovanni S. Mariano — QA Analyst | Game QA.
+        <a href="mailto:giovannis.mariano@gmail.com">giovannis.mariano@gmail.com</a> ·
+        <a href="https://linkedin.com/in/giogamedev">LinkedIn</a> ·
+        <a href="/resume.pdf">Resume (PDF)</a>
+      </p>
+    </noscript>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>

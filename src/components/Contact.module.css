@@ -1,0 +1,53 @@
+.section {
+  padding-block: clamp(44px, 7vw, 84px);
+}
+
+.panel {
+  padding: clamp(24px, 5vw, 56px);
+  border: 1px solid var(--accent-line);
+  border-radius: calc(var(--radius) + 6px);
+  background:
+    radial-gradient(640px 320px at 100% 0%, rgb(124 242 156 / 0.14), transparent 70%),
+    var(--surface);
+}
+
+.index {
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  letter-spacing: 0.08em;
+  color: var(--accent);
+}
+
+.title {
+  margin-top: 0.35rem;
+  font-size: clamp(1.9rem, 5vw, 3.2rem);
+  text-transform: uppercase;
+}
+
+.text {
+  max-width: 60ch;
+  margin-top: 0.9rem;
+  color: var(--text-muted);
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-top: 1.75rem;
+}
+
+.actions a {
+  text-transform: none;
+  letter-spacing: 0.01em;
+  overflow-wrap: anywhere;
+}
+
+.location {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  margin-top: 1.5rem;
+  font-size: 0.88rem;
+  color: var(--text-dim);
+}
