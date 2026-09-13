@@ -4,14 +4,14 @@ import { useLang } from '../i18n/LanguageContext';
 import { Section } from './Section';
 import styles from './Experience.module.css';
 
-export function Experience() {
+export function Experience({ index }: { index: string }) {
   const { t } = useLang();
 
   return (
-    <Section id="experience" index="03" title={t(ui.sections.experience)}>
+    <Section id="experience" index={index} title={t(ui.sections.experience)}>
       <div className={styles.groups}>
-        {experience.map((group, gi) => (
-          <div key={gi}>
+        {experience.map((group) => (
+          <div key={group.title.en}>
             <h3 className={styles.groupTitle}>{t(group.title)}</h3>
             <ol className={styles.timeline}>
               {group.jobs.map((job) => (
@@ -26,6 +26,17 @@ export function Experience() {
                         <li key={b}>{b}</li>
                       ))}
                     </ul>
+
+                    {job.more && (
+                      <details className={`disclosure ${styles.more}`}>
+                        <summary>{t(ui.experience.more)(t(job.more).length)}</summary>
+                        <ul className={`${styles.bullets} ${styles.moreList}`}>
+                          {t(job.more).map((b) => (
+                            <li key={b}>{b}</li>
+                          ))}
+                        </ul>
+                      </details>
+                    )}
 
                     {job.highlight && (
                       <div className={styles.highlight}>

@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { sampleDisclaimer, workSamples, type Block } from '../content/workSamples';
 import { ui } from '../content/ui';
 import { useLang } from '../i18n/LanguageContext';
@@ -5,17 +6,28 @@ import { Icon } from './Icon';
 import { Section } from './Section';
 import styles from './WorkSamples.module.css';
 
-export function WorkSamples() {
+export function WorkSamples({ index }: { index: string }) {
   const { t } = useLang();
 
+  // Links such as #sample-bug-report (from the hero) open the matching sample.
+  useEffect(() => {
+    const openFromHash = () => {
+      const target = location.hash ? document.getElementById(location.hash.slice(1)) : null;
+      if (target instanceof HTMLDetailsElement) target.open = true;
+    };
+    openFromHash();
+    window.addEventListener('hashchange', openFromHash);
+    return () => window.removeEventListener('hashchange', openFromHash);
+  }, []);
+
   return (
-    <Section id="samples" index="04" title={t(ui.sections.samples)} subtitle={t(ui.sections.samplesSubtitle)}>
+    <Section id="samples" index={index} title={t(ui.sections.samples)} subtitle={t(ui.sections.samplesSubtitle)}>
       <div className={styles.list}>
         {workSamples.map((sample) => (
-          <details key={sample.id} className={styles.sample}>
+          <details key={sample.id} id={`sample-${sample.id}`} className={styles.sample}>
             <summary className={styles.summary}>
               <span className={styles.icon} aria-hidden="true">
-                {sample.icon}
+                <Icon name={sample.icon} size={22} />
               </span>
               <span className={styles.heading}>
                 <span className={styles.title}>{t(sample.title)}</span>
@@ -27,10 +39,13 @@ export function WorkSamples() {
             </summary>
 
             <div className={styles.body}>
-              <p className={styles.disclaimer}>ℹ️ {t(sampleDisclaimer)}</p>
-              {sample.sections.map((section, si) => (
-                <section key={si} className={styles.section}>
-                  <h4 className={styles.sectionHeading}>{t(section.heading)}</h4>
+              <p className={styles.disclaimer}>
+                <Icon name="info" size={16} />
+                {t(sampleDisclaimer)}
+              </p>
+              {sample.sections.map((section) => (
+                <section key={section.heading.en} className={styles.section}>
+                  <h3 className={styles.sectionHeading}>{t(section.heading)}</h3>
                   {section.blocks.map((block, bi) => (
                     <SampleBlock key={bi} block={block} />
                   ))}
@@ -54,8 +69,8 @@ function SampleBlock({ block }: { block: Block }) {
     case 'fields':
       return (
         <dl className={styles.fields}>
-          {block.rows.map((row, i) => (
-            <div key={i}>
+          {block.rows.map((row) => (
+            <div key={row.label.en}>
               <dt>{t(row.label)}</dt>
               <dd>{t(row.value)}</dd>
             </div>

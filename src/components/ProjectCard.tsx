@@ -1,5 +1,12 @@
 import type { CSSProperties } from 'react';
-import { categoryInfo, coverUrl, storeLabel, testingLabels, type Project } from '../content/projects';
+import {
+  categoryInfo,
+  coverUrl,
+  storeLabel,
+  testingLabels,
+  universalTesting,
+  type Project,
+} from '../content/projects';
 import { ui } from '../content/ui';
 import { useLang } from '../i18n/LanguageContext';
 import { Icon } from './Icon';
@@ -40,8 +47,26 @@ export function ProjectCard({ project }: { project: Project }) {
           </p>
         )}
 
+        {project.caseStudy && (
+          <dl className={styles.case}>
+            <div>
+              <dt>{t(ui.projects.did)}</dt>
+              <dd>{t(project.caseStudy.did)}</dd>
+            </div>
+            {project.caseStudy.highlight && (
+              <div>
+                <dt>{t(ui.projects.highlight)}</dt>
+                <dd>{t(project.caseStudy.highlight)}</dd>
+              </div>
+            )}
+          </dl>
+        )}
+
+        {/* Functional/regression apply to every project and are stated once in the index. */}
         <ul className={styles.tags}>
-          {project.testing.map((type) => (
+          {project.testing
+            .filter((type) => !universalTesting.includes(type))
+            .map((type) => (
             <li key={type}>
               <Tag>{t(testingLabels[type])}</Tag>
             </li>

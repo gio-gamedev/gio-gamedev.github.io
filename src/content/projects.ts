@@ -25,6 +25,8 @@ export type Project = {
   testing: Testing[];
   selected?: boolean;
   focus?: L;
+  /** Short case study for featured cards: what I did, plus one finding or result. */
+  caseStudy?: { did: L; highlight?: L };
   link?: string;
   /** File in public/covers. Without an extension, ".webp" is assumed. Omit to show a placeholder. */
   cover?: string;
@@ -84,6 +86,12 @@ const defaults: Record<Category, Pick<Project, 'platforms' | 'testing'>> = {
     testing: ['Functional', 'Regression', 'UX', 'Compatibility'],
   },
 };
+
+/** Typical testing scope per platform: what every project in the category gets. */
+export const categoryScope = Object.fromEntries(categories.map((c) => [c, defaults[c].testing])) as Record<
+  Category,
+  Testing[]
+>;
 
 const p = (name: string, category: Category, extra: Partial<Project> = {}): Project => ({
   name,
@@ -236,16 +244,16 @@ export const projects: Project[] = [
   p('Bolão GRE-NAL 2026', 'Applications'),
 ];
 
-/** Featured order mixes platforms so the first row shows range. */
+/** The first row mixes platforms and only uses real cover art; placeholder covers go last. */
 const featuredOrder = [
   'Universo CAIXA',
-  'World Soccer Tycoon',
   'Sportia',
-  'Logic Pic',
   'Batalha de Gols',
-  'Skate Tycoon',
+  'Logic Pic',
   'Tetragon',
   'Desafio Motochefe',
+  'World Soccer Tycoon',
+  'Skate Tycoon',
 ];
 
 export const featuredProjects = featuredOrder.map((name) => {
@@ -253,6 +261,11 @@ export const featuredProjects = featuredOrder.map((name) => {
   if (!project) throw new Error(`Featured project not found: ${name}`);
   return project;
 });
+
+/** Testing types every project includes; stated once instead of repeated on each card. */
+export const universalTesting = (Object.keys(testingLabels) as Testing[]).filter((type) =>
+  projects.every((project) => project.testing.includes(type)),
+);
 
 export function storeLabel(url: string): L {
   const host = new URL(url).hostname;

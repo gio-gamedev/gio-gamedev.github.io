@@ -1,42 +1,16 @@
-import { createContext, useCallback, useContext, useEffect, useMemo, useState, type ReactNode } from 'react';
+import { createContext, useContext, useMemo, type ReactNode } from 'react';
 import type { L, Lang } from '../content/types';
-
-const STORAGE_KEY = 'lang';
-
-// index.html sets <html lang> before React loads, so the first render already matches.
-function initialLang(): Lang {
-  return document.documentElement.lang.startsWith('pt') ? 'pt' : 'en';
-}
 
 type LanguageContextValue = {
   lang: Lang;
-  setLang: (lang: Lang) => void;
   t: <T>(value: L<T>) => T;
 };
 
 const LanguageContext = createContext<LanguageContextValue | null>(null);
 
-export function LanguageProvider({ children }: { children: ReactNode }) {
-  const [lang, setLangState] = useState<Lang>(initialLang);
-
-  useEffect(() => {
-    document.documentElement.lang = lang === 'pt' ? 'pt-BR' : 'en';
-  }, [lang]);
-
-  const setLang = useCallback((next: Lang) => {
-    setLangState(next);
-    try {
-      localStorage.setItem(STORAGE_KEY, next);
-    } catch {
-      // Storage can be blocked (private mode); the choice then lasts for this visit only.
-    }
-  }, []);
-
-  const value = useMemo<LanguageContextValue>(
-    () => ({ lang, setLang, t: (v) => v[lang] }),
-    [lang, setLang],
-  );
-
+/** The language comes from the page URL (see routes.ts); switching language is a link to the other page. */
+export function LanguageProvider({ lang, children }: { lang: Lang; children: ReactNode }) {
+  const value = useMemo<LanguageContextValue>(() => ({ lang, t: (v) => v[lang] }), [lang]);
   return <LanguageContext.Provider value={value}>{children}</LanguageContext.Provider>;
 }
 

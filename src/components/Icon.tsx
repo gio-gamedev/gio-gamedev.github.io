@@ -1,4 +1,6 @@
-type IconName =
+import type { ReactNode } from 'react';
+
+export type IconName =
   | 'mail'
   | 'linkedin'
   | 'github'
@@ -9,9 +11,17 @@ type IconName =
   | 'pin'
   | 'trophy'
   | 'play'
-  | 'chevron';
+  | 'chevron'
+  | 'bug'
+  | 'clipboard'
+  | 'shield'
+  | 'info'
+  | 'lock'
+  | 'copy'
+  | 'check'
+  | 'arrowRight';
 
-const strokePaths: Record<Exclude<IconName, 'linkedin' | 'github'>, React.ReactNode> = {
+const strokePaths: Record<Exclude<IconName, 'linkedin' | 'github'>, ReactNode> = {
   mail: (
     <>
       <rect x="3" y="5" width="18" height="14" rx="2" />
@@ -54,6 +64,47 @@ const strokePaths: Record<Exclude<IconName, 'linkedin' | 'github'>, React.ReactN
     </>
   ),
   chevron: <path d="m6 9 6 6 6-6" />,
+  bug: (
+    <>
+      <rect x="7" y="8" width="10" height="12" rx="5" />
+      <path d="M9.5 8a2.5 2.5 0 0 1 5 0" />
+      <path d="M12 12v8" />
+      <path d="M7 13H3.5M20.5 13H17M7.6 17.4 4.5 19.5M16.4 17.4l3.1 2.1M7.8 9.6 5 7.5M16.2 9.6 19 7.5" />
+    </>
+  ),
+  clipboard: (
+    <>
+      <rect x="5" y="4" width="14" height="17" rx="2" />
+      <rect x="9" y="2.5" width="6" height="3.5" rx="1" />
+      <path d="M9 11h6M9 15h6M9 19h3" />
+    </>
+  ),
+  shield: (
+    <>
+      <path d="M12 3 5 6v5c0 4.4 2.9 8.2 7 10 4.1-1.8 7-5.6 7-10V6z" />
+      <path d="m9 12 2 2 4-4" />
+    </>
+  ),
+  info: (
+    <>
+      <circle cx="12" cy="12" r="9" />
+      <path d="M12 11v6M12 7.5v.01" />
+    </>
+  ),
+  lock: (
+    <>
+      <rect x="5" y="11" width="14" height="10" rx="2" />
+      <path d="M8 11V8a4 4 0 0 1 8 0v3" />
+    </>
+  ),
+  copy: (
+    <>
+      <rect x="8" y="8" width="12" height="12" rx="2" />
+      <path d="M16 8V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h2" />
+    </>
+  ),
+  check: <path d="m5 12.5 4.5 4.5L19 7" />,
+  arrowRight: <path d="M5 12h14M13 6l6 6-6 6" />,
 };
 
 export function Icon({ name, size = 18 }: { name: IconName; size?: number }) {

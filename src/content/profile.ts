@@ -1,3 +1,4 @@
+import { qaYears, techYears } from './stats';
 import type { L } from './types';
 
 const asset = (path: string) => `${import.meta.env.BASE_URL}${path}`;
@@ -12,13 +13,16 @@ export const profile = {
     en: 'Open to Senior Game QA and QA Lead roles',
     pt: 'Aberto a vagas de Senior Game QA e QA Lead',
   } as L,
+  availability: {
+    en: 'Remote from Brazil (UTC−3) · Open to full-time, contractor, freelance and relocation',
+    pt: 'Remoto a partir do Brasil (UTC−3) · Aberto a CLT, PJ, freelance e relocação',
+  } as L,
   stats: [
-    { value: '4', label: { en: 'Years in Game QA', pt: 'Anos em Game QA' } },
-    { value: '7', label: { en: 'Years in Technology', pt: 'Anos em Tecnologia' } },
+    { value: String(qaYears), label: { en: 'Years in Game QA', pt: 'Anos em Game QA' } },
+    { value: String(techYears), label: { en: 'Years in Technology', pt: 'Anos em Tecnologia' } },
     { value: '50+', label: { en: 'Game Projects Tested', pt: 'Projetos de games testados' } },
   ] as { value: string; label: L }[],
   platforms: ['Mobile', 'PC', 'Fortnite/UEFN', 'Roblox', 'Web3', 'LumePad 3D'],
-  location: { en: 'Brazil · Remote', pt: 'Brasil · Remoto' } as L,
   links: {
     email: 'giovannis.mariano@gmail.com',
     linkedin: 'https://linkedin.com/in/giogamedev',
@@ -28,27 +32,64 @@ export const profile = {
   resume: asset('resume.pdf'),
 };
 
-/** Paragraphs support **bold** markers. */
-export const about: L<string[]> = {
-  en: [
-    "I'm a QA Analyst specialized in Game QA, with **4 years** of professional experience in game studios and **7 years** of experience across the technology industry. I have tested **50+ game projects** and interactive experiences across Mobile, PC, Fortnite/UEFN, Roblox, Web3 and LumePad 3D.",
-    'I coordinate QA activities across concurrent projects and act as the link between Production, Development and QA — turning defect findings into actionable work and communicating release readiness to stakeholders.',
-    'I work risk-based: test depth follows where failure costs most, and no release ships without its known issues documented by severity and workaround. The full breakdown of testing types, documentation and platform compliance is in Expertise & Stack.',
-    'I also have a technical background in web and backend development, with experience in API testing, analytics validation and technical investigation. My approach combines risk assessment, test design, defect investigation, fix verification, and release validation — always considering both technical behavior and player experience.',
-  ],
-  pt: [
-    'Sou QA Analyst especializado em Game QA, com **4 anos** de experiência profissional em estúdios de games e **7 anos** de experiência na área de tecnologia. Já testei **mais de 50 projetos** de games e experiências interativas em Mobile, PC, Fortnite/UEFN, Roblox, Web3 e LumePad 3D.',
-    'Coordeno atividades de QA entre projetos simultâneos e atuo como elo entre Produção, Desenvolvimento e QA — transformando defeitos encontrados em trabalho acionável e comunicando prontidão de release aos stakeholders.',
-    'Trabalho com base em risco: a profundidade do teste segue onde a falha custa mais, e nenhuma release sai sem que os problemas conhecidos estejam documentados com severidade e workaround. O detalhamento de tipos de teste, documentação e compliance de plataformas está em Expertise & Stack.',
-    'Também tenho background técnico em desenvolvimento web e backend, com experiência em testes de API, validação de analytics e investigação técnica. Minha abordagem combina avaliação de risco, desenho de testes, investigação de defeitos, verificação de correções e validação de release — sempre considerando tanto o comportamento técnico quanto a experiência do jogador.',
-  ],
+/** "How I run QA": the Notion About section, restructured as a lead paragraph and workflow steps. */
+export const approach = {
+  /** Supports **bold** markers. */
+  lead: {
+    en: `I'm a QA Analyst specialized in Game QA, with **${qaYears} years** in game studios and **${techYears} years** across the technology industry. I have tested **50+ game projects** and interactive experiences across Mobile, PC, Fortnite/UEFN, Roblox, Web3 and LumePad 3D.`,
+    pt: `Sou Analista de QA especializado em Game QA, com **${qaYears} anos** em estúdios de games e **${techYears} anos** na área de tecnologia. Já testei **mais de 50 projetos** de games e experiências interativas em Mobile, PC, Fortnite/UEFN, Roblox, Web3 e LumePad 3D.`,
+  } as L,
+  steps: [
+    {
+      title: { en: 'Plan by risk', pt: 'Planejar por risco' },
+      text: {
+        en: 'Scope and priorities are set per milestone, and test depth follows where failure costs most.',
+        pt: 'Escopo e prioridades são definidos por milestone, e a profundidade do teste segue onde a falha custa mais.',
+      },
+    },
+    {
+      title: { en: 'Test broadly', pt: 'Testar com amplitude' },
+      text: {
+        en: 'Functional, regression and exploratory passes, plus multiplayer, device compatibility, accessibility and localization.',
+        pt: 'Rodadas funcionais, de regressão e exploratórias, além de multiplayer, compatibilidade de dispositivos, acessibilidade e localização.',
+      },
+    },
+    {
+      title: { en: 'Turn defects into work', pt: 'Transformar defeitos em tarefas' },
+      text: {
+        en: 'Every defect is reproduced and documented with steps, severity and evidence, so development can act on it.',
+        pt: 'Cada defeito é reproduzido e documentado com passos, severidade e evidências, para que o desenvolvimento possa agir.',
+      },
+    },
+    {
+      title: { en: 'Verify fixes', pt: 'Verificar correções' },
+      text: {
+        en: 'Fixes are verified and the affected areas are regressed.',
+        pt: 'As correções são verificadas e as áreas afetadas passam por regressão.',
+      },
+    },
+    {
+      title: { en: 'Sign off with facts', pt: 'Aprovar com fatos' },
+      text: {
+        en: 'No release ships without known issues documented by severity and workaround, and readiness is communicated to stakeholders.',
+        pt: 'Nenhuma release sai sem os problemas conhecidos documentados por severidade e workaround, e a prontidão é comunicada aos stakeholders.',
+      },
+    },
+  ] as { title: L; text: L }[],
+  technical: {
+    en: 'Technical background in web and backend development: API testing, analytics validation and technical investigation — always weighing technical behavior and player experience.',
+    pt: 'Background técnico em desenvolvimento web e backend: testes de API, validação de analytics e investigação técnica — sempre considerando o comportamento técnico e a experiência do jogador.',
+  } as L,
 };
 
 export type Job = {
   period: L;
   role: L;
   company: string;
+  /** Shown by default: the strongest points first. */
   bullets: L<string[]>;
+  /** Collapsed under "Show all responsibilities". */
+  more?: L<string[]>;
   highlight?: { stats: L; note: L };
   platforms?: string;
   tools?: string;
@@ -68,24 +109,30 @@ export const experience: { title: L; jobs: Job[] }[] = [
             'Act as the bridge between Production, Development and QA within a QA team of 4–6, translating defect findings into actionable development tasks',
             'Communicate risk assessment and release readiness to stakeholders, validating 4–8 release candidates per month',
             'Standardize bug reporting and QA processes across projects and teams',
-            'Execute functional, regression and exploratory testing across game projects',
-            'Validate gameplay, UX and first-time user experience',
-            'Test multiplayer scenarios and device compatibility across low-end, mid-range and reference device tiers',
-            'Validate accessibility and localization requirements',
             'Validate platform compliance against store and ecosystem requirements',
-            'Report and reproduce defects, then verify fixes',
-            'Test APIs and validate analytics event tracking',
           ],
           pt: [
             'Coordenação de atividades de QA em 4–6 projetos simultâneos, definindo escopo e prioridades de teste por milestone',
             'Ponte entre Produção, Desenvolvimento e QA em um time de QA de 4–6 pessoas, transformando defeitos encontrados em tarefas acionáveis para o desenvolvimento',
             'Comunicação de avaliação de risco e prontidão de release aos stakeholders, validando 4–8 release candidates por mês',
             'Padronização do relato de bugs e dos processos de QA entre projetos e times',
+            'Validação de compliance de plataforma frente aos requisitos das lojas e ecossistemas',
+          ],
+        },
+        more: {
+          en: [
+            'Execute functional, regression and exploratory testing across game projects',
+            'Validate gameplay, UX and first-time user experience',
+            'Test multiplayer scenarios and device compatibility across low-end, mid-range and reference device tiers',
+            'Validate accessibility and localization requirements',
+            'Report and reproduce defects, then verify fixes',
+            'Test APIs and validate analytics event tracking',
+          ],
+          pt: [
             'Execução de testes funcionais, de regressão e exploratórios nos projetos de games',
             'Validação de gameplay, UX e experiência de primeiro uso (FTUE)',
             'Testes de cenários multiplayer e de compatibilidade em dispositivos de entrada, intermediários e de referência',
             'Validação de requisitos de acessibilidade e localização',
-            'Validação de compliance de plataforma frente aos requisitos das lojas e ecossistemas',
             'Relato e reprodução de defeitos, seguidos da verificação das correções',
             'Testes de APIs e validação do tracking de eventos de analytics',
           ],
@@ -165,10 +212,21 @@ export const experience: { title: L; jobs: Job[] }[] = [
 export const earlierExperience = {
   title: { en: 'Earlier technology experience', pt: 'Experiências anteriores em tecnologia' } as L,
   text: {
-    en: 'Additional earlier experience in technology roles, including Cooper Card, Sercomputer and academic projects, preceding the transition into QA.',
-    pt: 'Experiências anteriores em tecnologia, incluindo Cooper Card, Sercomputer e projetos acadêmicos, antes da transição para QA.',
+    en: 'Earlier roles in technology preceding the transition into QA, including a Game Developer internship at FATEC Ourinhos (2017–2018, games built with RPG Maker and Construct 2), Cooper Card and Sercomputer.',
+    pt: 'Experiências anteriores em tecnologia, antes da transição para QA, incluindo estágio como Desenvolvedor de Jogos na FATEC Ourinhos (2017–2018, jogos feitos com RPG Maker e Construct 2), Cooper Card e Sercomputer.',
   } as L,
 };
+
+export type Testimonial = {
+  quote: L;
+  name: string;
+  role: L;
+  company: string;
+  link?: string;
+};
+
+/** Recommendations, added only with the author's permission. The section stays hidden while empty. */
+export const testimonials: Testimonial[] = [];
 
 export const expertise: { title: L; items: L<string[]> }[] = [
   {

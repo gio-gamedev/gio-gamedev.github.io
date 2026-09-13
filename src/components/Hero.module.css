@@ -1,25 +1,64 @@
 .hero {
-  padding-block: clamp(40px, 9vw, 112px) clamp(32px, 6vw, 72px);
+  padding-block: clamp(32px, 8vw, 104px) clamp(32px, 6vw, 64px);
 }
 
 .grid {
   display: grid;
-  grid-template-columns: minmax(0, 1.55fr) minmax(0, 1fr);
-  gap: clamp(32px, 6vw, 72px);
+  grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr);
+  grid-template-areas:
+    'copy avatar'
+    'copy stats';
+  column-gap: clamp(32px, 6vw, 72px);
+  row-gap: 1.5rem;
   align-items: center;
 }
 
-.status {
+.copy {
+  grid-area: copy;
+}
+
+.avatar {
+  grid-area: avatar;
+  align-self: end;
+  justify-self: center;
+  width: clamp(150px, 22vw, 230px);
+  max-width: 100%;
+  aspect-ratio: 1;
+  padding: 4px;
+  border-radius: 50%;
+  background: conic-gradient(from 200deg, var(--accent), var(--violet), var(--accent));
+  box-shadow: 0 0 64px rgb(124 242 156 / 0.18);
+}
+
+.avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 50%;
+  border: 4px solid var(--bg);
+}
+
+.badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.status,
+.award {
   display: inline-flex;
   align-items: center;
-  gap: 0.6rem;
+  gap: 0.5rem;
   padding: 0.35rem 0.85rem;
-  border: 1px solid var(--accent-line);
   border-radius: 999px;
-  background: var(--accent-soft);
-  color: var(--accent-strong);
   font-family: var(--font-mono);
   font-size: 0.78rem;
+}
+
+.status {
+  border: 1px solid var(--accent-line);
+  background: var(--accent-soft);
+  color: var(--accent-strong);
 }
 
 .dot {
@@ -43,6 +82,18 @@
   }
 }
 
+.award {
+  border: 1px solid rgb(245 220 107 / 0.4);
+  background: rgb(245 220 107 / 0.08);
+  color: var(--yellow);
+  text-decoration: none;
+}
+
+.award:hover {
+  background: rgb(245 220 107 / 0.16);
+  color: var(--yellow);
+}
+
 .name {
   margin-top: 1.25rem;
   font-size: clamp(2.4rem, 7vw, 4.4rem);
@@ -60,11 +111,26 @@
   color: var(--accent);
 }
 
+.availability {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.45rem;
+  margin-top: 0.8rem;
+  font-size: 0.92rem;
+  color: var(--text-muted);
+}
+
+.availability svg {
+  flex-shrink: 0;
+  margin-top: 0.2rem;
+  color: var(--accent);
+}
+
 .platforms {
   display: flex;
   flex-wrap: wrap;
   gap: 0.5rem;
-  margin-top: 1.5rem;
+  margin-top: 1.25rem;
   list-style: none;
 }
 
@@ -81,19 +147,32 @@
   display: flex;
   flex-wrap: wrap;
   gap: 0.75rem;
-  margin-top: 2rem;
+  margin-top: 1.75rem;
+}
+
+.sampleLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  min-height: 40px;
+  margin-top: 0.6rem;
+  font-weight: 500;
+  text-decoration: none;
+}
+
+.sampleLink:hover {
+  text-decoration: underline;
 }
 
 .links {
   display: flex;
   flex-wrap: wrap;
   gap: 0.25rem 1.25rem;
-  margin-top: 1.5rem;
+  margin-top: 0.75rem;
   list-style: none;
 }
 
-.links a,
-.links span {
+.links a {
   display: inline-flex;
   align-items: center;
   gap: 0.45rem;
@@ -108,32 +187,9 @@
   color: var(--accent-strong);
 }
 
-.side {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 1.5rem;
-}
-
-.avatarFrame {
-  width: clamp(150px, 26vw, 240px);
-  max-width: 100%;
-  aspect-ratio: 1;
-  padding: 4px;
-  border-radius: 50%;
-  background: conic-gradient(from 200deg, var(--accent), var(--violet), var(--accent));
-  box-shadow: 0 0 64px rgb(124 242 156 / 0.18);
-}
-
-.avatarFrame img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  border-radius: 50%;
-  border: 4px solid var(--bg);
-}
-
 .stats {
+  grid-area: stats;
+  align-self: start;
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 0.75rem;
@@ -168,27 +224,28 @@
   color: var(--text-muted);
 }
 
+/* Mobile: small photo, then the name — identity before numbers. */
 @media (max-width: 880px) {
   .grid {
     grid-template-columns: 1fr;
+    grid-template-areas:
+      'avatar'
+      'copy'
+      'stats';
+    row-gap: 1.25rem;
   }
 
-  .side {
-    order: -1;
-    flex-direction: row;
-    align-items: center;
-    gap: 1.25rem;
+  .avatar {
+    justify-self: start;
+    width: 84px;
+    padding: 3px;
   }
 
-  .avatarFrame {
-    width: 112px;
-    flex-shrink: 0;
+  .avatar img {
+    border-width: 3px;
   }
-}
 
-@media (max-width: 560px) {
-  .side {
-    flex-direction: column;
-    align-items: flex-start;
+  .name {
+    margin-top: 1rem;
   }
 }

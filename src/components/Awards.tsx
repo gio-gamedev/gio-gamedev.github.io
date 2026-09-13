@@ -5,11 +5,11 @@ import { Icon } from './Icon';
 import { Section } from './Section';
 import styles from './Awards.module.css';
 
-export function Awards() {
+export function Awards({ index }: { index: string }) {
   const { t } = useLang();
 
   return (
-    <Section id="awards" index="06" title={t(ui.sections.awards)}>
+    <Section id="awards" index={index} title={t(ui.sections.awards)}>
       <article className={styles.card}>
         <span className={styles.icon}>
           <Icon name="trophy" size={28} />

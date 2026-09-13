@@ -9,15 +9,32 @@ export function Hero() {
   const { links } = profile;
 
   return (
-    <section id="top" className={styles.hero}>
+    <section id="top" className={styles.hero} aria-labelledby="hero-title">
       <div className={`container ${styles.grid}`}>
-        <div>
-          <p className={styles.status}>
-            <span className={styles.dot} aria-hidden="true" />
-            {t(profile.openTo)}
-          </p>
-          <h1 className={styles.name}>{profile.name}</h1>
+        <div className={styles.avatar}>
+          <img src={profile.avatar} alt={profile.name} width={320} height={320} fetchPriority="high" />
+        </div>
+
+        <div className={styles.copy}>
+          <div className={styles.badges}>
+            <p className={styles.status}>
+              <span className={styles.dot} aria-hidden="true" />
+              {t(profile.openTo)}
+            </p>
+            <a className={styles.award} href="#awards">
+              <Icon name="trophy" size={15} />
+              {t(ui.hero.award)}
+            </a>
+          </div>
+
+          <h1 id="hero-title" className={styles.name}>
+            {profile.name}
+          </h1>
           <p className={styles.role}>{t(profile.role)}</p>
+          <p className={styles.availability}>
+            <Icon name="pin" size={16} />
+            {t(profile.availability)}
+          </p>
 
           <ul className={styles.platforms}>
             {profile.platforms.map((p) => (
@@ -34,6 +51,10 @@ export function Hero() {
               {t(ui.hero.resume)}
             </a>
           </div>
+          <a className={styles.sampleLink} href="#sample-bug-report">
+            {t(ui.hero.sampleLink)}
+            <Icon name="arrowRight" size={16} />
+          </a>
 
           <ul className={styles.links}>
             <li>
@@ -54,28 +75,17 @@ export function Hero() {
                 GitHub
               </a>
             </li>
-            <li>
-              <span>
-                <Icon name="pin" />
-                {t(profile.location)}
-              </span>
-            </li>
           </ul>
         </div>
 
-        <div className={styles.side}>
-          <div className={styles.avatarFrame}>
-            <img src={profile.avatar} alt={profile.name} width={320} height={320} />
-          </div>
-          <dl className={styles.stats}>
-            {profile.stats.map((s) => (
-              <div key={s.value} className={styles.stat}>
-                <dt>{t(s.label)}</dt>
-                <dd>{s.value}</dd>
-              </div>
-            ))}
-          </dl>
-        </div>
+        <dl className={styles.stats}>
+          {profile.stats.map((s) => (
+            <div key={s.label.en} className={styles.stat}>
+              <dt>{t(s.label)}</dt>
+              <dd>{s.value}</dd>
+            </div>
+          ))}
+        </dl>
       </div>
     </section>
   );

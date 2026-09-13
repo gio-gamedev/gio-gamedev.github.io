@@ -40,7 +40,7 @@
   border: 1px solid var(--border);
   border-radius: 10px;
   background: var(--surface-2);
-  font-size: 1.3rem;
+  color: var(--accent);
 }
 
 .heading {
@@ -82,6 +82,9 @@
 }
 
 .disclaimer {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5rem;
   margin-top: 1.25rem;
   padding: 0.75rem 1rem;
   border: 1px dashed var(--border-strong);
@@ -89,6 +92,12 @@
   background: var(--bg-elev);
   font-size: 0.85rem;
   color: var(--text-muted);
+}
+
+.disclaimer svg {
+  flex-shrink: 0;
+  margin-top: 0.15rem;
+  color: var(--blue);
 }
 
 .section {

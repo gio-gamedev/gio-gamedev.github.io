@@ -70,6 +70,15 @@
   color: var(--accent);
 }
 
+.more {
+  margin-top: 0.85rem;
+}
+
+.moreList {
+  margin-top: 0;
+  padding: 0 1rem 1rem 2.2rem;
+}
+
 .highlight {
   display: grid;
   gap: 0.25rem;

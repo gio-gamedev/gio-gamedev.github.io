@@ -5,11 +5,11 @@ import { Section } from './Section';
 import { Tag } from './Tag';
 import styles from './Education.module.css';
 
-export function Education() {
+export function Education({ index }: { index: string }) {
   const { t } = useLang();
 
   return (
-    <Section id="education" index="07" title={t(ui.sections.education)}>
+    <Section id="education" index={index} title={t(ui.sections.education)}>
       <div className={styles.grid}>
         <div className={styles.card}>
           <h3 className={styles.cardTitle}>{t(ui.labels.education)}</h3>

@@ -10,7 +10,8 @@
 
   --text: #e9edf5;
   --text-muted: #a0a8bb;
-  --text-dim: #6f7890;
+  /* ≥ 4.5:1 on --surface for small text (WCAG AA). */
+  --text-dim: #8b94a9;
 
   --accent: #7cf29c;
   --accent-strong: #b0ffc6;
@@ -25,8 +26,9 @@
   --yellow: #f5dc6b;
 
   --font-display: 'Chakra Petch', 'Segoe UI', system-ui, sans-serif;
-  --font-body: 'Inter', 'Segoe UI', system-ui, -apple-system, sans-serif;
-  --font-mono: 'JetBrains Mono', 'Cascadia Code', ui-monospace, Consolas, monospace;
+  /* Self-hosted via Fontsource (imported in main.tsx). */
+  --font-body: 'Inter Variable', 'Inter', 'Segoe UI', system-ui, -apple-system, sans-serif;
+  --font-mono: 'JetBrains Mono Variable', 'JetBrains Mono', 'Cascadia Code', ui-monospace, Consolas, monospace;
 
   --radius: 14px;
   --radius-sm: 8px;
@@ -235,6 +237,59 @@ ol {
 .disclosure-body {
   padding: 0 1rem 1rem 2.2rem;
   color: var(--text-muted);
+}
+
+/* Print / "Save as PDF": light palette, no navigation. App.tsx expands <details> before printing. */
+@media print {
+  :root {
+    color-scheme: light;
+    --bg: #fff;
+    --bg-elev: #fff;
+    --surface: #fff;
+    --surface-2: #f2f4f7;
+    --border: #d0d5dd;
+    --border-strong: #98a2b3;
+    --text: #101828;
+    --text-muted: #344054;
+    --text-dim: #475467;
+    --accent: #067647;
+    --accent-strong: #054f31;
+    --accent-soft: transparent;
+    --accent-line: #067647;
+    --violet: #5925dc;
+    --red: #b42318;
+    --blue: #175cd3;
+    --amber: #b54708;
+    --slate: #475467;
+    --yellow: #93370d;
+  }
+
+  body {
+    background: #fff;
+    font-size: 11pt;
+  }
+
+  #root > header,
+  .skip-link {
+    display: none !important;
+  }
+
+  * {
+    box-shadow: none !important;
+    text-shadow: none !important;
+    backdrop-filter: none !important;
+  }
+
+  main section {
+    padding-block: 14pt !important;
+  }
+
+  article,
+  figure,
+  table,
+  details {
+    break-inside: avoid;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {

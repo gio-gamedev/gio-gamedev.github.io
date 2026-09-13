@@ -3,6 +3,9 @@ name: Deploy to GitHub Pages
 on:
   push:
     branches: [main]
+  # Monthly rebuild keeps "years of experience" and the sitemap date current.
+  schedule:
+    - cron: '0 6 1 * *'
   workflow_dispatch:
 
 permissions:

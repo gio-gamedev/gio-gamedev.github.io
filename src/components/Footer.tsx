@@ -1,4 +1,5 @@
 import { profile } from '../content/profile';
+import { buildYear } from '../content/stats';
 import { ui } from '../content/ui';
 import { useLang } from '../i18n/LanguageContext';
 import styles from './Footer.module.css';
@@ -10,7 +11,7 @@ export function Footer() {
     <footer className={styles.footer}>
       <div className={`container ${styles.inner}`}>
         <p>
-          © {new Date().getFullYear()} {profile.name}
+          © {buildYear} {profile.name}
         </p>
         <p>{t(ui.footer.built)}</p>
       </div>

@@ -5,11 +5,11 @@ import { Section } from './Section';
 import { Tag } from './Tag';
 import styles from './Expertise.module.css';
 
-export function Expertise() {
+export function Expertise({ index }: { index: string }) {
   const { t } = useLang();
 
   return (
-    <Section id="expertise" index="05" title={t(ui.sections.expertise)}>
+    <Section id="expertise" index={index} title={t(ui.sections.expertise)}>
       <ul className={styles.grid}>
         {expertise.map((group, i) => (
           <li key={i} className={styles.card}>

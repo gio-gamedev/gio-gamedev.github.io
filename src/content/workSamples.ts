@@ -11,7 +11,7 @@ export type SampleSection = { heading: L; blocks: Block[] };
 
 export type WorkSample = {
   id: string;
-  icon: string;
+  icon: 'bug' | 'clipboard' | 'shield';
   title: L;
   subtitle: L;
   sections: SampleSection[];
@@ -27,7 +27,7 @@ const same = (value: string): L => ({ en: value, pt: value });
 export const workSamples: WorkSample[] = [
   {
     id: 'bug-report',
-    icon: '🐛',
+    icon: 'bug',
     title: {
       en: 'Bug Report — Progress loss on background/resume',
       pt: 'Bug Report — Perda de progresso ao ir para segundo plano e voltar',
@@ -224,7 +224,7 @@ export const workSamples: WorkSample[] = [
   },
   {
     id: 'test-plan',
-    icon: '📋',
+    icon: 'clipboard',
     title: {
       en: 'Test Plan — Mobile release, with device matrix',
       pt: 'Plano de Teste — Release mobile, com matriz de dispositivos',
@@ -393,7 +393,7 @@ export const workSamples: WorkSample[] = [
   },
   {
     id: 'compliance-checklist',
-    icon: '🛡️',
+    icon: 'shield',
     title: {
       en: 'Compliance Checklist — Roblox experience',
       pt: 'Checklist de Compliance — Experiência Roblox',
