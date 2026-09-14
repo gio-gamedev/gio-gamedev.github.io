@@ -449,7 +449,7 @@ export const gameDev = {
     {
       label: { en: 'Other games built', pt: 'Outros jogos desenvolvidos' },
       items: [
-        { name: 'Coração do Inverno', note: { en: 'final course project', pt: 'trabalho de conclusão de curso (TCC)' } },
+        { name: 'Coração do Inverno', note: { en: 'final course project, 2018', pt: 'trabalho de conclusão de curso (TCC), 2018' } },
         { name: 'Alone in the House', note: { en: 'survival · Construct', pt: 'sobrevivência · Construct' } },
         { name: 'Bomber War 3', note: { en: 'browser fighting game', pt: 'jogo de luta para navegador' } },
         { name: 'Game Island — O Herói dos Quatro Reinos', note: { en: 'fan game', pt: 'fan game' } },

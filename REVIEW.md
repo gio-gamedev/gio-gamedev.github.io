@@ -25,7 +25,6 @@ A amostra **Casos de teste** agora é real: sai do seu teste técnico de feverei
 
 | Item | Onde |
 |---|---|
-| Ano do TCC (Coração do Inverno): o Wix diz 2021, e o curso está como 2016–2018 | `gameDev` e `education` em `src/content/profile.ts` |
 | Números públicos de alcance (conferidos em 14/09/2026) | `src/content/reach.ts` |
 | Resultado do EF SET (inglês fica A2 até lá) | `languageList` em `src/content/profile.ts` |
 
