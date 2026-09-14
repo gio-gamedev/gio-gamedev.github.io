@@ -1,5 +1,5 @@
 import { monthYear, present } from '../content/dates';
-import { earlierExperience, experience } from '../content/profile';
+import { experience } from '../content/profile';
 import { ui } from '../content/ui';
 import { useLang } from '../i18n/LanguageContext';
 import { Section } from './Section';
@@ -16,7 +16,7 @@ export function Experience({ index }: { index: string }) {
             <h3 className={styles.groupTitle}>{t(group.title)}</h3>
             <ol className={styles.timeline}>
               {group.jobs.map((job) => (
-                <li key={job.company} className={styles.job}>
+                <li key={`${job.company}-${job.start}`} className={styles.job}>
                   <p className={styles.period}>
                     <time dateTime={job.start}>{monthYear(job.start, lang)}</time>
                     {' – '}
@@ -46,7 +46,7 @@ export function Experience({ index }: { index: string }) {
                     {job.highlight && (
                       <div className={styles.highlight}>
                         <strong>{t(job.highlight.stats)}</strong>
-                        <span>{t(job.highlight.note)}</span>
+                        {job.highlight.note && <span>{t(job.highlight.note)}</span>}
                       </div>
                     )}
 
@@ -72,11 +72,6 @@ export function Experience({ index }: { index: string }) {
             </ol>
           </div>
         ))}
-
-        <details className={`disclosure ${styles.earlier}`}>
-          <summary>{t(earlierExperience.title)}</summary>
-          <p className="disclosure-body">{t(earlierExperience.text)}</p>
-        </details>
       </div>
     </Section>
   );

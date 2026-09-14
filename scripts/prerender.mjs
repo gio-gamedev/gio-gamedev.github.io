@@ -8,7 +8,9 @@ const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const dist = path.join(root, 'dist');
 const ssrDir = path.join(root, 'dist-ssr');
 
-const { render, renderCv, headTags, SITE_URL, cvStyles, cvTitle, resumeJson, llmsTxt } = await import(
+import { buildDocx } from './cv-docx.mjs';
+
+const { render, renderCv, headTags, SITE_URL, cvData, cvStyles, cvTitle, resumeJson, llmsTxt } = await import(
   pathToFileURL(path.join(ssrDir, 'entry-server.js')).href
 );
 const template = await readFile(path.join(dist, 'index.html'), 'utf8');
@@ -64,6 +66,12 @@ for (const { lang, dir } of pages) {
 `;
   await mkdir(cvDir, { recursive: true });
   await writeFile(path.join(cvDir, 'index.html'), html);
+}
+
+// Word resumes, served from /cv/ next to the PDFs (public/cv/).
+for (const { lang } of pages) {
+  const file = `Giovanni-Mariano-Game-QA-${lang.toUpperCase()}.docx`;
+  await writeFile(path.join(dist, 'cv', file), await buildDocx(cvData(lang), cvTitle[lang]));
 }
 
 // Machine-readable copies for screening tools and LLMs.

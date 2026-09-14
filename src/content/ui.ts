@@ -1,3 +1,5 @@
+import { gameCount } from './projects';
+import { compactCount, totalReach } from './reach';
 import type { L } from './types';
 
 /** Interface labels. Long-form content lives in profile.ts, projects.ts and workSamples.ts. */
@@ -9,9 +11,9 @@ export const ui = {
     },
     description: {
       en: (years: number) =>
-        `Game QA Analyst — ${years} years in game studios, 50+ projects tested across Roblox, Fortnite (UEFN), mobile and PC. Work samples, projects and resume.`,
+        `Game QA Analyst — ${years} years in game studios, ${gameCount}+ game projects tested across Roblox, Fortnite (UEFN), The Sandbox, mobile and PC, with ${compactCount(totalReach, 'en')} downloads and visits. Work samples, projects and resume.`,
       pt: (years: number) =>
-        `Analista de QA de games — ${years} anos em estúdios, mais de 50 projetos testados em Roblox, Fortnite (UEFN), mobile e PC. Amostras de trabalho, projetos e currículo.`,
+        `Analista de QA de games — ${years} anos em estúdios, mais de ${gameCount} projetos testados em Roblox, Fortnite (UEFN), The Sandbox, mobile e PC, com ${compactCount(totalReach, 'pt')} de downloads e visitas. Amostras, projetos e currículo.`,
     },
     jobTitle: { en: 'Game QA Analyst', pt: 'Analista de QA de Games' },
     ogImageAlt: {
@@ -40,6 +42,7 @@ export const ui = {
   },
   hero: {
     resume: { en: 'Download resume (PDF)', pt: 'Baixar currículo (PDF)' },
+    docx: { en: 'Resume in Word (.docx)', pt: 'Currículo em Word (.docx)' },
     samples: { en: 'See work samples', pt: 'Ver amostras de trabalho' },
     award: { en: 'Best Team QA — Meta Testathon 2024', pt: 'Melhor Time de QA — Meta Testathon 2024' },
   },
@@ -49,17 +52,16 @@ export const ui = {
   sections: {
     projects: { en: 'Selected QA Projects', pt: 'Projetos de QA em destaque' },
     projectsSubtitle: {
-      en: 'Selected from 50+ game projects tested across Mobile, PC, Fortnite/UEFN and Roblox.',
-      pt: 'Selecionados entre mais de 50 projetos de games testados em Mobile, PC, Fortnite/UEFN e Roblox.',
+      en: `Selected from ${gameCount}+ game projects. On each one I run QA through every development phase, with feedback documents and first-time experience reports. At Hermit Crab Game Studio unless noted.`,
+      pt: `Selecionados entre mais de ${gameCount} projetos de games. Em cada um, faço QA em todas as fases do desenvolvimento, com documentos de feedback e relatórios de primeira experiência. Na Hermit Crab Game Studio, salvo indicação.`,
     },
     samples: { en: 'QA Work Samples', pt: 'Amostras de trabalho de QA' },
     samplesSubtitle: {
-      en: 'Anonymized samples of the QA documentation I produce day to day. Fictional data, real format.',
-      pt: 'Amostras anonimizadas da documentação de QA que produzo no dia a dia. Dados fictícios, formato real.',
+      en: 'The QA documentation I produce: a real, anonymized test report from a technical assessment, plus examples in my working format with fictional data.',
+      pt: 'A documentação de QA que produzo: um relatório de teste real e anonimizado de um teste técnico, e exemplos no meu formato de trabalho com dados fictícios.',
     },
     experience: { en: 'Work Experience', pt: 'Experiência profissional' },
     approach: { en: 'How I run QA', pt: 'Como eu conduzo QA' },
-    testimonials: { en: 'What people say', pt: 'O que dizem' },
     skills: { en: 'Skills & Tools', pt: 'Competências e ferramentas' },
     awards: { en: 'Awards & Recognition', pt: 'Prêmios e reconhecimento' },
     education: { en: 'Education & Certifications', pt: 'Formação e certificações' },
@@ -70,14 +72,15 @@ export const ui = {
   review: {
     chip: { en: 'Draft', pt: 'Rascunho' },
     banner: {
-      en: 'FICTIONAL DRAFT — REDO. Written by Claude as an example; replace it with your own before publishing (set draft: false in src/content/workSamples.ts). Hidden on the published site.',
-      pt: 'RASCUNHO FICTÍCIO — REFAZER. Escrito pelo Claude como exemplo; troque pelo seu antes de publicar (mude draft para false em src/content/workSamples.ts). Não aparece no site publicado.',
+      en: 'FICTIONAL DRAFT — REDO. Written by Claude as an example; replace it with your own before publishing (move it into src/content/workSamples.ts). Left out of the published site.',
+      pt: 'RASCUNHO FICTÍCIO — REFAZER. Escrito pelo Claude como exemplo; troque pelo seu antes de publicar (mova para src/content/workSamples.ts). Fica fora do site publicado.',
     },
   },
   projects: {
     focus: { en: 'Main focus', pt: 'Foco principal' },
     did: { en: 'What I did', pt: 'O que eu fiz' },
     highlight: { en: 'Highlight', pt: 'Destaque' },
+    brands: { en: 'Brands and IPs I have tested for', pt: 'Marcas e IPs em que trabalhei' },
     indexTitle: {
       en: (n: number) => `All ${n} projects by platform`,
       pt: (n: number) => `Todos os ${n} projetos por plataforma`,
@@ -89,9 +92,9 @@ export const ui = {
     },
     scope: { en: 'Typical scope', pt: 'Escopo típico' },
     featured: { en: 'Featured project', pt: 'Projeto em destaque' },
-    confidential: {
-      en: 'Project details are limited where confidentiality applies. Scope shown reflects the type of QA work performed, not project-specific internal information.',
-      pt: 'Os detalhes dos projetos são limitados onde há confidencialidade. O escopo mostrado reflete o tipo de trabalho de QA realizado, não informações internas de cada projeto.',
+    publicNote: {
+      en: 'Download and visit counts are public store and platform figures, rounded down.',
+      pt: 'Os números de downloads e visitas são dados públicos das lojas e plataformas, arredondados para baixo.',
     },
   },
   experience: {
@@ -120,6 +123,10 @@ export const ui = {
     built: {
       en: 'Built with React + Vite · Hosted on GitHub Pages',
       pt: 'Feito com React + Vite · Hospedado no GitHub Pages',
+    },
+    updated: {
+      en: (date: string) => `Updated ${date}`,
+      pt: (date: string) => `Atualizado em ${date}`,
     },
   },
 } satisfies Record<string, Record<string, L<unknown>>>;

@@ -1,16 +1,19 @@
+import { gameCount } from './projects';
+import { compactCount, reach, totalReach } from './reach';
 import { qaYears, techYears } from './stats';
 import type { L } from './types';
 
 const asset = (path: string) => `${import.meta.env.BASE_URL}${path}`;
 const same = (value: string): L => ({ en: value, pt: value });
+const both = (fn: (lang: 'en' | 'pt') => string): L => ({ en: fn('en'), pt: fn('pt') });
 
 export const profile = {
   name: 'Giovanni S. Mariano',
   /** Standard job title first: recruiters and screening tools match on it. */
   title: { en: 'Game QA Analyst', pt: 'Analista de QA de Games' } as L,
   headline: {
-    en: `Game QA Analyst with ${qaYears} years testing and shipping Roblox, Fortnite (UEFN), mobile and PC titles.`,
-    pt: `Analista de QA de games com ${qaYears} anos testando e liberando títulos de Roblox, Fortnite (UEFN), mobile e PC.`,
+    en: `Game QA Analyst with ${qaYears} years testing and shipping Roblox, Fortnite (UEFN), The Sandbox, mobile and PC titles, with ${compactCount(totalReach, 'en')} downloads and visits.`,
+    pt: `Analista de QA de games com ${qaYears} anos testando e liberando títulos de Roblox, Fortnite (UEFN), The Sandbox, mobile e PC, com ${compactCount(totalReach, 'pt')} de downloads e visitas.`,
   } as L,
   openTo: {
     en: 'Open to Senior Game QA and QA Lead roles',
@@ -21,20 +24,27 @@ export const profile = {
     pt: 'Remoto a partir do Brasil (UTC−3) · Aberto a CLT, PJ, freelance e relocação',
   } as L,
   proof: [
-    { value: String(qaYears), label: { en: 'years in Game QA', pt: 'anos em Game QA' } },
-    { value: '50+', label: { en: 'game projects tested', pt: 'projetos de games testados' } },
-    { value: String(techYears), label: { en: 'years in technology', pt: 'anos em tecnologia' } },
-  ] as { value: string; label: L }[],
+    { value: same(String(qaYears)), label: { en: 'years in Game QA', pt: 'anos em Game QA' } },
+    { value: same(`${gameCount}+`), label: { en: 'game projects tested', pt: 'projetos de games testados' } },
+    {
+      value: both((lang) => compactCount(totalReach, lang)),
+      label: { en: 'downloads & visits', pt: 'downloads e visitas' },
+    },
+  ] as { value: L; label: L }[],
   links: {
     email: 'giovannis.mariano@gmail.com',
     linkedin: 'https://linkedin.com/in/giogamedev',
     github: 'https://github.com/gio-gamedev',
   },
   avatar: asset('avatar.webp'),
-  /** Generated from this content by `npm run cv` (scripts/cv-pdf.mjs). */
+  /** PDF printed by `npm run cv` (scripts/cv-pdf.mjs); DOCX written at build time (scripts/cv-docx.mjs). */
   cv: {
     en: asset('cv/Giovanni-Mariano-Game-QA-EN.pdf'),
     pt: asset('cv/Giovanni-Mariano-Game-QA-PT.pdf'),
+  } as L,
+  cvDocx: {
+    en: asset('cv/Giovanni-Mariano-Game-QA-EN.docx'),
+    pt: asset('cv/Giovanni-Mariano-Game-QA-PT.docx'),
   } as L,
 };
 
@@ -62,8 +72,8 @@ export const snapshot: { label: L; value: L }[] = [
   {
     label: { en: 'Platforms', pt: 'Plataformas' },
     value: {
-      en: 'Roblox · Fortnite (UEFN) · iOS & Android · PC/Steam · Web3 · LumePad 3D',
-      pt: 'Roblox · Fortnite (UEFN) · iOS e Android · PC/Steam · Web3 · LumePad 3D',
+      en: 'Roblox · Fortnite (UEFN) · The Sandbox (Web3) · iOS & Android · PC/Steam · LumePad 3D',
+      pt: 'Roblox · Fortnite (UEFN) · The Sandbox (Web3) · iOS e Android · PC/Steam · LumePad 3D',
     },
   },
   {
@@ -92,8 +102,8 @@ export const snapshot: { label: L; value: L }[] = [
 export const approach = {
   /** Supports **bold** markers. */
   lead: {
-    en: `I'm a QA Analyst specialized in Game QA, with **${qaYears} years** in game studios and **${techYears} years** across the technology industry. I have tested **50+ game projects** and interactive experiences across Mobile, PC, Fortnite/UEFN, Roblox, Web3 and LumePad 3D.`,
-    pt: `Sou Analista de QA especializado em Game QA, com **${qaYears} anos** em estúdios de games e **${techYears} anos** na área de tecnologia. Já testei **mais de 50 projetos** de games e experiências interativas em Mobile, PC, Fortnite/UEFN, Roblox, Web3 e LumePad 3D.`,
+    en: `I'm a QA Analyst specialized in Game QA, with **${qaYears} years** in game studios and **${techYears} years** across the technology industry. I have tested **${gameCount}+ game projects** and interactive experiences across Roblox, Fortnite/UEFN, The Sandbox, mobile, PC and LumePad 3D.`,
+    pt: `Sou Analista de QA especializado em Game QA, com **${qaYears} anos** em estúdios de games e **${techYears} anos** na área de tecnologia. Já testei **mais de ${gameCount} projetos** de games e experiências interativas em Roblox, Fortnite/UEFN, The Sandbox, mobile, PC e LumePad 3D.`,
   } as L,
   steps: [
     {
@@ -149,9 +159,15 @@ export type Job = {
   bullets: L<string[]>;
   /** Collapsed under "Show all responsibilities". */
   more?: L<string[]>;
-  highlight?: { stats: L; note: L };
+  highlight?: { stats: L; note?: L };
   platforms?: string;
   tools?: string;
+};
+
+const reachOf = (key: string, lang: 'en' | 'pt') => {
+  const r = reach[key];
+  const kind = r.kind === 'visits' ? (lang === 'pt' ? 'visitas' : 'visits') : 'downloads';
+  return `${compactCount(r.count, lang)} ${kind}`;
 };
 
 export const experience: { title: L; jobs: Job[] }[] = [
@@ -164,34 +180,40 @@ export const experience: { title: L; jobs: Job[] }[] = [
         company: 'Hermit Crab Game Studio',
         bullets: {
           en: [
-            'Coordinate QA activities across 4–6 concurrent game projects, defining test scope and priorities per milestone',
-            'Act as the bridge between Production, Development and QA within a QA team of 4–6, translating defect findings into actionable development tasks',
-            'Communicate risk assessment and release readiness to stakeholders, validating 4–8 release candidates per month',
-            'Standardize bug reporting and QA processes across projects and teams',
-            'Validate platform compliance against store and ecosystem requirements',
+            'Coordinate QA across 4–6 concurrent game projects, defining test scope and priorities per milestone',
+            'Distribute testing tasks and priorities within a QA team of 4–6',
+            'Report QA status, risks and a go/no-go recommendation to Production, validating 4–8 release candidates per month',
+            'Act as the bridge between Production, Development and QA, turning defect findings into actionable development tasks',
+            'Cover every development phase, from early builds to live updates, with feedback documents and first-time experience reports',
           ],
           pt: [
-            'Coordenação de atividades de QA em 4–6 projetos simultâneos, definindo escopo e prioridades de teste por milestone',
-            'Ponte entre Produção, Desenvolvimento e QA em um time de QA de 4–6 pessoas, transformando defeitos encontrados em tarefas acionáveis para o desenvolvimento',
-            'Comunicação de avaliação de risco e prontidão de release aos stakeholders, validando 4–8 release candidates por mês',
-            'Padronização do relato de bugs e dos processos de QA entre projetos e times',
-            'Validação de compliance de plataforma frente aos requisitos das lojas e ecossistemas',
+            'Coordenação de QA em 4–6 projetos simultâneos, definindo escopo e prioridades de teste por milestone',
+            'Distribuição de tarefas e prioridades de teste em um time de QA de 4–6 pessoas',
+            'Reporte de status de QA, riscos e recomendação de go/no-go à Produção, validando 4–8 release candidates por mês',
+            'Ponte entre Produção, Desenvolvimento e QA, transformando defeitos encontrados em tarefas acionáveis para o desenvolvimento',
+            'Atuação em todas as fases do desenvolvimento, das primeiras builds às atualizações live, com documentos de feedback e relatórios de primeira experiência',
           ],
         },
         more: {
           en: [
+            'Standardize bug reporting and QA processes across projects and teams',
+            'Validate platform compliance against Roblox, Fortnite, The Sandbox, App Store and Google Play requirements',
             'Execute functional, regression and exploratory testing across game projects',
             'Validate gameplay, UX and first-time user experience',
             'Test multiplayer scenarios and device compatibility across low-end, mid-range and reference device tiers',
+            'Test Roblox and Fortnite experiences with a gamepad on PC to cover console controls',
             'Validate accessibility and localization requirements',
             'Report and reproduce defects, then verify fixes, using device logs (adb/logcat) and crash reports (Firebase Crashlytics)',
             'Distribute and validate mobile builds through TestFlight and Google Play Console testing tracks',
             'Test APIs and validate analytics event tracking',
           ],
           pt: [
+            'Padronização do relato de bugs e dos processos de QA entre projetos e times',
+            'Validação de compliance frente aos requisitos de Roblox, Fortnite, The Sandbox, App Store e Google Play',
             'Execução de testes funcionais, de regressão e exploratórios nos projetos de games',
             'Validação de gameplay, UX e experiência de primeiro uso (FTUE)',
             'Testes de cenários multiplayer e de compatibilidade em dispositivos de entrada, intermediários e de referência',
+            'Testes de experiências Roblox e Fortnite com controle no PC, cobrindo os comandos de console',
             'Validação de requisitos de acessibilidade e localização',
             'Relato e reprodução de defeitos, seguidos da verificação das correções, com logs de dispositivo (adb/logcat) e relatórios de crash (Firebase Crashlytics)',
             'Distribuição e validação de builds mobile pelas trilhas de teste do TestFlight e do Google Play Console',
@@ -204,11 +226,11 @@ export const experience: { title: L; jobs: Job[] }[] = [
             pt: '4–6 projetos simultâneos · 4–8 release candidates validados por mês · time de QA de 4–6',
           },
           note: {
-            en: 'Titles tested include PSG Soccer Freestyle — 1.6M+ downloads before delisting (public data: AppBrain)',
-            pt: 'Títulos testados incluem PSG Soccer Freestyle — mais de 1,6 mi de downloads antes de sair das lojas (dado público: AppBrain)',
+            en: `Titles tested include Pro Kick Simulator (${reachOf('Pro Kick Simulator', 'en')}) and PSG Football Freestyle (${reachOf('PSG Football Freestyle', 'en')})`,
+            pt: `Títulos testados incluem Pro Kick Simulator (${reachOf('Pro Kick Simulator', 'pt')}) e PSG Football Freestyle (${reachOf('PSG Football Freestyle', 'pt')})`,
           },
         },
-        platforms: 'Mobile · PC · Fortnite/UEFN · Roblox · Web3 · LumePad 3D',
+        platforms: 'Roblox · Fortnite/UEFN · The Sandbox (Web3) · Mobile · PC · LumePad 3D',
         tools:
           'Jira · ClickUp · Postman · REST · JSON · DevTools · adb/logcat · Android Studio · TestFlight · Google Play Console · Firebase Crashlytics · GameAnalytics · Firebase · Roblox Analytics · Git · UEFN · Roblox Studio · Unity',
       },
@@ -219,17 +241,21 @@ export const experience: { title: L; jobs: Job[] }[] = [
         company: 'Space Bit Games',
         bullets: {
           en: [
-            'Execute functional testing on mobile game projects',
-            'Validate gameplay and user experience',
-            'Report defects and verify fixes',
+            'Performed manual QA on mobile games, focusing on functionality, usability, stability and player experience',
+            'Created and executed test scenarios and documented defects with clear reproduction steps',
           ],
           pt: [
-            'Execução de testes funcionais em projetos de jogos mobile',
-            'Validação de gameplay e experiência do usuário',
-            'Relato de defeitos e verificação de correções',
+            'QA manual em jogos mobile, com foco em funcionalidade, usabilidade, estabilidade e experiência do jogador',
+            'Criação e execução de cenários de teste e documentação de defeitos com passos claros de reprodução',
           ],
         },
-        platforms: 'Mobile',
+        highlight: {
+          stats: {
+            en: `Titles tested: Logic Pic (${reachOf('Logic Pic', 'en')}) · Arcane Merge – Fantasy Mix (${reachOf('Arcane Merge – Fantasy Mix', 'en')})`,
+            pt: `Títulos testados: Logic Pic (${reachOf('Logic Pic', 'pt')}) · Arcane Merge – Fantasy Mix (${reachOf('Arcane Merge – Fantasy Mix', 'pt')})`,
+          },
+        },
+        platforms: 'Mobile (iOS · Android)',
       },
     ],
   },
@@ -239,18 +265,16 @@ export const experience: { title: L; jobs: Job[] }[] = [
       {
         start: '2020-08',
         end: '2021-06',
-        role: { en: 'Backend Developer', pt: 'Desenvolvedor Backend' },
-        company: 'Cooper Tec',
+        role: { en: 'Backend Developer — PHP', pt: 'Desenvolvedor Backend — PHP' },
+        company: 'Cooper Tec / Cooper Card',
         bullets: {
           en: [
-            'Develop backend features and services',
-            'Integrate APIs and web services',
-            'Query databases and validate data',
+            'Developed and maintained PHP backend systems and web services, working with APIs, databases and application integration',
+            'Tested APIs, web applications and systems, including SQL queries and data validation',
           ],
           pt: [
-            'Desenvolvimento de funcionalidades e serviços backend',
-            'Integração de APIs e web services',
-            'Consultas a bancos de dados e validação de dados',
+            'Desenvolvimento e manutenção de sistemas backend em PHP e web services, com APIs, bancos de dados e integração de aplicações',
+            'Testes de APIs, aplicações web e sistemas, incluindo consultas SQL e validação de dados',
           ],
         },
         tools: 'PHP · SQL · REST · JSON',
@@ -261,38 +285,50 @@ export const experience: { title: L; jobs: Job[] }[] = [
         role: { en: 'Web Developer — PHP', pt: 'Desenvolvedor Web — PHP' },
         company: 'Mark Up',
         bullets: {
-          en: ['Develop web applications with PHP and JavaScript', 'Build front-end interfaces with React'],
-          pt: [
-            'Desenvolvimento de aplicações web com PHP e JavaScript',
-            'Construção de interfaces front-end com React',
-          ],
+          en: ['Developed and maintained web applications with PHP/CakePHP, JavaScript and React'],
+          pt: ['Desenvolvimento e manutenção de aplicações web com PHP/CakePHP, JavaScript e React'],
         },
-        tools: 'PHP · JavaScript · React',
+        tools: 'PHP · CakePHP · JavaScript · React',
+      },
+      {
+        start: '2019-05',
+        end: '2019-09',
+        role: { en: 'Backend Developer — PHP', pt: 'Desenvolvedor Backend — PHP' },
+        company: 'Cooper Tec / Cooper Card',
+        bullets: {
+          en: ['Developed PHP backend features and web services, and tested APIs with SQL data validation'],
+          pt: ['Desenvolvimento de funcionalidades backend em PHP e web services, e testes de APIs com validação de dados em SQL'],
+        },
+        tools: 'PHP · SQL · REST',
+      },
+      {
+        start: '2017-06',
+        end: '2018-06',
+        role: { en: 'Game Developer Intern', pt: 'Estagiário de Desenvolvimento de Jogos' },
+        company: 'FATEC Ourinhos',
+        bullets: {
+          en: ['Developed games with RPG Maker and Construct 2', 'Adapted a web game to mobile with Construct 2'],
+          pt: ['Desenvolvimento de jogos com RPG Maker e Construct 2', 'Adaptação de um jogo web para mobile com Construct 2'],
+        },
+        tools: 'RPG Maker · Construct 2',
+      },
+      {
+        start: '2014-02',
+        end: '2015-03',
+        role: { en: 'IT Assistant', pt: 'Assistente de TI' },
+        company: 'Sercomputer',
+        bullets: {
+          en: ['Provided technical support and maintenance for computers, peripherals, software and network devices'],
+          pt: ['Suporte técnico e manutenção de computadores, periféricos, softwares e dispositivos de rede'],
+        },
       },
     ],
   },
 ];
 
-export const earlierExperience = {
-  title: { en: 'Earlier technology experience', pt: 'Experiências anteriores em tecnologia' } as L,
-  text: {
-    en: 'Earlier roles in technology preceding the transition into QA, including a Game Developer internship at FATEC Ourinhos (2017–2018, games built with RPG Maker and Construct 2), Cooper Card and Sercomputer.',
-    pt: 'Experiências anteriores em tecnologia, antes da transição para QA, incluindo estágio como Desenvolvedor de Jogos na FATEC Ourinhos (2017–2018, jogos feitos com RPG Maker e Construct 2), Cooper Card e Sercomputer.',
-  } as L,
-};
-
-export type Testimonial = {
-  quote: L;
-  name: string;
-  role: L;
-  company: string;
-  link?: string;
-};
-
-/** Recommendations, added only with the author's permission. The section stays hidden while empty. */
-export const testimonials: Testimonial[] = [];
-
 /** Market-standard skill names (what job posts and screening tools search for), grouped. */
+const list = (text: string): L<string[]> => ({ en: text.split(' · '), pt: text.split(' · ') });
+
 export const skills: { title: L; items: L<string[]> }[] = [
   {
     title: { en: 'Testing', pt: 'Testes' },
@@ -304,15 +340,15 @@ export const skills: { title: L; items: L<string[]> }[] = [
   {
     title: { en: 'Game QA', pt: 'Game QA' },
     items: {
-      en: ['Gameplay testing', 'Multiplayer testing', 'FTUE / onboarding', 'UX testing', 'Accessibility QA', 'Localization QA'],
-      pt: ['Testes de gameplay', 'Testes multiplayer', 'FTUE / onboarding', 'Testes de UX', 'QA de acessibilidade', 'QA de localização'],
+      en: ['Gameplay testing', 'Multiplayer testing', 'FTUE / onboarding', 'UX testing', 'Controller testing (gamepad on PC)', 'Accessibility QA', 'Localization QA'],
+      pt: ['Testes de gameplay', 'Testes multiplayer', 'FTUE / onboarding', 'Testes de UX', 'Testes com controle (gamepad no PC)', 'QA de acessibilidade', 'QA de localização'],
     },
   },
   {
     title: { en: 'Test management', pt: 'Gestão de testes' },
     items: {
-      en: ['Test planning', 'Test case design', 'Risk-based testing', 'Bug reporting', 'Defect triage & prioritization', 'Device compatibility matrix', 'Release validation'],
-      pt: ['Planejamento de testes', 'Criação de casos de teste', 'Testes baseados em risco', 'Relato de bugs', 'Triagem e priorização de defeitos', 'Matriz de compatibilidade de dispositivos', 'Validação de release'],
+      en: ['Test planning', 'Test case design', 'Risk-based testing', 'Bug reporting', 'Defect triage & prioritization', 'Device compatibility matrix', 'Release validation', 'Go/no-go reporting'],
+      pt: ['Planejamento de testes', 'Criação de casos de teste', 'Testes baseados em risco', 'Relato de bugs', 'Triagem e priorização de defeitos', 'Matriz de compatibilidade de dispositivos', 'Validação de release', 'Relatório de go/no-go'],
     },
   },
   {
@@ -324,15 +360,11 @@ export const skills: { title: L; items: L<string[]> }[] = [
   },
   {
     title: { en: 'QA tools', pt: 'Ferramentas de QA' },
-    items: same('Jira · ClickUp · HacknPlan · Postman · Chrome DevTools · adb / logcat · Android Studio · TestFlight · Google Play Console · Firebase Crashlytics · Git').en
-      .split(' · ')
-      .reduce((acc, tool) => ({ en: [...acc.en, tool], pt: [...acc.pt, tool] }), { en: [] as string[], pt: [] as string[] }),
+    items: list('Jira · ClickUp · HacknPlan · Postman · Chrome DevTools · adb / logcat · Android Studio · TestFlight · Google Play Console · Firebase Crashlytics · Git'),
   },
   {
     title: { en: 'Engines', pt: 'Engines' },
-    items: same('Unity · Unreal Engine · UEFN · Roblox Studio · Construct 2/3 · GameMaker · Blender').en
-      .split(' · ')
-      .reduce((acc, tool) => ({ en: [...acc.en, tool], pt: [...acc.pt, tool] }), { en: [] as string[], pt: [] as string[] }),
+    items: list('Unity · Unreal Engine · UEFN · Roblox Studio · Construct 2/3 · GameMaker · Blender'),
   },
   {
     title: { en: 'Analytics & data', pt: 'Analytics e dados' },
@@ -350,9 +382,7 @@ export const skills: { title: L; items: L<string[]> }[] = [
   },
   {
     title: { en: 'Development background', pt: 'Background em desenvolvimento' },
-    items: same('PHP · JavaScript · React · HTML5').en
-      .split(' · ')
-      .reduce((acc, tool) => ({ en: [...acc.en, tool], pt: [...acc.pt, tool] }), { en: [] as string[], pt: [] as string[] }),
+    items: list('PHP · JavaScript · React · HTML5'),
   },
 ];
 
@@ -388,39 +418,70 @@ export const education: { start: string; end: string; institution: string; degre
 
 export const certifications: { name: L; issuer?: string; year?: string }[] = [
   { name: same('Scrum Foundation Professional Certificate'), issuer: 'CertiProf', year: '2020' },
-  { name: same('Remote Work and Virtual Collaboration'), issuer: 'CertiProf', year: '2021' },
   { name: { en: 'Software Testing', pt: 'Teste de Software' }, issuer: 'Udemy' },
   { name: { en: 'Usability Evaluation', pt: 'Avaliação de Usabilidade' }, issuer: 'Lúmina/UFRGS' },
   { name: { en: 'Unity 3D and Augmented Reality (Vuforia)', pt: 'Unity 3D e Realidade Aumentada (Vuforia)' }, issuer: 'FATEC' },
-  { name: { en: 'Pentest (short course)', pt: 'Pentest (minicurso)' } },
 ];
 
+export type GameDevItem = { name: string | L; note?: L; link?: string };
+
+/** College and personal game projects (from the old Wix portfolio and itch.io). */
 export const gameDev = {
   title: { en: 'Game development background', pt: 'Background em desenvolvimento de games' } as L,
   intro: {
-    en: 'Personal and academic projects, before and alongside the transition into QA.',
-    pt: 'Projetos pessoais e acadêmicos, antes e durante a transição para QA.',
+    en: 'Game jams, college projects and personal games, before and alongside the move into QA.',
+    pt: 'Game jams, projetos da faculdade e jogos pessoais, antes e durante a transição para QA.',
   } as L,
   groups: [
     {
-      label: { en: 'Games built', pt: 'Jogos desenvolvidos' },
-      items: same('Coffee Rush|Art Convergence|Labirinto na Selva|Alone in The House|Game Island — O Herói dos Quatro Reinos|Energysion Caos|Coração do Inverno').en
-        .split('|')
-        .reduce((acc, x) => ({ en: [...acc.en, x], pt: [...acc.pt, x] }), { en: [] as string[], pt: [] as string[] }),
+      label: { en: 'Game jams', pt: 'Game jams' },
+      items: [
+        {
+          name: 'Coffee Rush',
+          link: 'https://mateusbomfim.itch.io/coffe-rush',
+          note: { en: 'CTRL ALT JAM · Producer in a team of 5 · Unity', pt: 'CTRL ALT JAM · Producer em um time de 5 · Unity' },
+        },
+        { name: 'Art Convergence', note: { en: 'GitHub Game Off 2018 · fan game', pt: 'GitHub Game Off 2018 · fan game' } },
+        { name: 'Labirinto na Selva', note: { en: 'Café Game Jam 2018 · solo · Construct', pt: 'Café Game Jam 2018 · solo · Construct' } },
+        { name: 'Energysion Caos', note: { en: 'FATEC Ourinhos game jam · runner', pt: 'Game jam da FATEC Ourinhos · runner' } },
+      ],
     },
     {
-      label: { en: 'Game design documents written', pt: 'Game design documents escritos' },
-      items: {
-        en: ['My Mod Pet', 'Mind Buster', 'Educational Game', 'Horror Game'],
-        pt: ['My Mod Pet', 'Mind Buster', 'Jogo educacional', 'Jogo de terror'],
-      },
+      label: { en: 'Other games built', pt: 'Outros jogos desenvolvidos' },
+      items: [
+        { name: 'Coração do Inverno', note: { en: 'final course project', pt: 'trabalho de conclusão de curso (TCC)' } },
+        { name: 'Alone in the House', note: { en: 'survival · Construct', pt: 'sobrevivência · Construct' } },
+        { name: 'Bomber War 3', note: { en: 'browser fighting game', pt: 'jogo de luta para navegador' } },
+        { name: 'Game Island — O Herói dos Quatro Reinos', note: { en: 'fan game', pt: 'fan game' } },
+      ],
+    },
+    {
+      label: { en: 'Game design documents', pt: 'Game design documents' },
+      items: [
+        {
+          name: 'Mind Buster',
+          note: {
+            en: 'co-written with Lucas das Neves · 21 functional and non-functional requirements',
+            pt: 'escrito com Lucas das Neves · 21 requisitos funcionais e não funcionais',
+          },
+        },
+        { name: 'My Mod Pet' },
+        { name: { en: 'Educational game', pt: 'Jogo educacional' } },
+        { name: { en: 'Horror game', pt: 'Jogo de terror' } },
+      ],
     },
     {
       label: { en: '3D modeling (Blender)', pt: 'Modelagem 3D (Blender)' },
-      items: {
-        en: ['Dino', 'Rifle', 'Robot', 'Locomotive'],
-        pt: ['Dino', 'Carabina', 'Robô', 'Locomotiva'],
-      },
+      items: [
+        { name: 'Dino' },
+        { name: { en: 'Rifle', pt: 'Carabina' } },
+        { name: { en: 'Robot', pt: 'Robô' } },
+        { name: { en: 'Locomotive', pt: 'Locomotiva' } },
+      ],
     },
-  ] as { label: L; items: L<string[]> }[],
+  ] as { label: L; items: GameDevItem[] }[],
+  links: [
+    { label: 'itch.io', url: 'https://gio-gamedev.itch.io' },
+    { label: 'ArtStation', url: 'https://www.artstation.com/gio_gamedev' },
+  ],
 };

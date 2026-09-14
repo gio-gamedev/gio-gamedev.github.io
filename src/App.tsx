@@ -9,19 +9,16 @@ import { Footer } from './components/Footer';
 import { Header } from './components/Header';
 import { Hero } from './components/Hero';
 import { Projects } from './components/Projects';
-import { Testimonials } from './components/Testimonials';
 import { WorkSamples } from './components/WorkSamples';
-import { testimonials } from './content/profile';
 import { ui } from './content/ui';
 import { useLang } from './i18n/LanguageContext';
 
 // Proof first (projects, work samples), then history, method and skills.
-// Sections are numbered in this order, so optional ones don't leave gaps.
+// Sections are numbered in this order.
 const sections: ComponentType<{ index: string }>[] = [
   Projects,
   WorkSamples,
   Experience,
-  ...(testimonials.length > 0 ? [Testimonials] : []),
   Approach,
   Skills,
   Awards,

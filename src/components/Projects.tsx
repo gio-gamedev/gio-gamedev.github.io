@@ -1,6 +1,7 @@
-import { featuredProjects } from '../content/projects';
+import { featuredProjects, projectKey } from '../content/projects';
 import { ui } from '../content/ui';
 import { useLang } from '../i18n/LanguageContext';
+import { BrandStrip } from './BrandStrip';
 import { ProjectCard } from './ProjectCard';
 import { ProjectIndex } from './ProjectIndex';
 import { Section } from './Section';
@@ -13,11 +14,12 @@ export function Projects({ index }: { index: string }) {
     <Section id="projects" index={index} title={t(ui.sections.projects)} subtitle={t(ui.sections.projectsSubtitle)}>
       <ul className={styles.featured}>
         {featuredProjects.map((project) => (
-          <li key={project.name}>
+          <li key={projectKey(project)}>
             <ProjectCard project={project} />
           </li>
         ))}
       </ul>
+      <BrandStrip />
       <ProjectIndex />
     </Section>
   );

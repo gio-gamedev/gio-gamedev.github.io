@@ -7,6 +7,7 @@ import { LanguageProvider } from './i18n/LanguageContext';
 
 export { SITE_URL } from './content/site';
 export { cvTitle } from './cv/CvDocument';
+export { cvData } from './cv/cvData';
 export { cvStyles } from './cv/cvStyles';
 export { llmsTxt, resumeJson } from './machine';
 export { headTags } from './seo';

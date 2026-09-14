@@ -1,6 +1,6 @@
 # Revisão: o que falta refazer ou confirmar
 
-Conteúdo marcado com `draft: true` é **fictício, escrito pelo Claude como exemplo**. Ele só aparece no modo de revisão, com a faixa listrada "RASCUNHO FICTÍCIO — REFAZER", e **nunca no site publicado**. O teste `draft samples never ship` garante isso no CI.
+As amostras marcadas com `draft: true` são **fictícias, escritas pelo Claude como exemplo**. Elas ficam em `src/content/workSamples.drafts.ts` e só aparecem no modo de revisão, com a faixa listrada "RASCUNHO FICTÍCIO — REFAZER". O build publicado **nem inclui esse arquivo no JavaScript** (a constante `__SHOW_DRAFTS__` em `vite.config.ts` é `false` nele). O teste `draft samples never ship` confere isso no CI.
 
 Para ver os rascunhos:
 
@@ -10,27 +10,23 @@ npm run dev                                  # http://localhost:5173 e /pt/
 npm run build:review && npm run preview
 ```
 
-Para aprovar um rascunho depois de refazer, troque `draft: true` por `draft: false` (ou apague a linha).
+Para publicar uma amostra depois de refazer, mova o objeto dela para `src/content/workSamples.ts` e apague a linha `draft: true`.
 
-## Amostras de trabalho fictícias (refazer)
+## Amostras fictícias (refazer)
 
 | Amostra | Onde | O que fazer |
 |---|---|---|
-| Casos de teste — FTUE mobile | `src/content/workSamples.ts`, `id: 'test-cases'` | Trocar pelos seus casos, no formato que você usa de verdade |
-| Relatório de go/no-go — 1.9.0 RC3 | `src/content/workSamples.ts`, `id: 'go-no-go'` | Trocar pelo seu formato de relatório de release |
-| Sessão exploratória — multiplayer Roblox | `src/content/workSamples.ts`, `id: 'exploratory-session'` | Trocar por uma sessão sua (anonimizada) |
+| Relatório de go/no-go — 1.9.0 RC3 | `src/content/workSamples.drafts.ts`, `id: 'go-no-go'` | Trocar pelo seu formato de relatório de release |
+| Sessão exploratória — multiplayer Roblox | `src/content/workSamples.drafts.ts`, `id: 'exploratory-session'` | Trocar por uma sessão sua (anonimizada) |
 
-## Conteúdo que depende de você
+A amostra **Casos de teste** agora é real: sai do seu teste técnico de fevereiro de 2022, anonimizado (sem o nome da empresa e sem os nomes internos do jogo).
 
-| Item | Onde entra |
+## Para conferir
+
+| Item | Onde |
 |---|---|
-| Métricas de impacto (bugs críticos pegos antes do lançamento, aprovação de loja, adoção do template de bug, testers treinados) | `experience` em `src/content/profile.ts` |
-| Mini case dos 8 destaques | `caseStudy` em `src/content/projects.ts` |
-| Depoimentos (com permissão) | `testimonials` em `src/content/profile.ts` |
-| Capas de World Soccer Tycoon e Skate Tycoon | `public/covers/` + `cover` em `src/content/projects.ts` |
-| NDA: Bolão GRE-NAL 2026, Bolão da UOL 2026, Tetragon 2 e marcas de clientes | `src/content/projects.ts` |
-| Divergências com o currículo antigo: datas da Cooper Tec, nome do curso, "PSG Soccer" x "PSG Football" Freestyle | `src/content/profile.ts` e `src/content/projects.ts` |
-| Resultado do EF SET | `languageList` em `src/content/profile.ts` |
-| Prazo de início | `snapshot` em `src/content/profile.ts` |
+| Ano do TCC (Coração do Inverno): o Wix diz 2021, e o curso está como 2016–2018 | `gameDev` e `education` em `src/content/profile.ts` |
+| Números públicos de alcance (conferidos em 14/09/2026) | `src/content/reach.ts` |
+| Resultado do EF SET (inglês fica A2 até lá) | `languageList` em `src/content/profile.ts` |
 
-Depois de mudar o conteúdo, rode `npm run cv` para gerar de novo os currículos em PDF.
+Depois de mudar o conteúdo, rode `npm run cv` para gerar de novo os currículos em PDF (os de Word saem em todo build).

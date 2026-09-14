@@ -2,8 +2,20 @@ import AxeBuilder from '@axe-core/playwright';
 import { expect, test } from '@playwright/test';
 
 const pages = [
-  { path: '/', lang: 'en', section: 'Selected QA Projects', cv: '/cv/Giovanni-Mariano-Game-QA-EN.pdf' },
-  { path: '/pt/', lang: 'pt-BR', section: 'Projetos de QA em destaque', cv: '/cv/Giovanni-Mariano-Game-QA-PT.pdf' },
+  {
+    path: '/',
+    lang: 'en',
+    section: 'Selected QA Projects',
+    cv: '/cv/Giovanni-Mariano-Game-QA-EN',
+    caixa: 'CAIXA Universe',
+  },
+  {
+    path: '/pt/',
+    lang: 'pt-BR',
+    section: 'Projetos de QA em destaque',
+    cv: '/cv/Giovanni-Mariano-Game-QA-PT',
+    caixa: 'Universo CAIXA',
+  },
 ];
 
 for (const page of pages) {
@@ -33,10 +45,26 @@ for (const page of pages) {
       });
     }
 
-    test('serves its resume PDF', async ({ request }) => {
-      const response = await request.get(page.cv);
-      expect(response.status()).toBe(200);
-      expect(response.headers()['content-type']).toContain('pdf');
+    test('serves its resume as PDF and Word', async ({ request }) => {
+      const pdf = await request.get(`${page.cv}.pdf`);
+      expect(pdf.status()).toBe(200);
+      expect(pdf.headers()['content-type']).toContain('pdf');
+      const docx = await request.get(`${page.cv}.docx`);
+      expect(docx.status()).toBe(200);
+      // A .docx is a zip archive: it starts with "PK".
+      expect((await docx.body()).subarray(0, 2).toString()).toBe('PK');
+    });
+
+    test('shows project names in the page language', async ({ page: tab }) => {
+      await tab.goto(page.path);
+      await expect(tab.getByRole('heading', { level: 3, name: page.caixa })).toBeVisible();
+    });
+
+    test('every featured project has cover art', async ({ page: tab }) => {
+      await tab.goto(page.path);
+      const cards = tab.locator('#projects article');
+      await expect(cards).toHaveCount(8);
+      await expect(tab.locator('#projects article img')).toHaveCount(8);
     });
   });
 }
@@ -76,16 +104,30 @@ test('work sample tabs switch with mouse and keyboard', async ({ page }) => {
   await expect(tabs.nth(2)).toBeFocused();
 });
 
-test('draft samples never ship in the production build', async ({ page }) => {
+test('draft samples never ship in the production build', async ({ page, request }) => {
   await page.goto('/');
-  await expect(page.getByRole('tab')).toHaveCount(3);
+  await expect(page.getByRole('tab')).toHaveCount(4);
   await expect(page.getByText('FICTIONAL DRAFT')).toHaveCount(0);
+
+  // Not just hidden: the drafts module must be absent from every published script.
+  const urls = await page
+    .locator('script[src], link[rel="modulepreload"]')
+    .evaluateAll((els) => els.map((el) => el.getAttribute('src') ?? el.getAttribute('href') ?? ''));
+  expect(urls.length).toBeGreaterThan(0);
+  for (const url of urls) {
+    const body = await (await request.get(url)).text();
+    expect(body).not.toContain('Goal Rush');
+    expect(body).not.toContain('1.9.0-rc3');
+  }
 });
 
 test('machine-readable resume files are served', async ({ request }) => {
   const resume = await (await request.get('/resume.json')).json();
   expect(resume.basics.name).toBe('Giovanni S. Mariano');
   expect(resume.basics.label).toBe('Game QA Analyst');
+  expect(resume.projects).toHaveLength(8);
   const llms = await (await request.get('/llms.txt')).text();
   expect(llms).toContain('# Giovanni S. Mariano — Game QA Analyst');
+  expect(llms).toContain('Logic Pic (Mobile, Space Bit Games)');
+  expect(llms).not.toContain('Goal Rush');
 });

@@ -32,6 +32,7 @@
   --amber: #ffc46b;
   --slate: #aab4c8;
   --yellow: #f5dc6b;
+  --pink: #ff94d6;
 
   --grid-line: rgb(255 255 255 / 0.03);
   --shadow: 0 14px 40px rgb(0 0 0 / 0.4);
@@ -64,6 +65,7 @@
   --amber: #b45309;
   --slate: #475569;
   --yellow: #a16207;
+  --pink: #be185d;
 
   --grid-line: rgb(23 21 31 / 0.045);
   --shadow: 0 14px 40px rgb(23 21 31 / 0.12);
@@ -93,6 +95,7 @@
     --amber: #b45309;
     --slate: #475569;
     --yellow: #a16207;
+  --pink: #be185d;
     --grid-line: rgb(23 21 31 / 0.045);
     --shadow: 0 14px 40px rgb(23 21 31 / 0.12);
   }
@@ -349,6 +352,7 @@ ol {
     --amber: #b45309;
     --slate: #475569;
     --yellow: #a16207;
+  --pink: #be185d;
     --grid-line: transparent;
   }
 

@@ -2,6 +2,12 @@
   padding-block: clamp(44px, 7vw, 84px);
 }
 
+/* Alternating bands, so a long page reads as distinct blocks while scrolling. */
+.section:nth-of-type(even) {
+  border-block: 1px solid var(--border);
+  background: var(--bg-elev);
+}
+
 .header {
   max-width: 720px;
   margin-bottom: clamp(24px, 4vw, 40px);

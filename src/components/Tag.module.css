@@ -34,6 +34,9 @@
 .tag[data-tone='yellow'] {
   --tone: var(--yellow);
 }
+.tag[data-tone='pink'] {
+  --tone: var(--pink);
+}
 
 .tag[data-tone='neutral'] {
   border-color: var(--border);

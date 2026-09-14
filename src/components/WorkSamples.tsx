@@ -1,15 +1,17 @@
 import { useEffect, useRef, useState, type KeyboardEvent } from 'react';
-import { visible } from '../content/review';
+import { SHOW_DRAFTS } from '../content/review';
 import { ui } from '../content/ui';
 import { sampleDisclaimer, workSamples, type Block } from '../content/workSamples';
+import { draftSamples } from '../content/workSamples.drafts';
 import { useLang } from '../i18n/LanguageContext';
 import { DraftBadge } from './DraftBadge';
 import { Icon } from './Icon';
 import { Section } from './Section';
 import styles from './WorkSamples.module.css';
 
-// Drafts (fictional examples still to be redone) only show in review mode.
-const samples = visible(workSamples);
+// Drafts (fictional examples still to be redone) only show in review mode. SHOW_DRAFTS is a
+// build-time constant, so the published bundle drops the drafts module altogether.
+const samples = SHOW_DRAFTS ? [...workSamples, ...draftSamples] : workSamples;
 
 export function WorkSamples({ index }: { index: string }) {
   const { t } = useLang();
@@ -94,14 +96,14 @@ export function WorkSamples({ index }: { index: string }) {
 
           <p className={styles.disclaimer}>
             <Icon name="info" size={16} />
-            {t(sampleDisclaimer)}
+            {t(sample.disclaimer ?? sampleDisclaimer)}
           </p>
 
           {sample.sections.map((section) => (
             <section key={section.heading.en} className={styles.section}>
               <h4 className={styles.sectionHeading}>{t(section.heading)}</h4>
               {section.blocks.map((block, bi) => (
-                <SampleBlock key={bi} block={block} />
+                <SampleBlock key={bi} block={block} label={t(section.heading)} />
               ))}
             </section>
           ))}
@@ -111,7 +113,7 @@ export function WorkSamples({ index }: { index: string }) {
   );
 }
 
-function SampleBlock({ block }: { block: Block }) {
+function SampleBlock({ block, label }: { block: Block; label: string }) {
   const { t } = useLang();
 
   switch (block.kind) {
@@ -149,7 +151,8 @@ function SampleBlock({ block }: { block: Block }) {
 
     case 'table':
       return (
-        <div className={styles.tableWrap}>
+        // Wide tables scroll sideways on phones; the region takes focus so keyboard users can scroll it.
+        <div className={styles.tableWrap} tabIndex={0} role="region" aria-label={label}>
           <table className={styles.table}>
             <thead>
               <tr>

@@ -10,6 +10,7 @@ export function Hero() {
   const { t } = useLang();
   const { links } = profile;
   const cv = t(profile.cv);
+  const docx = t(profile.cvDocx);
 
   return (
     <section id="top" className={styles.hero} aria-labelledby="hero-title">
@@ -29,7 +30,7 @@ export function Hero() {
           <ul className={styles.proof}>
             {profile.proof.map((item) => (
               <li key={item.label.en}>
-                <strong>{item.value}</strong> {t(item.label)}
+                <strong>{t(item.value)}</strong> {t(item.label)}
               </li>
             ))}
             <li>
@@ -68,6 +69,12 @@ export function Hero() {
               <a href={links.github} target="_blank" rel="noreferrer">
                 <Icon name="github" />
                 GitHub
+              </a>
+            </li>
+            <li>
+              <a href={docx} download={docx.split('/').pop()}>
+                <Icon name="download" />
+                {t(ui.hero.docx)}
               </a>
             </li>
           </ul>

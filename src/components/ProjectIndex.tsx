@@ -2,6 +2,8 @@ import {
   categories,
   categoryInfo,
   categoryScope,
+  projectKey,
+  projectName,
   projects,
   storeLabel,
   testingLabels,
@@ -20,7 +22,9 @@ const samePlatforms = (a: Project, b: Project) => a.platforms.join('|') === b.pl
 const panels = categories.map((category) => {
   const items = projects
     .filter((p) => p.category === category)
-    .sort((a, b) => Number(Boolean(b.selected)) - Number(Boolean(a.selected)) || a.name.localeCompare(b.name));
+    .sort(
+      (a, b) => Number(Boolean(b.selected)) - Number(Boolean(a.selected)) || projectKey(a).localeCompare(projectKey(b)),
+    );
   // Platforms only when every project shares them and they add to the category name ("Mobile" → "iOS · Android").
   const platforms = items.every((p) => samePlatforms(p, items[0]))
     ? items[0].platforms.filter((x) => !category.toLowerCase().includes(x.toLowerCase()))
@@ -30,7 +34,7 @@ const panels = categories.map((category) => {
 });
 
 export function ProjectIndex() {
-  const { t } = useLang();
+  const { lang, t } = useLang();
 
   return (
     <div className={styles.wrap}>
@@ -41,12 +45,7 @@ export function ProjectIndex() {
         {panels.map(({ category, items, platforms, scope, slug }) => {
           const info = categoryInfo[category];
           return (
-            <section
-              key={category}
-              className={styles.panel}
-              data-tone={info.tone}
-              aria-labelledby={`index-${slug}`}
-            >
+            <section key={category} className={styles.panel} data-tone={info.tone} aria-labelledby={`index-${slug}`}>
               <div className={styles.panelHead}>
                 <h4 id={`index-${slug}`} className={styles.panelTitle}>
                   {t(info.label)}
@@ -60,29 +59,33 @@ export function ProjectIndex() {
               </p>
 
               <ul className={styles.names}>
-                {items.map((p) => (
-                  <li key={p.name}>
-                    {p.link ? (
-                      <a
-                        className={styles.name}
-                        href={p.link}
-                        target="_blank"
-                        rel="noreferrer"
-                        aria-label={`${p.name} — ${t(storeLabel(p.link))}`}
-                      >
-                        {p.name}
-                        <Icon name="external" size={12} />
-                      </a>
-                    ) : (
-                      <span className={styles.name}>{p.name}</span>
-                    )}
-                    {p.selected && (
-                      <span className={styles.star} title={t(ui.projects.featured)}>
-                        ★<span className="sr-only">{t(ui.projects.featured)}</span>
-                      </span>
-                    )}
-                  </li>
-                ))}
+                {items.map((p) => {
+                  const name = projectName(p, lang);
+                  return (
+                    <li key={projectKey(p)}>
+                      {p.link ? (
+                        <a
+                          className={styles.name}
+                          href={p.link}
+                          target="_blank"
+                          rel="noreferrer"
+                          aria-label={`${name} — ${t(storeLabel(p.link))}`}
+                        >
+                          {name}
+                          <Icon name="external" size={12} />
+                        </a>
+                      ) : (
+                        <span className={styles.name}>{name}</span>
+                      )}
+                      {p.studio && <span className={styles.studio}>{p.studio}</span>}
+                      {p.selected && (
+                        <span className={styles.star} title={t(ui.projects.featured)}>
+                          ★<span className="sr-only">{t(ui.projects.featured)}</span>
+                        </span>
+                      )}
+                    </li>
+                  );
+                })}
               </ul>
             </section>
           );
@@ -90,8 +93,8 @@ export function ProjectIndex() {
       </div>
 
       <p className={styles.note}>
-        <Icon name="lock" size={14} />
-        {t(ui.projects.confidential)}
+        <Icon name="info" size={14} />
+        {t(ui.projects.publicNote)}
       </p>
     </div>
   );

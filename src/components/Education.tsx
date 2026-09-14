@@ -1,12 +1,16 @@
-import { certifications, education, gameDev, languages } from '../content/profile';
+import { certifications, education, gameDev, languages, type GameDevItem } from '../content/profile';
+import type { L } from '../content/types';
 import { ui } from '../content/ui';
 import { useLang } from '../i18n/LanguageContext';
+import { Icon } from './Icon';
 import { Section } from './Section';
-import { Tag } from './Tag';
 import styles from './Education.module.css';
+
+const itemKey = (item: GameDevItem) => (typeof item.name === 'string' ? item.name : item.name.en);
 
 export function Education({ index }: { index: string }) {
   const { t } = useLang();
+  const text = (value: string | L) => (typeof value === 'string' ? value : t(value));
 
   return (
     <Section id="education" index={index} title={t(ui.sections.education)}>
@@ -47,15 +51,32 @@ export function Education({ index }: { index: string }) {
           {gameDev.groups.map((group) => (
             <div key={group.label.en} className={styles.gdGroup}>
               <p className={styles.gdLabel}>{t(group.label)}</p>
-              <ul className={styles.gdItems}>
-                {t(group.items).map((item) => (
-                  <li key={item}>
-                    <Tag>{item}</Tag>
+              <ul className={styles.gdList}>
+                {group.items.map((item) => (
+                  <li key={itemKey(item)}>
+                    {item.link ? (
+                      <a href={item.link} target="_blank" rel="noreferrer">
+                        {text(item.name)}
+                      </a>
+                    ) : (
+                      <span className={styles.gdName}>{text(item.name)}</span>
+                    )}
+                    {item.note && <span className={styles.gdNote}> — {t(item.note)}</span>}
                   </li>
                 ))}
               </ul>
             </div>
           ))}
+          <ul className={styles.gdLinks}>
+            {gameDev.links.map((link) => (
+              <li key={link.url}>
+                <a href={link.url} target="_blank" rel="noreferrer">
+                  {link.label}
+                  <Icon name="external" size={13} />
+                </a>
+              </li>
+            ))}
+          </ul>
         </div>
       </details>
     </Section>

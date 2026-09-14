@@ -71,6 +71,10 @@ export function Contact({ index }: { index: string }) {
               <Icon name="download" />
               {t(ui.hero.resume)}
             </a>
+            <a className="btn btn-ghost" href={t(profile.cvDocx)} download={t(profile.cvDocx).split('/').pop()}>
+              <Icon name="download" />
+              {t(ui.hero.docx)}
+            </a>
           </div>
 
           <p className={styles.availability}>

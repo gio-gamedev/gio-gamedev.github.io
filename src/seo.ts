@@ -8,11 +8,12 @@ export { SITE_URL };
 
 const pageUrl: Record<Lang, string> = { en: `${SITE_URL}/`, pt: `${SITE_URL}/pt/` };
 const ogLocale: Record<Lang, string> = { en: 'en_US', pt: 'pt_BR' };
+const htmlLang: Record<Lang, string> = { en: 'en', pt: 'pt-BR' };
 
 const escapeHtml = (s: string) =>
   s.replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 
-/** <head> tags for one language page: meta, Open Graph, hreflang and schema.org Person data. */
+/** <head> tags for one language page: meta, Open Graph, hreflang and schema.org ProfilePage data. */
 export function headTags(lang: Lang): { htmlLang: string; tags: string } {
   const other: Lang = lang === 'en' ? 'pt' : 'en';
   const title = escapeHtml(ui.meta.title[lang]);
@@ -20,7 +21,6 @@ export function headTags(lang: Lang): { htmlLang: string; tags: string } {
 
   // Structured data that search engines and screening tools read without parsing the layout.
   const person = {
-    '@context': 'https://schema.org',
     '@type': 'Person',
     name: profile.name,
     alternateName: 'Giovanni da Silva Mariano',
@@ -44,9 +44,26 @@ export function headTags(lang: Lang): { htmlLang: string; tags: string } {
       ...(c.issuer ? { recognizedBy: { '@type': 'Organization', name: c.issuer } } : {}),
     })),
     award: `${award.title.en} (${award.org})`,
-    knowsAbout: ['Game QA', 'Roblox', 'Fortnite (UEFN)', 'Mobile games', 'Platform compliance', 'Release validation'],
+    knowsAbout: [
+      'Game QA',
+      'Roblox',
+      'Fortnite (UEFN)',
+      'The Sandbox',
+      'Mobile games',
+      'Platform compliance',
+      'Release validation',
+    ],
     knowsLanguage: languageList.map((l) => ({ '@type': 'Language', name: l.name.en, alternateName: l.code })),
     sameAs: [profile.links.linkedin, profile.links.github],
+  };
+
+  const profilePage = {
+    '@context': 'https://schema.org',
+    '@type': 'ProfilePage',
+    url: pageUrl[lang],
+    inLanguage: htmlLang[lang],
+    dateModified: __BUILD_DATE__,
+    mainEntity: person,
   };
 
   const tags = [
@@ -68,8 +85,8 @@ export function headTags(lang: Lang): { htmlLang: string; tags: string } {
     `<meta property="og:image:height" content="630" />`,
     `<meta property="og:image:alt" content="${escapeHtml(ui.meta.ogImageAlt[lang])}" />`,
     `<meta name="twitter:card" content="summary_large_image" />`,
-    `<script type="application/ld+json">${JSON.stringify(person).replace(/</g, '\\u003c')}</script>`,
+    `<script type="application/ld+json">${JSON.stringify(profilePage).replace(/</g, '\\u003c')}</script>`,
   ];
 
-  return { htmlLang: lang === 'pt' ? 'pt-BR' : 'en', tags: tags.join('\n    ') };
+  return { htmlLang: htmlLang[lang], tags: tags.join('\n    ') };
 }

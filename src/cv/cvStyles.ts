@@ -1,12 +1,12 @@
 /** Print stylesheet for the resume pages: neutral colors and system fonts that every PDF parser reads. */
 export const cvStyles = `
-@page { size: A4; margin: 12mm 14mm; }
+@page { size: A4; margin: 10mm 13mm; }
 * { box-sizing: border-box; }
-body { margin: 0; background: #fff; color: #111; font-family: Arial, Helvetica, sans-serif; font-size: 9.5pt; line-height: 1.35; }
-.cv { max-width: 182mm; margin: 0 auto; }
+body { margin: 0; background: #fff; color: #111; font-family: Arial, Helvetica, sans-serif; font-size: 9.2pt; line-height: 1.3; }
+.cv { max-width: 184mm; margin: 0 auto; }
 h1 { margin: 0; font-size: 19pt; }
-h2 { margin: 10pt 0 4pt; padding-bottom: 2pt; border-bottom: 1px solid #999; font-size: 10.5pt; letter-spacing: 0.04em; text-transform: uppercase; }
-h3 { margin: 7pt 0 0; font-size: 10pt; }
+h2 { margin: 8pt 0 3pt; padding-bottom: 2pt; border-bottom: 1px solid #999; font-size: 10.5pt; letter-spacing: 0.04em; text-transform: uppercase; }
+h3 { margin: 6pt 0 0; font-size: 9.8pt; }
 h2, h3, .dates { break-after: avoid; }
 p { margin: 2.5pt 0; }
 ul { margin: 2pt 0 0; padding-left: 13pt; }
