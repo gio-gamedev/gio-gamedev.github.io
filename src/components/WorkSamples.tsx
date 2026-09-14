@@ -1,60 +1,112 @@
-import { useEffect } from 'react';
-import { sampleDisclaimer, workSamples, type Block } from '../content/workSamples';
+import { useEffect, useRef, useState, type KeyboardEvent } from 'react';
+import { visible } from '../content/review';
 import { ui } from '../content/ui';
+import { sampleDisclaimer, workSamples, type Block } from '../content/workSamples';
 import { useLang } from '../i18n/LanguageContext';
+import { DraftBadge } from './DraftBadge';
 import { Icon } from './Icon';
 import { Section } from './Section';
 import styles from './WorkSamples.module.css';
 
+// Drafts (fictional examples still to be redone) only show in review mode.
+const samples = visible(workSamples);
+
 export function WorkSamples({ index }: { index: string }) {
   const { t } = useLang();
+  const [active, setActive] = useState(0);
+  const tabs = useRef<(HTMLButtonElement | null)[]>([]);
 
-  // Links such as #sample-bug-report (from the hero) open the matching sample.
+  // Links such as #sample-test-plan select the matching tab.
   useEffect(() => {
-    const openFromHash = () => {
-      const target = location.hash ? document.getElementById(location.hash.slice(1)) : null;
-      if (target instanceof HTMLDetailsElement) target.open = true;
+    const fromHash = () => {
+      const i = samples.findIndex((sample) => location.hash === `#sample-${sample.id}`);
+      if (i >= 0) setActive(i);
     };
-    openFromHash();
-    window.addEventListener('hashchange', openFromHash);
-    return () => window.removeEventListener('hashchange', openFromHash);
+    fromHash();
+    window.addEventListener('hashchange', fromHash);
+    return () => window.removeEventListener('hashchange', fromHash);
   }, []);
+
+  // WAI-ARIA tabs pattern: arrow keys move between tabs, Home/End jump to the ends.
+  const onKeyDown = (e: KeyboardEvent<HTMLButtonElement>) => {
+    const last = samples.length - 1;
+    const moves: Record<string, number> = {
+      ArrowRight: active === last ? 0 : active + 1,
+      ArrowLeft: active === 0 ? last : active - 1,
+      Home: 0,
+      End: last,
+    };
+    const next = moves[e.key];
+    if (next === undefined) return;
+    e.preventDefault();
+    setActive(next);
+    tabs.current[next]?.focus();
+  };
 
   return (
     <Section id="samples" index={index} title={t(ui.sections.samples)} subtitle={t(ui.sections.samplesSubtitle)}>
-      <div className={styles.list}>
-        {workSamples.map((sample) => (
-          <details key={sample.id} id={`sample-${sample.id}`} className={styles.sample}>
-            <summary className={styles.summary}>
-              <span className={styles.icon} aria-hidden="true">
-                <Icon name={sample.icon} size={22} />
-              </span>
-              <span className={styles.heading}>
-                <span className={styles.title}>{t(sample.title)}</span>
-                <span className={styles.subtitle}>{t(sample.subtitle)}</span>
-              </span>
-              <span className={styles.chevron}>
-                <Icon name="chevron" size={20} />
-              </span>
-            </summary>
-
-            <div className={styles.body}>
-              <p className={styles.disclaimer}>
-                <Icon name="info" size={16} />
-                {t(sampleDisclaimer)}
-              </p>
-              {sample.sections.map((section) => (
-                <section key={section.heading.en} className={styles.section}>
-                  <h3 className={styles.sectionHeading}>{t(section.heading)}</h3>
-                  {section.blocks.map((block, bi) => (
-                    <SampleBlock key={bi} block={block} />
-                  ))}
-                </section>
-              ))}
-            </div>
-          </details>
+      <div className={styles.tabs} role="tablist" aria-label={t(ui.samples.tabs)}>
+        {samples.map((sample, i) => (
+          <button
+            key={sample.id}
+            ref={(el) => {
+              tabs.current[i] = el;
+            }}
+            type="button"
+            role="tab"
+            id={`tab-${sample.id}`}
+            aria-selected={i === active}
+            aria-controls={`sample-${sample.id}`}
+            tabIndex={i === active ? 0 : -1}
+            className={styles.tab}
+            onClick={() => setActive(i)}
+            onKeyDown={onKeyDown}
+          >
+            <Icon name={sample.icon} size={18} />
+            {t(sample.tab)}
+            {sample.draft && <DraftBadge variant="chip" />}
+          </button>
         ))}
       </div>
+
+      {/* Inactive panels stay in the HTML (hidden), so screening tools and print still get every sample. */}
+      {samples.map((sample, i) => (
+        <article
+          key={sample.id}
+          id={`sample-${sample.id}`}
+          role="tabpanel"
+          aria-labelledby={`tab-${sample.id}`}
+          hidden={i !== active}
+          tabIndex={0}
+          className={styles.panel}
+          data-draft={sample.draft || undefined}
+        >
+          {sample.draft && <DraftBadge />}
+          <header className={styles.panelHead}>
+            <span className={styles.icon} aria-hidden="true">
+              <Icon name={sample.icon} size={22} />
+            </span>
+            <div>
+              <h3 className={styles.title}>{t(sample.title)}</h3>
+              <p className={styles.subtitle}>{t(sample.subtitle)}</p>
+            </div>
+          </header>
+
+          <p className={styles.disclaimer}>
+            <Icon name="info" size={16} />
+            {t(sampleDisclaimer)}
+          </p>
+
+          {sample.sections.map((section) => (
+            <section key={section.heading.en} className={styles.section}>
+              <h4 className={styles.sectionHeading}>{t(section.heading)}</h4>
+              {section.blocks.map((block, bi) => (
+                <SampleBlock key={bi} block={block} />
+              ))}
+            </section>
+          ))}
+        </article>
+      ))}
     </Section>
   );
 }

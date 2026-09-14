@@ -2,12 +2,15 @@ import { qaYears, techYears } from './stats';
 import type { L } from './types';
 
 const asset = (path: string) => `${import.meta.env.BASE_URL}${path}`;
+const same = (value: string): L => ({ en: value, pt: value });
 
 export const profile = {
   name: 'Giovanni S. Mariano',
-  role: {
-    en: 'QA Analyst | Game QA | Cross-team QA Coordination',
-    pt: 'Analista de QA | Game QA | Coordenação de QA entre times',
+  /** Standard job title first: recruiters and screening tools match on it. */
+  title: { en: 'Game QA Analyst', pt: 'Analista de QA de Games' } as L,
+  headline: {
+    en: `Game QA Analyst with ${qaYears} years testing and shipping Roblox, Fortnite (UEFN), mobile and PC titles.`,
+    pt: `Analista de QA de games com ${qaYears} anos testando e liberando títulos de Roblox, Fortnite (UEFN), mobile e PC.`,
   } as L,
   openTo: {
     en: 'Open to Senior Game QA and QA Lead roles',
@@ -17,20 +20,73 @@ export const profile = {
     en: 'Remote from Brazil (UTC−3) · Open to full-time, contractor, freelance and relocation',
     pt: 'Remoto a partir do Brasil (UTC−3) · Aberto a CLT, PJ, freelance e relocação',
   } as L,
-  stats: [
-    { value: String(qaYears), label: { en: 'Years in Game QA', pt: 'Anos em Game QA' } },
-    { value: String(techYears), label: { en: 'Years in Technology', pt: 'Anos em Tecnologia' } },
-    { value: '50+', label: { en: 'Game Projects Tested', pt: 'Projetos de games testados' } },
+  proof: [
+    { value: String(qaYears), label: { en: 'years in Game QA', pt: 'anos em Game QA' } },
+    { value: '50+', label: { en: 'game projects tested', pt: 'projetos de games testados' } },
+    { value: String(techYears), label: { en: 'years in technology', pt: 'anos em tecnologia' } },
   ] as { value: string; label: L }[],
-  platforms: ['Mobile', 'PC', 'Fortnite/UEFN', 'Roblox', 'Web3', 'LumePad 3D'],
   links: {
     email: 'giovannis.mariano@gmail.com',
     linkedin: 'https://linkedin.com/in/giogamedev',
     github: 'https://github.com/gio-gamedev',
   },
   avatar: asset('avatar.webp'),
-  resume: asset('resume.pdf'),
+  /** Generated from this content by `npm run cv` (scripts/cv-pdf.mjs). */
+  cv: {
+    en: asset('cv/Giovanni-Mariano-Game-QA-EN.pdf'),
+    pt: asset('cv/Giovanni-Mariano-Game-QA-PT.pdf'),
+  } as L,
 };
+
+export const languageList: { name: L; level: L; code: string }[] = [
+  { name: { en: 'Portuguese', pt: 'Português' }, level: { en: 'native', pt: 'nativo' }, code: 'pt' },
+  { name: { en: 'English', pt: 'Inglês' }, level: same('A2'), code: 'en' },
+  { name: { en: 'French', pt: 'Francês' }, level: { en: 'beginner', pt: 'iniciante' }, code: 'fr' },
+];
+
+export const languages: L = {
+  en: languageList.map((l) => `${l.name.en} (${l.level.en})`).join(' · '),
+  pt: languageList.map((l) => `${l.name.pt} (${l.level.pt})`).join(' · '),
+};
+
+/** The first thing a recruiter (or a screening tool) reads: the facts they filter on. */
+export const snapshot: { label: L; value: L }[] = [
+  { label: { en: 'Target roles', pt: 'Cargos-alvo' }, value: same('Senior Game QA · QA Lead') },
+  {
+    label: { en: 'Experience', pt: 'Experiência' },
+    value: {
+      en: `${qaYears} years in Game QA · ${techYears} years in technology`,
+      pt: `${qaYears} anos em Game QA · ${techYears} anos em tecnologia`,
+    },
+  },
+  {
+    label: { en: 'Platforms', pt: 'Plataformas' },
+    value: {
+      en: 'Roblox · Fortnite (UEFN) · iOS & Android · PC/Steam · Web3 · LumePad 3D',
+      pt: 'Roblox · Fortnite (UEFN) · iOS e Android · PC/Steam · Web3 · LumePad 3D',
+    },
+  },
+  {
+    label: { en: 'Strengths', pt: 'Pontos fortes' },
+    value: {
+      en: 'Test planning · bug reporting & triage · multiplayer · platform compliance · release sign-off',
+      pt: 'Planejamento de testes · relato e triagem de bugs · multiplayer · compliance de plataforma · aprovação de release',
+    },
+  },
+  {
+    label: { en: 'Key tools', pt: 'Ferramentas-chave' },
+    value: same('Jira · Postman · adb/logcat · TestFlight · Google Play Console · Firebase Crashlytics · Unity · UEFN · Roblox Studio'),
+  },
+  { label: { en: 'Location', pt: 'Localização' }, value: { en: 'Brazil · UTC−3 · remote', pt: 'Brasil · UTC−3 · remoto' } },
+  {
+    label: { en: 'Work model', pt: 'Contratação' },
+    value: {
+      en: 'Full-time, contractor or freelance · open to relocation',
+      pt: 'CLT, PJ ou freelance · aberto a relocação',
+    },
+  },
+  { label: { en: 'Languages', pt: 'Idiomas' }, value: languages },
+];
 
 /** "How I run QA": the Notion About section, restructured as a lead paragraph and workflow steps. */
 export const approach = {
@@ -83,7 +139,10 @@ export const approach = {
 };
 
 export type Job = {
-  period: L;
+  /** ISO month, e.g. "2022-11"; rendered in <time datetime>. */
+  start: string;
+  /** Omit for the current role. */
+  end?: string;
   role: L;
   company: string;
   /** Shown by default: the strongest points first. */
@@ -100,7 +159,7 @@ export const experience: { title: L; jobs: Job[] }[] = [
     title: { en: 'Game QA', pt: 'Game QA' },
     jobs: [
       {
-        period: { en: 'Nov 2022 – Present', pt: 'nov 2022 – atual' },
+        start: '2022-11',
         role: { en: 'QA Analyst', pt: 'Analista de QA' },
         company: 'Hermit Crab Game Studio',
         bullets: {
@@ -125,7 +184,8 @@ export const experience: { title: L; jobs: Job[] }[] = [
             'Validate gameplay, UX and first-time user experience',
             'Test multiplayer scenarios and device compatibility across low-end, mid-range and reference device tiers',
             'Validate accessibility and localization requirements',
-            'Report and reproduce defects, then verify fixes',
+            'Report and reproduce defects, then verify fixes, using device logs (adb/logcat) and crash reports (Firebase Crashlytics)',
+            'Distribute and validate mobile builds through TestFlight and Google Play Console testing tracks',
             'Test APIs and validate analytics event tracking',
           ],
           pt: [
@@ -133,7 +193,8 @@ export const experience: { title: L; jobs: Job[] }[] = [
             'Validação de gameplay, UX e experiência de primeiro uso (FTUE)',
             'Testes de cenários multiplayer e de compatibilidade em dispositivos de entrada, intermediários e de referência',
             'Validação de requisitos de acessibilidade e localização',
-            'Relato e reprodução de defeitos, seguidos da verificação das correções',
+            'Relato e reprodução de defeitos, seguidos da verificação das correções, com logs de dispositivo (adb/logcat) e relatórios de crash (Firebase Crashlytics)',
+            'Distribuição e validação de builds mobile pelas trilhas de teste do TestFlight e do Google Play Console',
             'Testes de APIs e validação do tracking de eventos de analytics',
           ],
         },
@@ -149,10 +210,11 @@ export const experience: { title: L; jobs: Job[] }[] = [
         },
         platforms: 'Mobile · PC · Fortnite/UEFN · Roblox · Web3 · LumePad 3D',
         tools:
-          'Jira · ClickUp · Postman · REST · JSON · DevTools · GameAnalytics · Firebase · Roblox Analytics · UEFN · Roblox Studio · Unity',
+          'Jira · ClickUp · Postman · REST · JSON · DevTools · adb/logcat · Android Studio · TestFlight · Google Play Console · Firebase Crashlytics · GameAnalytics · Firebase · Roblox Analytics · Git · UEFN · Roblox Studio · Unity',
       },
       {
-        period: { en: 'Sep 2022 – Nov 2022', pt: 'set 2022 – nov 2022' },
+        start: '2022-09',
+        end: '2022-11',
         role: { en: 'QA Analyst', pt: 'Analista de QA' },
         company: 'Space Bit Games',
         bullets: {
@@ -175,7 +237,8 @@ export const experience: { title: L; jobs: Job[] }[] = [
     title: { en: 'Technology Background', pt: 'Background em tecnologia' },
     jobs: [
       {
-        period: { en: 'Aug 2020 – Jun 2021', pt: 'ago 2020 – jun 2021' },
+        start: '2020-08',
+        end: '2021-06',
         role: { en: 'Backend Developer', pt: 'Desenvolvedor Backend' },
         company: 'Cooper Tec',
         bullets: {
@@ -193,7 +256,8 @@ export const experience: { title: L; jobs: Job[] }[] = [
         tools: 'PHP · SQL · REST · JSON',
       },
       {
-        period: { en: 'Sep 2019 – Aug 2020', pt: 'set 2019 – ago 2020' },
+        start: '2019-09',
+        end: '2020-08',
         role: { en: 'Web Developer — PHP', pt: 'Desenvolvedor Web — PHP' },
         company: 'Mark Up',
         bullets: {
@@ -228,69 +292,67 @@ export type Testimonial = {
 /** Recommendations, added only with the author's permission. The section stays hidden while empty. */
 export const testimonials: Testimonial[] = [];
 
-export const expertise: { title: L; items: L<string[]> }[] = [
+/** Market-standard skill names (what job posts and screening tools search for), grouped. */
+export const skills: { title: L; items: L<string[]> }[] = [
   {
-    title: { en: 'Testing Types', pt: 'Tipos de teste' },
+    title: { en: 'Testing', pt: 'Testes' },
     items: {
-      en: ['Functional', 'Regression', 'Exploratory', 'Gameplay', 'Multiplayer', 'Compatibility', 'Performance'],
-      pt: ['Funcional', 'Regressão', 'Exploratório', 'Gameplay', 'Multiplayer', 'Compatibilidade', 'Performance'],
+      en: ['Functional testing', 'Regression testing', 'Smoke testing', 'Exploratory testing', 'Integration testing', 'Compatibility testing', 'Performance testing'],
+      pt: ['Testes funcionais', 'Testes de regressão', 'Smoke tests', 'Testes exploratórios', 'Testes de integração', 'Testes de compatibilidade', 'Testes de performance'],
     },
   },
   {
-    title: { en: 'Player Experience', pt: 'Experiência do jogador' },
+    title: { en: 'Game QA', pt: 'Game QA' },
     items: {
-      en: ['UX / FTUE', 'Accessibility QA', 'Localization QA'],
-      pt: ['UX / FTUE', 'QA de acessibilidade', 'QA de localização'],
+      en: ['Gameplay testing', 'Multiplayer testing', 'FTUE / onboarding', 'UX testing', 'Accessibility QA', 'Localization QA'],
+      pt: ['Testes de gameplay', 'Testes multiplayer', 'FTUE / onboarding', 'Testes de UX', 'QA de acessibilidade', 'QA de localização'],
     },
   },
   {
-    title: { en: 'Test Documentation', pt: 'Documentação de testes' },
+    title: { en: 'Test management', pt: 'Gestão de testes' },
     items: {
-      en: ['Test Cases', 'Test Plans', 'Test Suites', 'Device Compatibility Matrix', 'Bug Reporting'],
-      pt: ['Casos de teste', 'Planos de teste', 'Suítes de teste', 'Matriz de compatibilidade de dispositivos', 'Relato de bugs'],
+      en: ['Test planning', 'Test case design', 'Risk-based testing', 'Bug reporting', 'Defect triage & prioritization', 'Device compatibility matrix', 'Release validation'],
+      pt: ['Planejamento de testes', 'Criação de casos de teste', 'Testes baseados em risco', 'Relato de bugs', 'Triagem e priorização de defeitos', 'Matriz de compatibilidade de dispositivos', 'Validação de release'],
     },
   },
   {
-    title: { en: 'Platform Compliance', pt: 'Compliance de plataforma' },
+    title: { en: 'Platform compliance', pt: 'Compliance de plataforma' },
     items: {
       en: ['App Store', 'Google Play', 'Roblox', 'Fortnite/UEFN', 'The Sandbox', 'Web3', 'Telco (carrier stores)', 'Leia Appstore (LumePad 3D)'],
       pt: ['App Store', 'Google Play', 'Roblox', 'Fortnite/UEFN', 'The Sandbox', 'Web3', 'Telco (lojas de operadoras)', 'Leia Appstore (LumePad 3D)'],
     },
   },
   {
-    title: { en: 'Tools & Engines', pt: 'Ferramentas e engines' },
+    title: { en: 'QA tools', pt: 'Ferramentas de QA' },
+    items: same('Jira · ClickUp · HacknPlan · Postman · Chrome DevTools · adb / logcat · Android Studio · TestFlight · Google Play Console · Firebase Crashlytics · Git').en
+      .split(' · ')
+      .reduce((acc, tool) => ({ en: [...acc.en, tool], pt: [...acc.pt, tool] }), { en: [] as string[], pt: [] as string[] }),
+  },
+  {
+    title: { en: 'Engines', pt: 'Engines' },
+    items: same('Unity · Unreal Engine · UEFN · Roblox Studio · Construct 2/3 · GameMaker · Blender').en
+      .split(' · ')
+      .reduce((acc, tool) => ({ en: [...acc.en, tool], pt: [...acc.pt, tool] }), { en: [] as string[], pt: [] as string[] }),
+  },
+  {
+    title: { en: 'Analytics & data', pt: 'Analytics e dados' },
     items: {
-      en: ['UEFN', 'Roblox Studio', 'Unity', 'Unreal Engine', 'Construct', 'GameMaker', 'Blender'],
-      pt: ['UEFN', 'Roblox Studio', 'Unity', 'Unreal Engine', 'Construct', 'GameMaker', 'Blender'],
+      en: ['GameAnalytics', 'Firebase Analytics', 'Roblox Analytics', 'SQL', 'REST APIs', 'JSON'],
+      pt: ['GameAnalytics', 'Firebase Analytics', 'Roblox Analytics', 'SQL', 'APIs REST', 'JSON'],
     },
   },
   {
-    title: { en: 'QA & Methodology', pt: 'QA e metodologia' },
+    title: { en: 'Ways of working', pt: 'Forma de trabalho' },
     items: {
-      en: ['Jira', 'ClickUp', 'Agile', 'Scrum'],
-      pt: ['Jira', 'ClickUp', 'Agile', 'Scrum'],
+      en: ['Agile', 'Scrum', 'Notion', 'Miro', 'Cross-team communication'],
+      pt: ['Agile', 'Scrum', 'Notion', 'Miro', 'Comunicação entre times'],
     },
   },
   {
-    title: { en: 'API & Technical', pt: 'API e técnico' },
-    items: {
-      en: ['Postman', 'REST', 'JSON', 'DevTools', 'SQL', 'Database Validation'],
-      pt: ['Postman', 'REST', 'JSON', 'DevTools', 'SQL', 'Validação de banco de dados'],
-    },
-  },
-  {
-    title: { en: 'Analytics', pt: 'Analytics' },
-    items: {
-      en: ['GameAnalytics', 'Firebase', 'Roblox Analytics'],
-      pt: ['GameAnalytics', 'Firebase', 'Roblox Analytics'],
-    },
-  },
-  {
-    title: { en: 'Technical Background', pt: 'Background técnico' },
-    items: {
-      en: ['PHP', 'JavaScript', 'React'],
-      pt: ['PHP', 'JavaScript', 'React'],
-    },
+    title: { en: 'Development background', pt: 'Background em desenvolvimento' },
+    items: same('PHP · JavaScript · React · HTML5').en
+      .split(' · ')
+      .reduce((acc, tool) => ({ en: [...acc.en, tool], pt: [...acc.pt, tool] }), { en: [] as string[], pt: [] as string[] }),
   },
 ];
 
@@ -300,6 +362,7 @@ export const award = {
     pt: 'Vencedor — Melhor Time de QA — Testathon World Tour São Paulo',
   } as L,
   org: 'Meta · 2024',
+  year: '2024',
   link: 'https://www.youtube.com/watch?v=nuXAPn1jyfY',
   linkLabel: { en: 'Event coverage', pt: 'Cobertura do evento' } as L,
   note: {
@@ -308,43 +371,29 @@ export const award = {
   } as L,
 };
 
-export const education: { period: string; title: L }[] = [
+export const education: { start: string; end: string; institution: string; degree: L }[] = [
   {
-    period: '2016–2018',
-    title: {
-      en: 'Technology Degree in Digital Games — Faculdade de Tecnologia de Ourinhos (FATEC)',
-      pt: 'Tecnólogo em Jogos Digitais — Faculdade de Tecnologia de Ourinhos',
-    },
+    start: '2016',
+    end: '2018',
+    institution: 'Faculdade de Tecnologia de Ourinhos (FATEC)',
+    degree: { en: 'Technology Degree in Digital Games', pt: 'Tecnólogo em Jogos Digitais' },
   },
   {
-    period: '2012–2013',
-    title: { en: 'IT Technician — SENAI', pt: 'Técnico em Informática — SENAI' },
+    start: '2012',
+    end: '2013',
+    institution: 'SENAI',
+    degree: { en: 'IT Technician', pt: 'Técnico em Informática' },
   },
 ];
 
-export const certifications: L<string[]> = {
-  en: [
-    'Scrum Foundation Professional Certificate — CertiProf — 2020',
-    'Remote Work and Virtual Collaboration — CertiProf — 2021',
-    'Software Testing — Udemy',
-    'Usability Evaluation — Lúmina/UFRGS',
-    'Unity 3D and Augmented Reality (Vuforia) — FATEC',
-    'Pentest (short course)',
-  ],
-  pt: [
-    'Scrum Foundation Professional Certificate — CertiProf — 2020',
-    'Remote Work and Virtual Collaboration — CertiProf — 2021',
-    'Teste de Software — Udemy',
-    'Avaliação de Usabilidade — Lúmina/UFRGS',
-    'Unity 3D e Realidade Aumentada (Vuforia) — FATEC',
-    'Pentest (minicurso)',
-  ],
-};
-
-export const languages: L = {
-  en: 'Portuguese (native) · English (A2) · French (beginner)',
-  pt: 'Português (nativo) · Inglês (A2) · Francês (iniciante)',
-};
+export const certifications: { name: L; issuer?: string; year?: string }[] = [
+  { name: same('Scrum Foundation Professional Certificate'), issuer: 'CertiProf', year: '2020' },
+  { name: same('Remote Work and Virtual Collaboration'), issuer: 'CertiProf', year: '2021' },
+  { name: { en: 'Software Testing', pt: 'Teste de Software' }, issuer: 'Udemy' },
+  { name: { en: 'Usability Evaluation', pt: 'Avaliação de Usabilidade' }, issuer: 'Lúmina/UFRGS' },
+  { name: { en: 'Unity 3D and Augmented Reality (Vuforia)', pt: 'Unity 3D e Realidade Aumentada (Vuforia)' }, issuer: 'FATEC' },
+  { name: { en: 'Pentest (short course)', pt: 'Pentest (minicurso)' } },
+];
 
 export const gameDev = {
   title: { en: 'Game development background', pt: 'Background em desenvolvimento de games' } as L,
@@ -355,10 +404,9 @@ export const gameDev = {
   groups: [
     {
       label: { en: 'Games built', pt: 'Jogos desenvolvidos' },
-      items: {
-        en: ['Coffee Rush', 'Art Convergence', 'Labirinto na Selva', 'Alone in The House', 'Game Island — O Herói dos Quatro Reinos', 'Energysion Caos', 'Coração do Inverno'],
-        pt: ['Coffee Rush', 'Art Convergence', 'Labirinto na Selva', 'Alone in The House', 'Game Island — O Herói dos Quatro Reinos', 'Energysion Caos', 'Coração do Inverno'],
-      },
+      items: same('Coffee Rush|Art Convergence|Labirinto na Selva|Alone in The House|Game Island — O Herói dos Quatro Reinos|Energysion Caos|Coração do Inverno').en
+        .split('|')
+        .reduce((acc, x) => ({ en: [...acc.en, x], pt: [...acc.pt, x] }), { en: [] as string[], pt: [] as string[] }),
     },
     {
       label: { en: 'Game design documents written', pt: 'Game design documents escritos' },

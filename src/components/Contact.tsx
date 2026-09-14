@@ -67,7 +67,7 @@ export function Contact({ index }: { index: string }) {
               <Icon name="github" />
               GitHub
             </a>
-            <a className="btn btn-ghost" href={profile.resume} download="Giovanni-S-Mariano-Resume.pdf">
+            <a className="btn btn-ghost" href={t(profile.cv)} download={t(profile.cv).split('/').pop()}>
               <Icon name="download" />
               {t(ui.hero.resume)}
             </a>

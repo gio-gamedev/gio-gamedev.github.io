@@ -1,3 +1,4 @@
+import { monthYear, present } from '../content/dates';
 import { earlierExperience, experience } from '../content/profile';
 import { ui } from '../content/ui';
 import { useLang } from '../i18n/LanguageContext';
@@ -5,7 +6,7 @@ import { Section } from './Section';
 import styles from './Experience.module.css';
 
 export function Experience({ index }: { index: string }) {
-  const { t } = useLang();
+  const { lang, t } = useLang();
 
   return (
     <Section id="experience" index={index} title={t(ui.sections.experience)}>
@@ -16,7 +17,11 @@ export function Experience({ index }: { index: string }) {
             <ol className={styles.timeline}>
               {group.jobs.map((job) => (
                 <li key={job.company} className={styles.job}>
-                  <p className={styles.period}>{t(job.period)}</p>
+                  <p className={styles.period}>
+                    <time dateTime={job.start}>{monthYear(job.start, lang)}</time>
+                    {' – '}
+                    {job.end ? <time dateTime={job.end}>{monthYear(job.end, lang)}</time> : t(present)}
+                  </p>
                   <div className={styles.card}>
                     <h4 className={styles.role}>
                       {t(job.role)} <span className={styles.company}>— {job.company}</span>

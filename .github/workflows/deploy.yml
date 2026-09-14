@@ -29,6 +29,9 @@ jobs:
           cache: npm
       - run: npm ci
       - run: npm run build
+      # Smoke, accessibility (axe, both themes) and resume-file checks before anything is published.
+      - run: npx playwright install --with-deps chromium
+      - run: npx playwright test
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v4
         with:

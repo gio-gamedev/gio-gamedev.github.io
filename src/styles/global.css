@@ -1,32 +1,113 @@
-:root {
+/*
+ * Design tokens. Dark is the default; light applies via data-theme (set before first paint in
+ * index.html) or, without JavaScript, via the system setting. No green anywhere: action color is
+ * violet, highlights are amber. scripts/check-colors.mjs fails the build if a green hue slips in.
+ */
+:root,
+:root[data-theme='dark'] {
   color-scheme: dark;
 
-  --bg: #0b0d12;
-  --bg-elev: #10131a;
-  --surface: #151923;
-  --surface-2: #1b2030;
-  --border: #242a3a;
-  --border-strong: #353d54;
+  --bg: #0f0e17;
+  --bg-elev: #141224;
+  --surface: #18162a;
+  --surface-2: #211e38;
+  --border: #2d2a47;
+  --border-strong: #433e68;
 
-  --text: #e9edf5;
-  --text-muted: #a0a8bb;
+  --text: #eeedf7;
+  --text-muted: #b4b1cb;
   /* ≥ 4.5:1 on --surface for small text (WCAG AA). */
-  --text-dim: #8b94a9;
+  --text-dim: #9591b0;
 
-  --accent: #7cf29c;
-  --accent-strong: #b0ffc6;
-  --accent-soft: rgb(124 242 156 / 0.1);
-  --accent-line: rgb(124 242 156 / 0.35);
+  --accent: #9d8cff;
+  --accent-strong: #c3b8ff;
+  --on-accent: #0f0e17;
 
-  --violet: #b39dff;
+  --highlight: #ffb547;
+  --highlight-text: #ffc978;
+
   --red: #ff8a8a;
+  --violet: #b8a8ff;
   --blue: #7cb6ff;
   --amber: #ffc46b;
-  --slate: #a9b6cc;
+  --slate: #aab4c8;
   --yellow: #f5dc6b;
 
-  --font-display: 'Chakra Petch', 'Segoe UI', system-ui, sans-serif;
+  --grid-line: rgb(255 255 255 / 0.03);
+  --shadow: 0 14px 40px rgb(0 0 0 / 0.4);
+}
+
+:root[data-theme='light'] {
+  color-scheme: light;
+
+  --bg: #f6f5fb;
+  --bg-elev: #fbfaff;
+  --surface: #ffffff;
+  --surface-2: #efedf7;
+  --border: #dedbeb;
+  --border-strong: #c4c0d8;
+
+  --text: #17151f;
+  --text-muted: #4a4661;
+  --text-dim: #625e7a;
+
+  --accent: #5b47d6;
+  --accent-strong: #4432b8;
+  --on-accent: #ffffff;
+
+  --highlight: #f59e0b;
+  --highlight-text: #b45309;
+
+  --red: #b91c1c;
+  --violet: #6d28d9;
+  --blue: #1d4ed8;
+  --amber: #b45309;
+  --slate: #475569;
+  --yellow: #a16207;
+
+  --grid-line: rgb(23 21 31 / 0.045);
+  --shadow: 0 14px 40px rgb(23 21 31 / 0.12);
+}
+
+/* Without JavaScript the inline script can't set data-theme; follow the system instead. */
+@media (prefers-color-scheme: light) {
+  :root:not([data-theme]) {
+    color-scheme: light;
+    --bg: #f6f5fb;
+    --bg-elev: #fbfaff;
+    --surface: #ffffff;
+    --surface-2: #efedf7;
+    --border: #dedbeb;
+    --border-strong: #c4c0d8;
+    --text: #17151f;
+    --text-muted: #4a4661;
+    --text-dim: #625e7a;
+    --accent: #5b47d6;
+    --accent-strong: #4432b8;
+    --on-accent: #ffffff;
+    --highlight: #f59e0b;
+    --highlight-text: #b45309;
+    --red: #b91c1c;
+    --violet: #6d28d9;
+    --blue: #1d4ed8;
+    --amber: #b45309;
+    --slate: #475569;
+    --yellow: #a16207;
+    --grid-line: rgb(23 21 31 / 0.045);
+    --shadow: 0 14px 40px rgb(23 21 31 / 0.12);
+  }
+}
+
+/* Derived tokens: computed from the theme values above, so they follow the active theme. */
+:root {
+  --accent-soft: color-mix(in srgb, var(--accent) 12%, transparent);
+  --accent-line: color-mix(in srgb, var(--accent) 42%, transparent);
+  --highlight-soft: color-mix(in srgb, var(--highlight) 11%, transparent);
+  --highlight-line: color-mix(in srgb, var(--highlight) 45%, transparent);
+  --header-bg: color-mix(in srgb, var(--bg) 86%, transparent);
+
   /* Self-hosted via Fontsource (imported in main.tsx). */
+  --font-display: 'Chakra Petch', 'Segoe UI', system-ui, sans-serif;
   --font-body: 'Inter Variable', 'Inter', 'Segoe UI', system-ui, -apple-system, sans-serif;
   --font-mono: 'JetBrains Mono Variable', 'JetBrains Mono', 'Cascadia Code', ui-monospace, Consolas, monospace;
 
@@ -54,12 +135,11 @@ body {
   min-height: 100vh;
   background-color: var(--bg);
   background-image:
-    radial-gradient(1000px 520px at 85% -120px, rgb(124 242 156 / 0.09), transparent 70%),
-    radial-gradient(800px 480px at -10% 10%, rgb(179 157 255 / 0.07), transparent 70%),
-    linear-gradient(rgb(255 255 255 / 0.022) 1px, transparent 1px),
-    linear-gradient(90deg, rgb(255 255 255 / 0.022) 1px, transparent 1px);
+    radial-gradient(1000px 520px at 85% -120px, color-mix(in srgb, var(--accent) 13%, transparent), transparent 70%),
+    radial-gradient(800px 480px at -10% 12%, color-mix(in srgb, var(--highlight) 6%, transparent), transparent 70%),
+    linear-gradient(var(--grid-line) 1px, transparent 1px),
+    linear-gradient(90deg, var(--grid-line) 1px, transparent 1px);
   background-size: auto, auto, 48px 48px, 48px 48px;
-  background-attachment: scroll;
   color: var(--text);
   font-family: var(--font-body);
   font-size: 1rem;
@@ -95,6 +175,12 @@ a:hover {
   color: var(--accent-strong);
 }
 
+abbr[title] {
+  text-decoration: underline dotted;
+  text-decoration-color: var(--text-dim);
+  cursor: help;
+}
+
 ul,
 ol {
   margin: 0;
@@ -103,7 +189,7 @@ ol {
 
 ::selection {
   background: var(--accent);
-  color: #06140b;
+  color: var(--on-accent);
 }
 
 :focus-visible {
@@ -139,7 +225,7 @@ ol {
   padding: 0.6rem 1rem;
   border-radius: var(--radius-sm);
   background: var(--accent);
-  color: #06140b;
+  color: var(--on-accent);
   font-weight: 600;
   transform: translateY(-160%);
   transition: transform 0.15s ease;
@@ -147,7 +233,7 @@ ol {
 
 .skip-link:focus {
   transform: none;
-  color: #06140b;
+  color: var(--on-accent);
 }
 
 /* Buttons */
@@ -164,7 +250,6 @@ ol {
   font-weight: 600;
   font-size: 0.95rem;
   letter-spacing: 0.04em;
-  text-transform: uppercase;
   text-decoration: none;
   cursor: pointer;
   transition:
@@ -176,13 +261,13 @@ ol {
 
 .btn-primary {
   background: var(--accent);
-  color: #06140b;
-  box-shadow: 0 0 0 1px var(--accent-line), 0 8px 28px rgb(124 242 156 / 0.2);
+  color: var(--on-accent);
+  box-shadow: 0 8px 28px color-mix(in srgb, var(--accent) 28%, transparent);
 }
 
 .btn-primary:hover {
   background: var(--accent-strong);
-  color: #06140b;
+  color: var(--on-accent);
 }
 
 .btn-ghost {
@@ -193,7 +278,7 @@ ol {
 
 .btn-ghost:hover {
   border-color: var(--accent-line);
-  color: var(--accent-strong);
+  color: var(--accent);
   background: var(--accent-soft);
 }
 
@@ -241,27 +326,30 @@ ol {
 
 /* Print / "Save as PDF": light palette, no navigation. App.tsx expands <details> before printing. */
 @media print {
-  :root {
+  :root,
+  :root[data-theme] {
     color-scheme: light;
     --bg: #fff;
     --bg-elev: #fff;
     --surface: #fff;
-    --surface-2: #f2f4f7;
-    --border: #d0d5dd;
-    --border-strong: #98a2b3;
-    --text: #101828;
-    --text-muted: #344054;
-    --text-dim: #475467;
-    --accent: #067647;
-    --accent-strong: #054f31;
-    --accent-soft: transparent;
-    --accent-line: #067647;
-    --violet: #5925dc;
-    --red: #b42318;
-    --blue: #175cd3;
-    --amber: #b54708;
-    --slate: #475467;
-    --yellow: #93370d;
+    --surface-2: #f2f1f7;
+    --border: #d4d1e2;
+    --border-strong: #a8a3c0;
+    --text: #17151f;
+    --text-muted: #3b384d;
+    --text-dim: #555170;
+    --accent: #4432b8;
+    --accent-strong: #33248f;
+    --on-accent: #fff;
+    --highlight: #b45309;
+    --highlight-text: #92400e;
+    --red: #b91c1c;
+    --violet: #6d28d9;
+    --blue: #1d4ed8;
+    --amber: #b45309;
+    --slate: #475569;
+    --yellow: #a16207;
+    --grid-line: transparent;
   }
 
   body {

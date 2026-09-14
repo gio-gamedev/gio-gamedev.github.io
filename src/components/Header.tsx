@@ -5,6 +5,7 @@ import { ui } from '../content/ui';
 import { useLang } from '../i18n/LanguageContext';
 import { langPath } from '../i18n/routes';
 import { Icon } from './Icon';
+import { ThemeToggle } from './ThemeToggle';
 import styles from './Header.module.css';
 
 const links = [
@@ -12,7 +13,7 @@ const links = [
   ['samples', ui.nav.samples],
   ['experience', ui.nav.experience],
   ['approach', ui.nav.approach],
-  ['expertise', ui.nav.expertise],
+  ['skills', ui.nav.skills],
   ['contact', ui.nav.contact],
 ] as const;
 
@@ -126,10 +127,11 @@ export function Header() {
               </a>
             ))}
           </nav>
+          <ThemeToggle />
           <a
             className={styles.resume}
-            href={profile.resume}
-            download="Giovanni-S-Mariano-Resume.pdf"
+            href={t(profile.cv)}
+            download={t(profile.cv).split('/').pop()}
             aria-label={t(ui.header.resumeLabel)}
           >
             <Icon name="download" size={16} />

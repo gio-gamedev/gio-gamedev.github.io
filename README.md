@@ -1,27 +1,37 @@
 # gio-gamedev.github.io
 
-Portfólio de Game QA de Giovanni S. Mariano, bilíngue, em React + Vite, publicado no GitHub Pages.
+Portfólio de Game QA de Giovanni S. Mariano: bilíngue, com tema claro e escuro, em React + Vite, publicado no GitHub Pages.
 
 - **EN:** https://gio-gamedev.github.io
 - **PT:** https://gio-gamedev.github.io/pt/
+- **Currículos:** `/cv/Giovanni-Mariano-Game-QA-EN.pdf` e `-PT.pdf`
+- **Para IAs e ATS:** `/resume.json` (padrão JSON Resume) e `/llms.txt`
 
-## Rodar localmente
+## Comandos
 
 ```bash
 npm install
-npm run dev       # servidor de desenvolvimento em http://localhost:5173 (e /pt/)
-npm run build     # checa tipos, gera o bundle e pré-renderiza as páginas em dist/
-npm run preview   # serve o build de produção localmente
+npm run dev            # desenvolvimento em http://localhost:5173 (e /pt/); mostra os rascunhos
+npm run build          # tipos + bundle + pré-renderização + checagem de "sem verde"
+npm run build:review   # build com os rascunhos visíveis (para revisar com npm run preview)
+npm run preview        # serve o build localmente
+npm run cv             # build + gera os currículos em PDF em public/cv/ (usa o Chrome local)
+npm run og             # gera public/og-image.png a partir de scripts/og.html
+npm run test:e2e       # Playwright + axe no build (rode npm run build antes)
 ```
 
-### Como o build funciona
+## Como o build funciona
 
 1. `tsc` checa os tipos.
 2. `vite build` gera o bundle do navegador.
 3. `vite build --ssr src/entry-server.tsx` gera uma versão do app que roda no Node.
-4. `scripts/prerender.mjs` renderiza cada idioma em HTML estático (`dist/index.html` para EN e `dist/pt/index.html` para PT). O script também gera `sitemap.xml` e grava no `<head>` o título, a descrição, as tags Open Graph, os links `hreflang` e os dados estruturados (JSON-LD).
+4. `scripts/prerender.mjs` escreve:
+   - uma página HTML completa por idioma: `dist/index.html` (EN) e `dist/pt/index.html` (PT);
+   - as páginas de currículo `dist/cv/` e `dist/pt/cv/`;
+   - `resume.json`, `llms.txt` e `sitemap.xml`.
 
-O navegador recebe a página já com o conteúdo, e o React só "hidrata" a interação. É isso que permite ao Google e aos previews de link lerem tudo, inclusive a versão em português.
+   O CSS vai embutido no HTML e as fontes do topo têm preload.
+5. `scripts/check-colors.mjs` falha o build se aparecer qualquer cor verde. É uma regra de design do site.
 
 ## Editar o conteúdo
 
@@ -29,43 +39,25 @@ Todo o texto fica em `src/content/`, separado dos componentes. Cada texto traduz
 
 | Arquivo | O que tem |
 |---|---|
-| `src/content/profile.ts` | Nome, links, disponibilidade, "Como eu conduzo QA", experiência, depoimentos, expertise, prêmio, formação e idiomas |
-| `src/content/projects.ts` | Os 60 projetos, os destaques e os mini cases |
-| `src/content/workSamples.ts` | Bug report, plano de teste e checklist de compliance |
-| `src/content/ui.ts` | Rótulos da interface, meta tags e títulos de seção |
-| `src/content/stats.ts` | Anos de experiência, calculados a partir da data do build |
+| `profile.ts` | Nome, título, headline, resumo para recrutadores, experiência, competências, formação, certificações, idiomas, depoimentos |
+| `projects.ts` | Os 60 projetos, os destaques e os mini cases (`caseStudy`) |
+| `workSamples.ts` | Amostras de trabalho; as marcadas com `draft: true` são rascunhos |
+| `ui.ts` | Rótulos da interface e meta tags |
+| `stats.ts` | Anos de experiência, calculados pela data do build |
 
-### Adicionar um projeto
+O site, o currículo em PDF, o `resume.json` e o `llms.txt` saem do mesmo conteúdo. Depois de editar, rode `npm run cv` para atualizar os PDFs.
 
-Em `projects.ts`, acrescente uma linha na categoria certa:
+### Rascunhos
 
-```ts
-p('Nome do Projeto', 'Roblox'),
-```
+Conteúdo com `draft: true` é fictício e precisa ser refeito. Ele aparece com uma faixa "RASCUNHO FICTÍCIO — REFAZER" só no `npm run dev` e no `npm run build:review`; **nunca** no site publicado (há um teste que garante isso). A lista do que falta está em [REVIEW.md](REVIEW.md).
 
-Plataformas e tipos de teste vêm do padrão da categoria; para mudar, passe `platforms` ou `testing`. Para colocar o projeto em **destaque**:
+### Tema
 
-1. adicione `selected: true`, `focus` (EN/PT), `link` e, se quiser, `caseStudy: { did, highlight }`;
-2. coloque a imagem em `public/covers/` e informe o nome em `cover` (sem extensão, assume `.webp`);
-3. inclua o nome na lista `featuredOrder`.
-
-Sem `cover`, o card mostra uma arte de placeholder com o nome do projeto.
-
-### Depoimentos
-
-Acrescente itens em `testimonials` (`profile.ts`), sempre com a permissão da pessoa. A seção só aparece quando a lista tem pelo menos um item.
-
-### Experiência
-
-Em cada cargo, `bullets` aparecem sempre (os pontos mais fortes) e `more` fica recolhido em "Ver todas as responsabilidades".
-
-### Trocar o currículo
-
-Substitua `public/resume.pdf` pelo novo arquivo, mantendo o mesmo nome.
+Na primeira visita, o site segue o tema do sistema. O botão no header alterna entre claro e escuro, e a escolha fica salva. As cores estão como tokens em `src/styles/global.css`: `:root` para o escuro e `[data-theme='light']` para o claro.
 
 ## Deploy e manutenção
 
-- **Deploy:** cada push na `main` dispara `.github/workflows/deploy.yml`, que roda o build e publica `dist/` no GitHub Pages. Configuração única no repositório: **Settings → Pages → Source: GitHub Actions**.
-- **Rebuild mensal:** o mesmo workflow roda no dia 1 de cada mês, para atualizar os anos de experiência e a data do sitemap.
-- **Links:** `.github/workflows/links.yml` confere mensalmente os links de lojas e perfis e falha se algum quebrar.
-- **Domínio próprio (opcional):** crie `public/CNAME` com o domínio, configure o DNS e troque `SITE_URL` em `src/seo.ts`, além das URLs em `public/robots.txt`.
+- **Deploy:** cada push na `main` roda `.github/workflows/deploy.yml`, nesta ordem: build, testes Playwright + axe (desktop e celular, nos dois temas) e publicação no GitHub Pages. Configuração única no repositório: **Settings → Pages → Source: GitHub Actions**.
+- **Rebuild mensal:** no dia 1 de cada mês, para atualizar os anos de experiência.
+- **Links:** `.github/workflows/links.yml` confere mensalmente os links de lojas e perfis.
+- **Fotos originais:** ficam em `images/`, que é ignorada pelo git; a versão otimizada está em `public/avatar.webp`.

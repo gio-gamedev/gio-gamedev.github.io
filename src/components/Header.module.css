@@ -12,7 +12,7 @@
 }
 
 .header[data-solid] {
-  background: rgb(11 13 18 / 0.85);
+  background: var(--header-bg);
   backdrop-filter: blur(12px);
   border-bottom-color: var(--border);
 }
@@ -121,7 +121,7 @@
 
 .lang a[aria-current='page'] {
   background: var(--accent);
-  color: #06140b;
+  color: var(--on-accent);
 }
 
 .resume {
@@ -145,7 +145,7 @@
 }
 
 .resume:hover {
-  background: rgb(124 242 156 / 0.18);
+  background: color-mix(in srgb, var(--accent) 20%, transparent);
   color: var(--accent-strong);
 }
 
@@ -189,7 +189,7 @@
     right: 0;
     margin: 0;
     padding: 0.5rem var(--gutter) 1rem;
-    background: rgb(11 13 18 / 0.97);
+    background: color-mix(in srgb, var(--bg) 97%, transparent);
     border-bottom: 1px solid var(--border);
   }
 

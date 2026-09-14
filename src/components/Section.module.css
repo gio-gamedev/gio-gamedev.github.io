@@ -11,7 +11,7 @@
   font-family: var(--font-mono);
   font-size: 0.8rem;
   letter-spacing: 0.08em;
-  color: var(--accent);
+  color: var(--text-dim);
 }
 
 .title {

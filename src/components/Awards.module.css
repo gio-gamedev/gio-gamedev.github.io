@@ -3,10 +3,10 @@
   align-items: flex-start;
   gap: 1.25rem;
   padding: clamp(1.25rem, 3vw, 1.75rem);
-  border: 1px solid rgb(245 220 107 / 0.35);
+  border: 1px solid var(--highlight-line);
   border-radius: var(--radius);
   background:
-    linear-gradient(135deg, rgb(245 220 107 / 0.1), transparent 60%),
+    linear-gradient(135deg, var(--highlight-soft), transparent 60%),
     var(--surface);
 }
 
@@ -17,8 +17,8 @@
   width: 56px;
   height: 56px;
   border-radius: 12px;
-  background: rgb(245 220 107 / 0.12);
-  color: var(--yellow);
+  background: var(--highlight-soft);
+  color: var(--highlight-text);
 }
 
 .title {
@@ -29,7 +29,7 @@
   margin-top: 0.35rem;
   font-family: var(--font-mono);
   font-size: 0.82rem;
-  color: var(--yellow);
+  color: var(--highlight-text);
 }
 
 .note {

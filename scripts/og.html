@@ -1,0 +1,135 @@
+<!doctype html>
+<!-- Source of public/og-image.png (1200×630). Regenerate with `npm run og`. -->
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <style>
+      @font-face {
+        font-family: 'Chakra Petch';
+        font-weight: 700;
+        src: url('../node_modules/@fontsource/chakra-petch/files/chakra-petch-latin-700-normal.woff2') format('woff2');
+      }
+      @font-face {
+        font-family: 'Inter';
+        font-weight: 100 900;
+        src: url('../node_modules/@fontsource-variable/inter/files/inter-latin-wght-normal.woff2') format('woff2');
+      }
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        width: 1200px;
+        height: 630px;
+        overflow: hidden;
+        background-color: #0f0e17;
+        background-image:
+          radial-gradient(700px 420px at 88% 8%, rgb(157 140 255 / 0.28), transparent 70%),
+          radial-gradient(520px 360px at 0% 100%, rgb(255 181 71 / 0.1), transparent 70%),
+          linear-gradient(rgb(255 255 255 / 0.035) 1px, transparent 1px),
+          linear-gradient(90deg, rgb(255 255 255 / 0.035) 1px, transparent 1px);
+        background-size: auto, auto, 48px 48px, 48px 48px;
+        color: #eeedf7;
+        font-family: 'Inter', Arial, sans-serif;
+      }
+      .bar {
+        height: 6px;
+        background: linear-gradient(90deg, #9d8cff, #ffb547);
+      }
+      .wrap {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 48px;
+        padding: 70px 80px 0;
+      }
+      .kicker {
+        margin: 0;
+        font-family: Consolas, monospace;
+        font-size: 22px;
+        letter-spacing: 0.08em;
+        color: #c3b8ff;
+      }
+      h1 {
+        margin: 18px 0 0;
+        font-family: 'Chakra Petch', sans-serif;
+        font-size: 78px;
+        line-height: 1;
+        text-transform: uppercase;
+      }
+      .headline {
+        margin: 22px 0 0;
+        max-width: 640px;
+        font-size: 28px;
+        line-height: 1.35;
+        color: #d6d3ea;
+      }
+      .stats {
+        display: flex;
+        gap: 16px;
+        margin-top: 34px;
+      }
+      .stat {
+        padding: 14px 20px;
+        border: 1px solid #2d2a47;
+        border-radius: 12px;
+        background: #18162a;
+      }
+      .stat b {
+        display: block;
+        font-family: 'Chakra Petch', sans-serif;
+        font-size: 34px;
+        color: #9d8cff;
+      }
+      .stat span {
+        font-size: 17px;
+        color: #b4b1cb;
+      }
+      .award b {
+        color: #ffb547;
+        font-size: 24px;
+        line-height: 41px;
+      }
+      .photo {
+        flex-shrink: 0;
+        width: 300px;
+        height: 300px;
+        padding: 6px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #9d8cff, #ffb547);
+      }
+      .photo img {
+        display: block;
+        width: 100%;
+        height: 100%;
+        border: 6px solid #0f0e17;
+        border-radius: 50%;
+        object-fit: cover;
+      }
+      .url {
+        position: absolute;
+        left: 80px;
+        bottom: 36px;
+        font-size: 22px;
+        color: #9591b0;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="bar"></div>
+    <div class="wrap">
+      <div>
+        <p class="kicker">// GAME QA PORTFOLIO</p>
+        <h1>Giovanni S.<br />Mariano</h1>
+        <p class="headline">Game QA Analyst — Roblox, Fortnite (UEFN), mobile and PC</p>
+        <div class="stats">
+          <div class="stat"><b>4+</b><span>years in Game QA</span></div>
+          <div class="stat"><b>50+</b><span>game projects</span></div>
+          <div class="stat award"><b>Meta Testathon</b><span>Best Team QA · 2024</span></div>
+        </div>
+      </div>
+      <div class="photo"><img src="../public/avatar.webp" alt="" /></div>
+    </div>
+    <p class="url">gio-gamedev.github.io</p>
+  </body>
+</html>

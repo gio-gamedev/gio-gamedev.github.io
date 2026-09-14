@@ -9,11 +9,11 @@ export const ui = {
     },
     description: {
       en: (years: number) =>
-        `QA Analyst specialized in Game QA — ${years} years in game studios, 50+ projects tested across Mobile, PC, Fortnite/UEFN and Roblox. Projects, QA work samples and resume.`,
+        `Game QA Analyst — ${years} years in game studios, 50+ projects tested across Roblox, Fortnite (UEFN), mobile and PC. Work samples, projects and resume.`,
       pt: (years: number) =>
-        `Analista de QA especializado em games — ${years} anos em estúdios, mais de 50 projetos testados em Mobile, PC, Fortnite/UEFN e Roblox. Projetos, amostras de trabalho de QA e currículo.`,
+        `Analista de QA de games — ${years} anos em estúdios, mais de 50 projetos testados em Roblox, Fortnite (UEFN), mobile e PC. Amostras de trabalho, projetos e currículo.`,
     },
-    jobTitle: { en: 'QA Analyst — Game QA', pt: 'Analista de QA — Game QA' },
+    jobTitle: { en: 'Game QA Analyst', pt: 'Analista de QA de Games' },
     ogImageAlt: {
       en: 'Giovanni S. Mariano — Game QA portfolio',
       pt: 'Giovanni S. Mariano — portfólio de Game QA',
@@ -24,13 +24,14 @@ export const ui = {
     mainNav: { en: 'Main navigation', pt: 'Navegação principal' },
     language: { en: 'Language', pt: 'Idioma' },
     menu: { en: 'Menu', pt: 'Menu' },
+    theme: { en: 'Toggle light or dark theme', pt: 'Alternar tema claro ou escuro' },
   },
   nav: {
     projects: { en: 'Projects', pt: 'Projetos' },
     samples: { en: 'Work Samples', pt: 'Amostras' },
     experience: { en: 'Experience', pt: 'Experiência' },
     approach: { en: 'Approach', pt: 'Abordagem' },
-    expertise: { en: 'Expertise', pt: 'Expertise' },
+    skills: { en: 'Skills', pt: 'Competências' },
     contact: { en: 'Contact', pt: 'Contato' },
   },
   header: {
@@ -38,10 +39,12 @@ export const ui = {
     resumeLabel: { en: 'Download resume (PDF)', pt: 'Baixar currículo (PDF)' },
   },
   hero: {
-    viewProjects: { en: 'View projects', pt: 'Ver projetos' },
-    resume: { en: 'Download resume', pt: 'Baixar currículo' },
+    resume: { en: 'Download resume (PDF)', pt: 'Baixar currículo (PDF)' },
+    samples: { en: 'See work samples', pt: 'Ver amostras de trabalho' },
     award: { en: 'Best Team QA — Meta Testathon 2024', pt: 'Melhor Time de QA — Meta Testathon 2024' },
-    sampleLink: { en: 'See a real-format bug report', pt: 'Ver um bug report no formato real' },
+  },
+  snapshot: {
+    title: { en: 'Recruiter snapshot', pt: 'Resumo para recrutadores' },
   },
   sections: {
     projects: { en: 'Selected QA Projects', pt: 'Projetos de QA em destaque' },
@@ -57,9 +60,19 @@ export const ui = {
     experience: { en: 'Work Experience', pt: 'Experiência profissional' },
     approach: { en: 'How I run QA', pt: 'Como eu conduzo QA' },
     testimonials: { en: 'What people say', pt: 'O que dizem' },
-    expertise: { en: 'Expertise & Stack', pt: 'Expertise & Stack' },
+    skills: { en: 'Skills & Tools', pt: 'Competências e ferramentas' },
     awards: { en: 'Awards & Recognition', pt: 'Prêmios e reconhecimento' },
     education: { en: 'Education & Certifications', pt: 'Formação e certificações' },
+  },
+  samples: {
+    tabs: { en: 'Choose a work sample', pt: 'Escolha uma amostra de trabalho' },
+  },
+  review: {
+    chip: { en: 'Draft', pt: 'Rascunho' },
+    banner: {
+      en: 'FICTIONAL DRAFT — REDO. Written by Claude as an example; replace it with your own before publishing (set draft: false in src/content/workSamples.ts). Hidden on the published site.',
+      pt: 'RASCUNHO FICTÍCIO — REFAZER. Escrito pelo Claude como exemplo; troque pelo seu antes de publicar (mude draft para false em src/content/workSamples.ts). Não aparece no site publicado.',
+    },
   },
   projects: {
     focus: { en: 'Main focus', pt: 'Foco principal' },

@@ -15,9 +15,13 @@ export function Education({ index }: { index: string }) {
           <h3 className={styles.cardTitle}>{t(ui.labels.education)}</h3>
           <ul className={styles.degrees}>
             {education.map((item) => (
-              <li key={item.period} className={styles.degree}>
-                <span className={styles.period}>{item.period}</span>
-                <span className={styles.degreeTitle}>{t(item.title)}</span>
+              <li key={item.institution} className={styles.degree}>
+                <span className={styles.period}>
+                  <time dateTime={item.start}>{item.start}</time>–<time dateTime={item.end}>{item.end}</time>
+                </span>
+                <span className={styles.degreeTitle}>
+                  {t(item.degree)} — {item.institution}
+                </span>
               </li>
             ))}
           </ul>
@@ -29,8 +33,8 @@ export function Education({ index }: { index: string }) {
         <div className={styles.card}>
           <h3 className={styles.cardTitle}>{t(ui.labels.certifications)}</h3>
           <ul className={styles.certs}>
-            {t(certifications).map((c) => (
-              <li key={c}>{c}</li>
+            {certifications.map((c) => (
+              <li key={c.name.en}>{[t(c.name), c.issuer, c.year].filter(Boolean).join(' — ')}</li>
             ))}
           </ul>
         </div>

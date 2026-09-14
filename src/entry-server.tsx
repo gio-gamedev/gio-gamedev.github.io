@@ -1,10 +1,15 @@
 import { StrictMode } from 'react';
-import { renderToString } from 'react-dom/server';
+import { renderToStaticMarkup, renderToString } from 'react-dom/server';
 import { App } from './App';
 import type { Lang } from './content/types';
+import { CvDocument } from './cv/CvDocument';
 import { LanguageProvider } from './i18n/LanguageContext';
 
-export { headTags, SITE_URL } from './seo';
+export { SITE_URL } from './content/site';
+export { cvTitle } from './cv/CvDocument';
+export { cvStyles } from './cv/cvStyles';
+export { llmsTxt, resumeJson } from './machine';
+export { headTags } from './seo';
 
 /** Used by scripts/prerender.mjs to write one static page per language. */
 export function render(lang: Lang): string {
@@ -15,4 +20,9 @@ export function render(lang: Lang): string {
       </LanguageProvider>
     </StrictMode>,
   );
+}
+
+/** Static resume page (no client JavaScript), printed to PDF by scripts/cv-pdf.mjs. */
+export function renderCv(lang: Lang): string {
+  return renderToStaticMarkup(<CvDocument lang={lang} />);
 }

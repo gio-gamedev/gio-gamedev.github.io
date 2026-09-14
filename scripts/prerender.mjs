@@ -8,7 +8,9 @@ const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const dist = path.join(root, 'dist');
 const ssrDir = path.join(root, 'dist-ssr');
 
-const { render, headTags, SITE_URL } = await import(pathToFileURL(path.join(ssrDir, 'entry-server.js')).href);
+const { render, renderCv, headTags, SITE_URL, cvStyles, cvTitle, resumeJson, llmsTxt } = await import(
+  pathToFileURL(path.join(ssrDir, 'entry-server.js')).href
+);
 const template = await readFile(path.join(dist, 'index.html'), 'utf8');
 
 const HEAD = /<!--head:start-->[\s\S]*?<!--head:end-->/;
@@ -44,6 +46,30 @@ for (const { lang, dir, url } of pages) {
   await writeFile(path.join(dir, 'index.html'), html);
   console.log(`prerendered ${url} (${(Buffer.byteLength(html) / 1024).toFixed(1)} kB)`);
 }
+
+// Resume pages (one column, no JavaScript) that scripts/cv-pdf.mjs prints to PDF.
+for (const { lang, dir } of pages) {
+  const cvDir = path.join(dir, 'cv');
+  const html = `<!doctype html>
+<html lang="${lang === 'pt' ? 'pt-BR' : 'en'}">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="robots" content="noindex" />
+    <title>${cvTitle[lang]}</title>
+    <style>${cvStyles}</style>
+  </head>
+  <body>${renderCv(lang)}</body>
+</html>
+`;
+  await mkdir(cvDir, { recursive: true });
+  await writeFile(path.join(cvDir, 'index.html'), html);
+}
+
+// Machine-readable copies for screening tools and LLMs.
+await writeFile(path.join(dist, 'resume.json'), `${JSON.stringify(resumeJson(), null, 2)}\n`);
+await writeFile(path.join(dist, 'llms.txt'), llmsTxt());
+console.log('wrote cv pages, resume.json and llms.txt');
 
 const lastmod = new Date().toISOString().slice(0, 10);
 const alternates = [

@@ -6,7 +6,7 @@
   border-radius: 999px;
   border: 1px solid color-mix(in srgb, var(--tone) 32%, transparent);
   background: color-mix(in srgb, var(--tone) 13%, transparent);
-  color: color-mix(in srgb, var(--tone) 88%, white);
+  color: color-mix(in srgb, var(--tone) 82%, var(--text));
   font-size: 0.75rem;
   font-weight: 500;
   line-height: 1.5;

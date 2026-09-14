@@ -4,7 +4,7 @@ import { Awards } from './components/Awards';
 import { Contact } from './components/Contact';
 import { Education } from './components/Education';
 import { Experience } from './components/Experience';
-import { Expertise } from './components/Expertise';
+import { Skills } from './components/Skills';
 import { Footer } from './components/Footer';
 import { Header } from './components/Header';
 import { Hero } from './components/Hero';
@@ -23,7 +23,7 @@ const sections: ComponentType<{ index: string }>[] = [
   Experience,
   ...(testimonials.length > 0 ? [Testimonials] : []),
   Approach,
-  Expertise,
+  Skills,
   Awards,
   Education,
   Contact,
