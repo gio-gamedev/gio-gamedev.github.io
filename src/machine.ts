@@ -18,13 +18,15 @@ import {
 import {
   categories,
   categoryInfo,
+  categoryNote,
   DEFAULT_STUDIO,
   featuredProjects,
   gameCount,
   projectName,
   projects,
+  type Project,
 } from './content/projects';
-import { compactCount, formatReach, totalReach } from './content/reach';
+import { compactCount, formatReachList, fortniteMinutes, totalReach } from './content/reach';
 import { SITE_URL } from './content/site';
 import { workSamples } from './content/workSamples';
 
@@ -32,6 +34,16 @@ const plain = (text: string) => text.replace(/\*\*/g, '');
 const summary = () => `${plain(approach.lead.en)} ${approach.technical.en}`;
 const jobs = () => experience.flatMap((group) => group.jobs);
 const itemName = (name: string | { en: string }) => (typeof name === 'string' ? name : name.en);
+
+/** "Tetragon (by Cafundó; Gameloft (telco), Lume Pad 3D)" */
+const describe = (p: Project) => {
+  const details = [
+    ...(p.studio ? [p.studio] : []),
+    ...(p.origin ? [`by ${p.origin}`] : []),
+    ...(p.category === 'Publishing' || p.ports ? [p.platforms.join(', ')] : []),
+  ];
+  return `${projectName(p, 'en')}${details.length ? ` (${details.join('; ')})` : ''}`;
+};
 
 export function resumeJson() {
   return {
@@ -71,8 +83,8 @@ export function resumeJson() {
       name: projectName(p, 'en'),
       description: p.focus?.en,
       entity: p.studio ?? DEFAULT_STUDIO,
-      url: p.link,
-      highlights: p.reach ? [formatReach(p.reach, 'en')] : [],
+      url: p.links?.[0],
+      highlights: p.reach ? [formatReachList(p.reach, 'en')] : [],
       keywords: [categoryInfo[p.category].label.en, ...p.testing],
       roles: ['QA Analyst'],
     })),
@@ -92,6 +104,7 @@ export function llmsTxt(): string {
     '',
     `- Portfolio (English): ${SITE_URL}/`,
     `- Portfolio (Portuguese): ${SITE_URL}/pt/`,
+    `- All ${projects.length} projects, with images: ${SITE_URL}/projects/`,
     `- Resume PDF (English): ${SITE_URL}${profile.cv.en}`,
     `- Resume PDF (Portuguese): ${SITE_URL}${profile.cv.pt}`,
     `- Resume Word (English): ${SITE_URL}${profile.cvDocx.en}`,
@@ -120,28 +133,27 @@ export function llmsTxt(): string {
     ...skills.map((group) => `- ${group.title.en}: ${group.items.en.join(', ')}`),
     '',
     '## Projects',
-    `${gameCount}+ game projects tested; the titles with public figures add up to ${compactCount(totalReach, 'en')} downloads and visits. Studio: ${DEFAULT_STUDIO} unless noted.`,
+    `${gameCount}+ game projects tested. Titles with public figures add up to ${compactCount(totalReach, 'en')} players, downloads and visits, and ${compactCount(fortniteMinutes, 'en')} minutes played on Fortnite. Studio: ${DEFAULT_STUDIO} unless noted.`,
     '',
     '### Selected',
     ...featuredProjects.map((p) =>
       [
         `- ${projectName(p, 'en')} (${categoryInfo[p.category].label.en}${p.studio ? `, ${p.studio}` : ''})`,
-        p.reach ? formatReach(p.reach, 'en') : '',
+        formatReachList(p.reach, 'en'),
         p.focus?.en ?? '',
-        p.link ?? '',
+        p.links?.[0] ?? '',
       ]
         .filter(Boolean)
         .join(' — '),
     ),
     '',
     '### All projects by platform',
-    ...categories.map(
-      (category) =>
-        `- ${categoryInfo[category].label.en}: ${projects
-          .filter((p) => p.category === category)
-          .map((p) => `${projectName(p, 'en')}${p.studio ? ` (${p.studio})` : ''}`)
-          .join(', ')}`,
-    ),
+    ...categories.flatMap((category) => [
+      `- ${categoryInfo[category].label.en}${categoryNote[category] ? ` (${categoryNote[category].en})` : ''}: ${projects
+        .filter((p) => p.category === category)
+        .map((p) => [describe(p), formatReachList(p.reach, 'en')].filter(Boolean).join(' — '))
+        .join('; ')}`,
+    ]),
     '',
     '## Work samples',
     ...workSamples.map(

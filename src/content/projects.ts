@@ -1,8 +1,10 @@
+import { covers } from './covers';
 import { reach, type Reach } from './reach';
 import type { L, Lang, Tone } from './types';
 
-// Sources: Notion "Project Index" database, the Hermit Crab catalog (images/, not in git; FC Barcelona
-// Moments left out on purpose) and Giovanni's own project list.
+// Sources: Notion "Project Index", the Hermit Crab catalog (images/, not in git; FC Barcelona Moments
+// left out on purpose), the public portfolio of Gabriel Budzinski (game designer on the same
+// projects), fortnite.gg, the app stores and Giovanni's own project list.
 
 export type Category = 'Roblox' | 'Fortnite/UEFN' | 'The Sandbox' | 'Mobile' | 'Steam' | 'Publishing' | 'Applications';
 
@@ -18,7 +20,11 @@ export type Testing =
   | 'Localization'
   | 'Compatibility'
   | 'Performance'
+  | 'Stereo3D'
   | 'Compliance';
+
+/** Storefronts a game was ported or released to through a partner. */
+export type Port = 'Gameloft' | 'Lume Pad' | 'CrazyGames';
 
 export type Project = {
   /** A plain string when the title is the same in both languages. */
@@ -28,15 +34,18 @@ export type Project = {
   testing: Testing[];
   /** Where Giovanni worked on it. Omitted means Hermit Crab Game Studio. */
   studio?: 'Space Bit Games';
+  /** Original developer of a ported or partner-published game. */
+  origin?: string;
+  /** Partner storefronts; these also list the game under Publishing. */
+  ports?: Port[];
   selected?: boolean;
   focus?: L;
-  link?: string;
-  /** File in public/covers without the extension. Wide covers also have a "-400" variant. */
-  cover?: string;
-  /** Use 'contain' for square art such as app icons. */
-  coverFit?: 'cover' | 'contain';
-  /** Public downloads or visits, from src/content/reach.ts. */
-  reach?: Reach;
+  /** Release status, such as a demo. */
+  status?: L;
+  /** Store or play links, main one first. */
+  links?: string[];
+  /** Public downloads, visits, players or minutes, from src/content/reach.ts. */
+  reach?: Reach[];
 };
 
 export const DEFAULT_STUDIO = 'Hermit Crab Game Studio';
@@ -49,8 +58,20 @@ export const categoryInfo: Record<Category, { label: L; tone: Tone }> = {
   'The Sandbox': { label: { en: 'The Sandbox', pt: 'The Sandbox' }, tone: 'pink' },
   Mobile: { label: { en: 'Mobile', pt: 'Mobile' }, tone: 'blue' },
   Steam: { label: { en: 'PC / Steam', pt: 'PC / Steam' }, tone: 'slate' },
-  Publishing: { label: { en: 'Publishing', pt: 'Publicação' }, tone: 'amber' },
+  Publishing: { label: { en: 'Publishing & ports', pt: 'Publicação e portes' }, tone: 'amber' },
   Applications: { label: { en: 'Applications', pt: 'Aplicações' }, tone: 'yellow' },
+};
+
+/** One line of context for categories that need it. */
+export const categoryNote: Partial<Record<Category, L>> = {
+  Publishing: {
+    en: 'Ports and releases through partners: Gameloft on carrier (telco) stores, Leia Inc. on the Lume Pad 1 and 2 3D tablets, and CrazyGames on the web. Public download counts belong to the original versions, so ports show none.',
+    pt: 'Portes e lançamentos por parceiros: Gameloft em lojas de operadoras (telco), Leia Inc. nos tablets 3D Lume Pad 1 e 2, e CrazyGames na web. Os downloads públicos são das versões originais, então os portes aparecem sem números.',
+  },
+  Applications: {
+    en: 'Web products for football clubs and media brands: the eClub benefits platform and prediction pools.',
+    pt: 'Produtos web para clubes de futebol e marcas de mídia: a plataforma de benefícios eClub e bolões.',
+  },
 };
 
 export const testingLabels: Record<Testing, L> = {
@@ -65,6 +86,7 @@ export const testingLabels: Record<Testing, L> = {
   Localization: { en: 'Localization', pt: 'Localização' },
   Compatibility: { en: 'Compatibility', pt: 'Compatibilidade' },
   Performance: { en: 'Performance', pt: 'Performance' },
+  Stereo3D: { en: '3D display', pt: 'Efeito 3D' },
   Compliance: { en: 'Compliance', pt: 'Compliance' },
 };
 
@@ -99,16 +121,24 @@ const defaults: Record<Category, Pick<Project, 'platforms' | 'testing'>> = {
   },
 };
 
-/** Typical testing scope per platform: what every project in the category gets. */
-export const categoryScope = Object.fromEntries(categories.map((c) => [c, defaults[c].testing])) as Record<
-  Category,
-  Testing[]
->;
-
-/** The English title doubles as the project's key (featured order, reach figures). */
+/** The English title doubles as the project's key (featured order, reach figures, cover file). */
 export const projectKey = (project: Project) => (typeof project.name === 'string' ? project.name : project.name.en);
 export const projectName = (project: Project, lang: Lang) =>
   typeof project.name === 'string' ? project.name : project.name[lang];
+
+/** Must match the cover import script. */
+export const slugify = (text: string) =>
+  text
+    .normalize('NFD')
+    .replace(/[̀-ͯ]/g, '')
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-+|-+$/g, '');
+
+export const projectSlug = (project: Project) => slugify(projectKey(project));
+
+/** 'wide' (16:9 art) or 'square' (icon), from the generated src/content/covers.ts; undefined without art. */
+export const coverOf = (project: Project) => covers[projectSlug(project)];
 
 const p = (name: string | L, category: Category, extra: Partial<Project> = {}): Project => {
   const key = typeof name === 'string' ? name : name.en;
@@ -117,14 +147,34 @@ const p = (name: string | L, category: Category, extra: Partial<Project> = {}): 
 
 const roblox = (id: string) => `https://www.roblox.com/games/${id}`;
 const fortnite = (code: string) => `https://www.fortnite.com/@hermitcrab/${code}`;
+const play = (id: string) => `https://play.google.com/store/apps/details?id=${id}`;
+const appStore = (id: string) => `https://apps.apple.com/app/id${id}`;
+
+const portTesting: Testing[] = ['Functional', 'Regression', 'Compatibility', 'Compliance'];
+const lumePadTesting: Testing[] = ['Functional', 'Regression', 'Stereo3D', 'Performance', 'UX', 'Compliance'];
+
+/** Ported to carrier (telco) stores through Gameloft. */
+const gameloft = (name: string, origin: string) =>
+  p(name, 'Publishing', { platforms: ['Gameloft (telco)'], ports: ['Gameloft'], testing: portTesting, origin });
+
+/** Ported to Leia's Lume Pad 1 and 2 3D tablets. */
+const lumePad = (name: string, origin?: string) =>
+  p(name, 'Publishing', { platforms: ['Lume Pad 3D'], ports: ['Lume Pad'], testing: lumePadTesting, origin });
+
+/** Ported to both. */
+const bothPorts = (name: string, origin: string) =>
+  p(name, 'Publishing', {
+    platforms: ['Gameloft (telco)', 'Lume Pad 3D'],
+    ports: ['Gameloft', 'Lume Pad'],
+    testing: [...new Set([...portTesting, ...lumePadTesting])],
+    origin,
+  });
 
 export const projects: Project[] = [
   // Roblox
   p({ en: 'CAIXA Universe', pt: 'Universo CAIXA' }, 'Roblox', {
     selected: true,
-    cover: 'universo-caixa',
-    coverFit: 'contain',
-    link: roblox('131872423586473'),
+    links: [roblox('131872423586473')],
     focus: {
       en: 'Branded experience · gameplay flow · platform requirements',
       pt: 'Experiência de marca · fluxo de gameplay · requisitos da plataforma',
@@ -132,29 +182,19 @@ export const projects: Project[] = [
   }),
   p('Pro Kick Simulator', 'Roblox', {
     selected: true,
-    cover: 'pro-kick-simulator',
-    link: roblox('86365208170090'),
+    links: [roblox('86365208170090')],
     focus: {
       en: 'Gameplay mechanics · progression systems · Roblox platform validation',
       pt: 'Mecânicas de gameplay · sistemas de progressão · validação na plataforma Roblox',
     },
   }),
-  p('Corrida do Galo', 'Roblox', {
-    selected: true,
-    cover: 'corrida-do-galo',
-    coverFit: 'contain',
-    link: roblox('95423176261993'),
-    focus: {
-      en: 'Football club experience (Atlético Mineiro) · gameplay flow · platform requirements',
-      pt: 'Experiência de clube de futebol (Atlético Mineiro) · fluxo de gameplay · requisitos da plataforma',
-    },
-  }),
-  p({ en: 'Goal Clash', pt: 'Batalha de Gols' }, 'Roblox', { link: roblox('81332944567096') }),
-  p('Desafio MotoChefe', 'Roblox', { link: roblox('101653923117064') }),
-  p({ en: 'Vasco Universe', pt: 'Universo Vasco' }, 'Roblox', { link: roblox('130899415272734') }),
-  p({ en: 'Grêmio Universe', pt: 'Universo Grêmio' }, 'Roblox', { link: roblox('82710341117097') }),
-  p('Ginga no Gelo', 'Roblox', { link: roblox('93759862621077') }),
-  p('Obby Difícil Sports Land – Parkour do Ginga', 'Roblox', { link: roblox('18220182918') }),
+  p('Corrida do Galo', 'Roblox', { links: [roblox('95423176261993')] }),
+  p({ en: 'Goal Clash', pt: 'Batalha de Gols' }, 'Roblox', { links: [roblox('81332944567096')] }),
+  p('Desafio MotoChefe', 'Roblox', { links: [roblox('101653923117064')] }),
+  p({ en: 'Vasco Universe', pt: 'Universo Vasco' }, 'Roblox', { links: [roblox('130899415272734')] }),
+  p({ en: 'Grêmio Universe', pt: 'Universo Grêmio' }, 'Roblox', { links: [roblox('82710341117097')] }),
+  p('Ginga no Gelo', 'Roblox', { links: [roblox('93759862621077')] }),
+  p('Obby Difícil Sports Land – Parkour do Ginga', 'Roblox', { links: [roblox('18220182918')] }),
   p('Sports Land: Parque do Ginga', 'Roblox'),
   p('Os Chocolix', 'Roblox'),
   p('Slap Tower', 'Roblox'),
@@ -163,58 +203,69 @@ export const projects: Project[] = [
   p("Mimi's Dream Builders!", 'Roblox'),
 
   // Fortnite / UEFN
+  p('Tuning Cars Tycoon', 'Fortnite/UEFN', {
+    selected: true,
+    links: [fortnite('5473-4322-7315')],
+    focus: {
+      en: 'Car customization tycoon · economy and progression · multiplayer sessions',
+      pt: 'Tycoon de customização de carros · economia e progressão · sessões multiplayer',
+    },
+  }),
+  p('Football Tycoon (Soccer Tycoon)', 'Fortnite/UEFN', {
+    selected: true,
+    links: [fortnite('8773-9657-5309')],
+    focus: {
+      en: 'Football tycoon · progression and economy · live updates',
+      pt: 'Tycoon de futebol · progressão e economia · atualizações live',
+    },
+  }),
   p('World Soccer Tycoon', 'Fortnite/UEFN', {
     selected: true,
-    cover: 'world-soccer-tycoon',
-    link: fortnite('8861-6784-3687'),
+    links: [fortnite('8861-6784-3687')],
     focus: {
       en: 'Multiplayer sessions · progression · player state validation',
       pt: 'Sessões multiplayer · progressão · validação de estado do jogador',
     },
   }),
-  p('Skate Tycoon', 'Fortnite/UEFN', { link: fortnite('0543-1357-2916') }),
-  p('Football Tycoon (Soccer Tycoon)', 'Fortnite/UEFN', { link: fortnite('8773-9657-5309') }),
-  p('Football Tycoon 2', 'Fortnite/UEFN'),
-  p('Football Tycoon 3', 'Fortnite/UEFN'),
-  p('Football Goal Tycoon', 'Fortnite/UEFN'),
-  p('American Football Tycoon', 'Fortnite/UEFN'),
-  p('Soccer Team Tycoon', 'Fortnite/UEFN'),
-  p('Baseball Tycoon', 'Fortnite/UEFN'),
-  p('Volley Tycoon', 'Fortnite/UEFN'),
-  p('Surf Tycoon', 'Fortnite/UEFN'),
-  p('Ice Hockey Tycoon', 'Fortnite/UEFN'),
-  p('Tuning Cars Tycoon', 'Fortnite/UEFN'),
-  p('Skate Trick Simulator', 'Fortnite/UEFN'),
-  p('Sports OnlyUp', 'Fortnite/UEFN'),
-  p('Street Champions', 'Fortnite/UEFN'),
-  p('Red vs. Blue - Paintball', 'Fortnite/UEFN'),
-  p('Prop Hunt - Rio', 'Fortnite/UEFN'),
-  p('Coconuts vs Pirates', 'Fortnite/UEFN'),
+  p('Skate Tycoon', 'Fortnite/UEFN', { links: [fortnite('0543-1357-2916')] }),
+  p('Surf Tycoon', 'Fortnite/UEFN', { links: [fortnite('3286-6093-6738')] }),
+  p('Baseball Tycoon', 'Fortnite/UEFN', { links: [fortnite('0752-0223-8137')] }),
+  p('Soccer Team Tycoon', 'Fortnite/UEFN', { links: [fortnite('1701-7859-9582')] }),
+  p('Football Tycoon 2', 'Fortnite/UEFN', { links: [fortnite('6081-4755-9263')] }),
+  p('Football Tycoon 3', 'Fortnite/UEFN', { links: [fortnite('4492-8138-9875')] }),
+  p('Football Goal Tycoon', 'Fortnite/UEFN', { links: [fortnite('4600-2680-7823')] }),
+  p('American Football Tycoon', 'Fortnite/UEFN', { links: [fortnite('3737-8784-3421')] }),
+  p('Volley Tycoon', 'Fortnite/UEFN', { links: [fortnite('7312-6745-4746')] }),
+  p('Ice Hockey Tycoon', 'Fortnite/UEFN', { links: [fortnite('7474-2891-9022')] }),
+  p('Skate Trick Simulator', 'Fortnite/UEFN', { links: [fortnite('7178-9189-3451')] }),
+  p('Sports OnlyUp', 'Fortnite/UEFN', { links: [fortnite('7780-8097-0083')] }),
+  p('Street Champions', 'Fortnite/UEFN', { links: [fortnite('0178-0443-6758')] }),
+  p('Red vs. Blue - Paintball', 'Fortnite/UEFN', { links: [fortnite('6571-7622-8921')] }),
+  p('Prop Hunt - Rio', 'Fortnite/UEFN', { links: [fortnite('9234-4701-5715')] }),
+  p('Coconuts vs Pirates', 'Fortnite/UEFN', { links: [fortnite('0534-2548-0763')] }),
   p('Island Defense', 'Fortnite/UEFN'),
   p('Winter Sports', 'Fortnite/UEFN'),
 
   // The Sandbox
   p('The Walking Dead: Through the Tower', 'The Sandbox', {
     selected: true,
-    cover: 'the-walking-dead-through-the-tower',
     focus: {
       en: 'Licensed IP experience · gameplay flow · platform requirements',
       pt: 'Experiência de IP licenciada · fluxo de gameplay · requisitos da plataforma',
     },
   }),
+  p('Stonebridge — Dungeon Siege', 'The Sandbox'),
+  p('Dungeon Siege: Farmlands', 'The Sandbox'),
+  p('Maradona: Ascension', 'The Sandbox'),
   p('Jamiroquai — Escape the Insanity', 'The Sandbox', {
-    selected: true,
-    cover: 'jamiroquai-escape-the-insanity',
-    link: 'https://www.sandbox.game/en/experiences/Jamiroquai%20-%20Escape%20The%20Insanity/2607ac60-fd5c-42b0-ac01-d593b9b29490/page/',
-    focus: {
-      en: 'Music IP experience · gameplay flow · platform requirements',
-      pt: 'Experiência de IP musical · fluxo de gameplay · requisitos da plataforma',
-    },
+    links: [
+      'https://www.sandbox.game/en/experiences/Jamiroquai%20-%20Escape%20The%20Insanity/2607ac60-fd5c-42b0-ac01-d593b9b29490/page/',
+    ],
   }),
   p("Spinnin' Records — World's Biggest Demo Drop", 'The Sandbox'),
-  p({ en: 'Maradona in Sports Land (DIVINO collection)', pt: 'Maradona no Sports Land (coleção DIVINO)' }, 'The Sandbox'),
   p('Deepak Chopra — Oasis of Quantum Consciousness', 'The Sandbox'),
-  p('Nobel Land by Metapeace', 'The Sandbox'),
+  // Official trailer on Metapeace's channel.
+  p('Nobel Land by Metapeace', 'The Sandbox', { links: ['https://www.youtube.com/watch?v=aSkNru8u0Rs'] }),
   p('SurreaLisbon', 'The Sandbox'),
   p('The Shebeen', 'The Sandbox'),
   p('The Valley of Belonging II', 'The Sandbox'),
@@ -230,9 +281,7 @@ export const projects: Project[] = [
   p('Logic Pic', 'Mobile', {
     selected: true,
     studio: 'Space Bit Games',
-    cover: 'logic-pic',
-    coverFit: 'contain',
-    link: 'https://play.google.com/store/apps/details?id=br.com.tapps.logicpic',
+    links: [play('br.com.tapps.logicpic')],
     focus: {
       en: 'Mobile compatibility · device coverage · store submission',
       pt: 'Compatibilidade mobile · cobertura de dispositivos · submissão às lojas',
@@ -240,8 +289,7 @@ export const projects: Project[] = [
   }),
   p('Rumble Kong League', 'Mobile', {
     selected: true,
-    cover: 'rumble-kong-league',
-    link: 'https://play.google.com/store/apps/details?id=com.hermitcrabstudio.f2p.rl',
+    links: [play('com.hermitcrabstudio.f2p.rl'), appStore('6471519344')],
     focus: {
       en: '3v3 multiplayer matches · device compatibility · store release',
       pt: 'Partidas multiplayer 3v3 · compatibilidade de dispositivos · lançamento nas lojas',
@@ -250,34 +298,88 @@ export const projects: Project[] = [
   p('Arcane Merge – Fantasy Mix', 'Mobile', {
     studio: 'Space Bit Games',
     platforms: ['Android'],
-    link: 'https://play.google.com/store/apps/details?id=com.byaliens.spacebit.arcanemerge',
+    links: [play('com.byaliens.spacebit.arcanemerge')],
+  }),
+  p('Sportia Football Cup', 'Mobile', {
+    platforms: ['iOS', 'Android', 'Web'],
+    ports: ['CrazyGames'],
+    links: [
+      play('com.hermitcrabstudio.f2p.footballstrikers'),
+      appStore('6768308307'),
+      'https://www.crazygames.com/game/sportia-football-cup',
+    ],
+    status: { en: 'Rated 9.1/10 on CrazyGames', pt: 'Nota 9,1/10 no CrazyGames' },
   }),
   p('PSG Football Freestyle', 'Mobile'),
   p('All Stars Merge', 'Mobile', {
-    link: 'https://play.google.com/store/apps/details?id=com.hermitcrabstudio.f2p.allstarsmerge',
+    links: [play('com.hermitcrabstudio.f2p.allstarsmerge'), appStore('6479314556')],
   }),
   p('FuntasticTeam Football Manager', 'Mobile', {
-    link: 'https://play.google.com/store/apps/details?id=com.hermitcrabstudio.f2p.footballmanager',
+    links: [play('com.hermitcrabstudio.f2p.footballmanager'), appStore('6475968065')],
   }),
-  p('Sportia Football Cup', 'Mobile', { link: 'https://apps.apple.com/br/app/sportia-football-cup/id6768308307' }),
-  p('Time Brasil .gameplay', 'Mobile', { link: 'https://apps.apple.com/br/app/time-brasil-gameplay/id6479170787' }),
-  p('COB Sports Legends – Collect & Merge', 'Mobile'),
+  p('Time Brasil .gameplay', 'Mobile', { links: [appStore('6479170787')] }),
+  // No longer listed in the stores.
+  p('COB Sports Legends – Collect & Merge', 'Mobile', { platforms: ['Android'] }),
+  p('Manchester City Freestyle Academy', 'Mobile', {
+    platforms: ['iOS', 'Android', 'Lume Pad 3D'],
+    ports: ['Lume Pad'],
+    testing: [...defaults.Mobile.testing, 'Stereo3D'],
+  }),
   p('Benfica Football Merge', 'Mobile'),
   p('Barcelona Card Game', 'Mobile'),
   p('Barcelona Football Freestyle', 'Mobile'),
   p('Arsenal Freestyle Show', 'Mobile'),
-  p('Manchester City Freestyle Academy', 'Mobile'),
 
   // PC / Steam
-  p('Sportia', 'Steam', { link: 'https://store.steampowered.com/app/3897390/Sportia/' }),
+  p('Sportia', 'Steam', {
+    links: ['https://store.steampowered.com/app/3897390/Sportia/'],
+    status: { en: 'Demo on Steam · release planned for 2027', pt: 'Demo na Steam · lançamento previsto para 2027' },
+  }),
 
-  // Publishing
-  p('Tetragon', 'Publishing', { platforms: ['iOS', 'Android'] }),
-  p('Tetragon 2', 'Publishing'),
-  p('Adventure Llama', 'Publishing'),
-  p('Hello Kitty – Activity Book for Kids', 'Publishing'),
-  p('RKL: Arcade Slam', 'Publishing'),
-  p('Super Mombo Quest', 'Publishing'),
+  // Publishing & ports: Gameloft (telco stores)
+  gameloft('Sportia Football Cup (Gameloft)', 'Hermit Crab Game Studio'),
+  gameloft('RKL: Arcade Slam', 'Hermit Crab / Rumble League Studios'),
+  bothPorts('Tetragon', 'Cafundó'),
+  gameloft('Tetragon 2', 'Cafundó'),
+  gameloft('Spin Football Rush', 'Cafundó'),
+  bothPorts('Adventure Llama', 'Orube Game Studio'),
+  gameloft('Super Mombo Quest', 'Orube Game Studio'),
+  gameloft('Hello Kitty – Activity Book for Kids', 'Webcore Games'),
+
+  // Publishing & ports: Leia Lume Pad 1 and 2 (3D tablets). Original studio only where confirmed.
+  lumePad('Blocky Gate', 'Maqna Interactive'),
+  lumePad('Bump it Up'),
+  lumePad('Clickermon'),
+  lumePad('Colorgrid'),
+  lumePad('Double Bounce', 'Studica'),
+  lumePad('Farm Break'),
+  lumePad('Fire and Ice Run'),
+  lumePad('Flip the Box'),
+  lumePad('Goroons'),
+  lumePad('Guitar & Drum: Music & Run'),
+  lumePad('Guitar & Drum: Rainbow Band'),
+  lumePad('Hang the Kings'),
+  lumePad('Hexon'),
+  lumePad('IIN'),
+  lumePad('Kite Drop'),
+  lumePad('Knight Swap'),
+  lumePad('Knights Retreat'),
+  lumePad('Kukulcan'),
+  lumePad('Ladder Stacker'),
+  lumePad('Mesmerized'),
+  lumePad('Milky Way Coliseum'),
+  lumePad('Minute Bomb'),
+  lumePad('Parkpurr'),
+  lumePad('Qubine'),
+  lumePad('Slackline Infinite', 'Maqna Interactive'),
+  lumePad('Slice Mania'),
+  lumePad('Sniper Master'),
+  lumePad('Sokobalien'),
+  lumePad('Sugar Rush'),
+  lumePad('Tinker Racers'),
+  lumePad('Tropical Kong Penalty', 'Maqna Interactive'),
+  lumePad('Unlock the King'),
+  lumePad('Vacuum Guy'),
 
   // Applications
   p('eClub — Benefits Platform', 'Applications'),
@@ -289,11 +391,19 @@ export const projects: Project[] = [
   p('Bolão GRE-NAL 2026', 'Applications'),
 ];
 
+/** Primary category, or Publishing for games ported or released through a partner. */
+export const inCategory = (project: Project, category: Category) =>
+  project.category === category || (category === 'Publishing' && Boolean(project.ports?.length));
+
 /** Games only (the Applications category is web products, not games). */
 export const gameProjects = projects.filter((project) => project.category !== 'Applications');
 
-/** Shown as "70+": the game count rounded down to the ten. */
+/** Shown as "110+": the game count rounded down to the ten. */
 export const gameCount = Math.floor(gameProjects.length / 10) * 10;
+
+/** Ports to Gameloft (telco) and Lume Pad, rounded down to the ten. */
+export const portCount =
+  Math.floor(projects.filter((x) => x.ports?.some((port) => port !== 'CrazyGames')).length / 10) * 10;
 
 /** Mixed platforms, strongest public reach first, every card with real cover art. */
 const featuredOrder = [
@@ -301,16 +411,16 @@ const featuredOrder = [
   'Logic Pic',
   'CAIXA Universe',
   'The Walking Dead: Through the Tower',
-  'Corrida do Galo',
+  'Tuning Cars Tycoon',
   'Rumble Kong League',
-  'Jamiroquai — Escape the Insanity',
+  'Football Tycoon (Soccer Tycoon)',
   'World Soccer Tycoon',
 ];
 
 export const featuredProjects = featuredOrder.map((key) => {
   const project = projects.find((x) => projectKey(x) === key);
   if (!project) throw new Error(`Featured project not found: ${key}`);
-  if (!project.cover) throw new Error(`Featured project without a cover: ${key}`);
+  if (!coverOf(project)) throw new Error(`Featured project without a cover: ${key}`);
   return project;
 });
 
@@ -319,23 +429,49 @@ export const universalTesting = (Object.keys(testingLabels) as Testing[]).filter
   projects.every((project) => project.testing.includes(type)),
 );
 
+/** Typical scope per category: every testing type used by at least one of its projects. */
+export const categoryScope = Object.fromEntries(
+  categories.map((category) => [
+    category,
+    (Object.keys(testingLabels) as Testing[]).filter((type) =>
+      projects.some((project) => project.category === category && project.testing.includes(type)),
+    ),
+  ]),
+) as Record<Category, Testing[]>;
+
+/** Short store name for a secondary link: "App Store", "CrazyGames". */
+export function storeName(url: string): string {
+  const host = new URL(url).hostname;
+  if (host.includes('steampowered')) return 'Steam';
+  if (host.includes('play.google')) return 'Google Play';
+  if (host.includes('apps.apple')) return 'App Store';
+  if (host.includes('crazygames')) return 'CrazyGames';
+  if (host.includes('roblox')) return 'Roblox';
+  if (host.includes('fortnite')) return 'Fortnite';
+  if (host.includes('sandbox.game')) return 'The Sandbox';
+  if (host.includes('youtube')) return 'YouTube';
+  return host;
+}
+
 export function storeLabel(url: string): L {
   const host = new URL(url).hostname;
   if (host.includes('steampowered')) return { en: 'View on Steam', pt: 'Ver na Steam' };
   if (host.includes('play.google')) return { en: 'View on Google Play', pt: 'Ver no Google Play' };
   if (host.includes('apps.apple')) return { en: 'View on the App Store', pt: 'Ver na App Store' };
+  if (host.includes('crazygames')) return { en: 'Play on CrazyGames', pt: 'Jogar no CrazyGames' };
   if (host.includes('roblox')) return { en: 'Play on Roblox', pt: 'Jogar no Roblox' };
   if (host.includes('fortnite')) return { en: 'Play in Fortnite', pt: 'Jogar no Fortnite' };
   if (host.includes('sandbox.game')) return { en: 'Play in The Sandbox', pt: 'Jogar no The Sandbox' };
+  if (host.includes('youtube')) return { en: 'Watch the trailer', pt: 'Ver o trailer' };
   return { en: 'Open link', pt: 'Abrir link' };
 }
 
-export const coverUrl = (cover: string) => `${import.meta.env.BASE_URL}covers/${cover}.webp`;
+export const coverUrl = (file: string) => `${import.meta.env.BASE_URL}covers/${file}.webp`;
 
 /** Wide covers ship at 800 and 400 px; square icons ship at one size. */
-export const coverSrcSet = (cover: string) => `${coverUrl(`${cover}-400`)} 400w, ${coverUrl(cover)} 800w`;
+export const coverSrcSet = (slug: string) => `${coverUrl(`${slug}-400`)} 400w, ${coverUrl(slug)} 800w`;
 
-/** Brands and IPs from the projects above, for the brand strip. */
+/** Brands, IPs and partners from the projects above, for the brand strip. */
 export const brands = [
   'CAIXA',
   'Atlético Mineiro',
@@ -350,11 +486,15 @@ export const brands = [
   'Arsenal',
   'Benfica',
   'The Walking Dead',
+  'Dungeon Siege',
+  'Maradona',
   'Warner Music Group',
   "Spinnin' Records",
   'Jamiroquai',
-  'Maradona',
   'Deepak Chopra',
+  'Metapeace',
   'Hello Kitty',
   'Gameloft',
+  'Leia Inc.',
+  'CrazyGames',
 ];

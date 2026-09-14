@@ -1,14 +1,14 @@
-// Writes one static HTML page per language after `vite build` and `vite build --ssr`,
-// plus sitemap.xml. The client bundle then hydrates the prerendered markup.
+// Writes one static HTML page per language and page after `vite build` and `vite build --ssr`,
+// plus the resume pages, the machine-readable files and sitemap.xml. The client bundle then
+// hydrates the prerendered markup.
 import { mkdir, readdir, readFile, rm, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
+import { buildDocx } from './cv-docx.mjs';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const dist = path.join(root, 'dist');
 const ssrDir = path.join(root, 'dist-ssr');
-
-import { buildDocx } from './cv-docx.mjs';
 
 const { render, renderCv, headTags, SITE_URL, cvData, cvStyles, cvTitle, resumeJson, llmsTxt } = await import(
   pathToFileURL(path.join(ssrDir, 'entry-server.js')).href
@@ -33,24 +33,29 @@ const preloads = (await readdir(assetsDir))
 if (preloads.length !== 2) throw new Error(`Expected 2 fonts to preload, found ${preloads.length}`);
 const shell = template.replace(cssTag[0], () => `${preloads.join('\n    ')}\n    <style>${css}</style>`);
 
+// Keep in sync with src/i18n/routes.ts.
 const pages = [
-  { lang: 'en', dir: dist, url: `${SITE_URL}/` },
-  { lang: 'pt', dir: path.join(dist, 'pt'), url: `${SITE_URL}/pt/` },
+  { lang: 'en', page: 'home', dir: dist, url: `${SITE_URL}/` },
+  { lang: 'pt', page: 'home', dir: path.join(dist, 'pt'), url: `${SITE_URL}/pt/` },
+  { lang: 'en', page: 'projects', dir: path.join(dist, 'projects'), url: `${SITE_URL}/projects/` },
+  { lang: 'pt', page: 'projects', dir: path.join(dist, 'pt', 'projetos'), url: `${SITE_URL}/pt/projetos/` },
 ];
 
-for (const { lang, dir, url } of pages) {
-  const head = headTags(lang);
+for (const { lang, page, dir, url } of pages) {
+  const head = headTags(lang, page);
   const html = shell
     .replace(/<html lang="[^"]*">/, () => `<html lang="${head.htmlLang}">`)
     .replace(HEAD, () => head.tags)
-    .replace(ROOT, () => `<div id="root">${render(lang)}</div>`);
+    .replace(ROOT, () => `<div id="root">${render(lang, page)}</div>`);
   await mkdir(dir, { recursive: true });
   await writeFile(path.join(dir, 'index.html'), html);
   console.log(`prerendered ${url} (${(Buffer.byteLength(html) / 1024).toFixed(1)} kB)`);
 }
 
+const homes = pages.filter((p) => p.page === 'home');
+
 // Resume pages (one column, no JavaScript) that scripts/cv-pdf.mjs prints to PDF.
-for (const { lang, dir } of pages) {
+for (const { lang, dir } of homes) {
   const cvDir = path.join(dir, 'cv');
   const html = `<!doctype html>
 <html lang="${lang === 'pt' ? 'pt-BR' : 'en'}">
@@ -69,7 +74,7 @@ for (const { lang, dir } of pages) {
 }
 
 // Word resumes, served from /cv/ next to the PDFs (public/cv/).
-for (const { lang } of pages) {
+for (const { lang } of homes) {
   const file = `Giovanni-Mariano-Game-QA-${lang.toUpperCase()}.docx`;
   await writeFile(path.join(dist, 'cv', file), await buildDocx(cvData(lang), cvTitle[lang]));
 }
@@ -79,18 +84,20 @@ await writeFile(path.join(dist, 'resume.json'), `${JSON.stringify(resumeJson(), 
 await writeFile(path.join(dist, 'llms.txt'), llmsTxt());
 console.log('wrote cv pages, resume.json and llms.txt');
 
+// Each URL lists its language versions (and the English one as x-default).
 const lastmod = new Date().toISOString().slice(0, 10);
-const alternates = [
-  ['en', `${SITE_URL}/`],
-  ['pt-BR', `${SITE_URL}/pt/`],
-  ['x-default', `${SITE_URL}/`],
-]
-  .map(([hreflang, href]) => `    <xhtml:link rel="alternate" hreflang="${hreflang}" href="${href}"/>`)
-  .join('\n');
+const entry = ({ page, url }) => {
+  const versions = pages.filter((x) => x.page === page);
+  const english = versions.find((x) => x.lang === 'en').url;
+  const alternates = [...versions.map((x) => [x.lang === 'pt' ? 'pt-BR' : 'en', x.url]), ['x-default', english]]
+    .map(([hreflang, href]) => `    <xhtml:link rel="alternate" hreflang="${hreflang}" href="${href}"/>`)
+    .join('\n');
+  return `  <url>\n    <loc>${url}</loc>\n    <lastmod>${lastmod}</lastmod>\n${alternates}\n  </url>`;
+};
 
 const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">
-${pages.map(({ url }) => `  <url>\n    <loc>${url}</loc>\n    <lastmod>${lastmod}</lastmod>\n${alternates}\n  </url>`).join('\n')}
+${pages.map(entry).join('\n')}
 </urlset>
 `;
 await writeFile(path.join(dist, 'sitemap.xml'), sitemap);

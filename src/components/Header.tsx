@@ -3,7 +3,7 @@ import { profile } from '../content/profile';
 import type { Lang } from '../content/types';
 import { ui } from '../content/ui';
 import { useLang } from '../i18n/LanguageContext';
-import { langPath } from '../i18n/routes';
+import { pagePath } from '../i18n/routes';
 import { Icon } from './Icon';
 import { ThemeToggle } from './ThemeToggle';
 import styles from './Header.module.css';
@@ -31,13 +31,17 @@ function keepHash(e: MouseEvent<HTMLAnchorElement>) {
 }
 
 export function Header() {
-  const { lang, t } = useLang();
+  const { lang, page, t } = useLang();
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [active, setActive] = useState<string | null>(null);
   const headerRef = useRef<HTMLElement>(null);
   const navRef = useRef<HTMLElement>(null);
   const menuButtonRef = useRef<HTMLButtonElement>(null);
+
+  // On other pages the section links lead back to the home page.
+  const home = pagePath(lang, 'home');
+  const anchor = (id: string) => (page === 'home' ? `#${id}` : `${home}#${id}`);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 8);
@@ -48,6 +52,7 @@ export function Header() {
 
   // Mark the nav link of the section crossing the middle of the viewport.
   useEffect(() => {
+    if (page !== 'home') return;
     const targets = ['top', ...links.map(([id]) => id)]
       .map((id) => document.getElementById(id))
       .filter((el): el is HTMLElement => el !== null);
@@ -59,7 +64,7 @@ export function Header() {
     );
     targets.forEach((el) => observer.observe(el));
     return () => observer.disconnect();
-  }, []);
+  }, [page]);
 
   // Mobile menu: focus moves into it on open; Escape returns focus to the button; a tap outside closes it.
   useEffect(() => {
@@ -81,10 +86,13 @@ export function Header() {
     };
   }, [open]);
 
+  const current = (id: string) =>
+    (page === 'home' && active === id) || (page === 'projects' && id === 'projects') ? 'location' : undefined;
+
   return (
     <header ref={headerRef} className={styles.header} data-solid={scrolled || open || undefined}>
       <div className={`container ${styles.inner}`}>
-        <a href="#top" className={styles.brand} onClick={() => setOpen(false)}>
+        <a href={page === 'home' ? '#top' : home} className={styles.brand} onClick={() => setOpen(false)}>
           <span className={styles.brandMark}>GSM</span>
           <span className={styles.brandText}>Game QA</span>
         </a>
@@ -99,11 +107,7 @@ export function Header() {
           <ul>
             {links.map(([id, label]) => (
               <li key={id}>
-                <a
-                  href={`#${id}`}
-                  aria-current={active === id ? 'location' : undefined}
-                  onClick={() => setOpen(false)}
-                >
+                <a href={anchor(id)} aria-current={current(id)} onClick={() => setOpen(false)}>
                   {t(label)}
                 </a>
               </li>
@@ -116,7 +120,7 @@ export function Header() {
             {langs.map((l) => (
               <a
                 key={l.code}
-                href={langPath[l.code]}
+                href={pagePath(l.code, page)}
                 hrefLang={l.hrefLang}
                 lang={l.hrefLang}
                 aria-label={l.label}

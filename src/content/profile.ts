@@ -1,5 +1,5 @@
-import { gameCount } from './projects';
-import { compactCount, reach, totalReach } from './reach';
+import { gameCount, portCount } from './projects';
+import { compactCount, formatReach, fortniteMinutes, reach, totalReach } from './reach';
 import { qaYears, techYears } from './stats';
 import type { L } from './types';
 
@@ -12,8 +12,8 @@ export const profile = {
   /** Standard job title first: recruiters and screening tools match on it. */
   title: { en: 'Game QA Analyst', pt: 'Analista de QA de Games' } as L,
   headline: {
-    en: `Game QA Analyst with ${qaYears} years testing and shipping Roblox, Fortnite (UEFN), The Sandbox, mobile and PC titles, with ${compactCount(totalReach, 'en')} downloads and visits.`,
-    pt: `Analista de QA de games com ${qaYears} anos testando e liberando títulos de Roblox, Fortnite (UEFN), The Sandbox, mobile e PC, com ${compactCount(totalReach, 'pt')} de downloads e visitas.`,
+    en: `Game QA Analyst with ${qaYears} years testing and shipping Roblox, Fortnite (UEFN), The Sandbox, mobile and PC titles, with ${compactCount(totalReach, 'en')} players, downloads and visits.`,
+    pt: `Analista de QA de games com ${qaYears} anos testando e liberando títulos de Roblox, Fortnite (UEFN), The Sandbox, mobile e PC, com ${compactCount(totalReach, 'pt')} de jogadores, downloads e visitas.`,
   } as L,
   openTo: {
     en: 'Open to Senior Game QA and QA Lead roles',
@@ -28,7 +28,11 @@ export const profile = {
     { value: same(`${gameCount}+`), label: { en: 'game projects tested', pt: 'projetos de games testados' } },
     {
       value: both((lang) => compactCount(totalReach, lang)),
-      label: { en: 'downloads & visits', pt: 'downloads e visitas' },
+      label: { en: 'players, downloads & visits', pt: 'jogadores, downloads e visitas' },
+    },
+    {
+      value: both((lang) => compactCount(fortniteMinutes, lang)),
+      label: { en: 'minutes played on Fortnite', pt: 'minutos jogados no Fortnite' },
     },
   ] as { value: L; label: L }[],
   links: {
@@ -72,8 +76,8 @@ export const snapshot: { label: L; value: L }[] = [
   {
     label: { en: 'Platforms', pt: 'Plataformas' },
     value: {
-      en: 'Roblox · Fortnite (UEFN) · The Sandbox (Web3) · iOS & Android · PC/Steam · LumePad 3D',
-      pt: 'Roblox · Fortnite (UEFN) · The Sandbox (Web3) · iOS e Android · PC/Steam · LumePad 3D',
+      en: 'Roblox · Fortnite (UEFN) · The Sandbox (Web3) · iOS & Android · PC/Steam · Lume Pad 3D',
+      pt: 'Roblox · Fortnite (UEFN) · The Sandbox (Web3) · iOS e Android · PC/Steam · Lume Pad 3D',
     },
   },
   {
@@ -102,8 +106,8 @@ export const snapshot: { label: L; value: L }[] = [
 export const approach = {
   /** Supports **bold** markers. */
   lead: {
-    en: `I'm a QA Analyst specialized in Game QA, with **${qaYears} years** in game studios and **${techYears} years** across the technology industry. I have tested **${gameCount}+ game projects** and interactive experiences across Roblox, Fortnite/UEFN, The Sandbox, mobile, PC and LumePad 3D.`,
-    pt: `Sou Analista de QA especializado em Game QA, com **${qaYears} anos** em estúdios de games e **${techYears} anos** na área de tecnologia. Já testei **mais de ${gameCount} projetos** de games e experiências interativas em Roblox, Fortnite/UEFN, The Sandbox, mobile, PC e LumePad 3D.`,
+    en: `I'm a QA Analyst specialized in Game QA, with **${qaYears} years** in game studios and **${techYears} years** across the technology industry. I have tested **${gameCount}+ game projects** and interactive experiences across Roblox, Fortnite/UEFN, The Sandbox, mobile, PC and Lume Pad 3D.`,
+    pt: `Sou Analista de QA especializado em Game QA, com **${qaYears} anos** em estúdios de games e **${techYears} anos** na área de tecnologia. Já testei **mais de ${gameCount} projetos** de games e experiências interativas em Roblox, Fortnite/UEFN, The Sandbox, mobile, PC e Lume Pad 3D.`,
   } as L,
   steps: [
     {
@@ -164,11 +168,7 @@ export type Job = {
   tools?: string;
 };
 
-const reachOf = (key: string, lang: 'en' | 'pt') => {
-  const r = reach[key];
-  const kind = r.kind === 'visits' ? (lang === 'pt' ? 'visitas' : 'visits') : 'downloads';
-  return `${compactCount(r.count, lang)} ${kind}`;
-};
+const reachOf = (key: string, lang: 'en' | 'pt') => formatReach(reach[key][0], lang);
 
 export const experience: { title: L; jobs: Job[] }[] = [
   {
@@ -185,6 +185,7 @@ export const experience: { title: L; jobs: Job[] }[] = [
             'Report QA status, risks and a go/no-go recommendation to Production, validating 4–8 release candidates per month',
             'Act as the bridge between Production, Development and QA, turning defect findings into actionable development tasks',
             'Cover every development phase, from early builds to live updates, with feedback documents and first-time experience reports',
+            `Test ${portCount}+ ports of partner-studio games to carrier (telco) stores through Gameloft and to Leia's Lume Pad 1 and 2 3D tablets, validating the 3D effect, performance, controls and store requirements; plus web releases on CrazyGames`,
           ],
           pt: [
             'Coordenação de QA em 4–6 projetos simultâneos, definindo escopo e prioridades de teste por milestone',
@@ -192,6 +193,7 @@ export const experience: { title: L; jobs: Job[] }[] = [
             'Reporte de status de QA, riscos e recomendação de go/no-go à Produção, validando 4–8 release candidates por mês',
             'Ponte entre Produção, Desenvolvimento e QA, transformando defeitos encontrados em tarefas acionáveis para o desenvolvimento',
             'Atuação em todas as fases do desenvolvimento, das primeiras builds às atualizações live, com documentos de feedback e relatórios de primeira experiência',
+            `Testes de mais de ${portCount} portes de jogos de estúdios parceiros para lojas de operadoras (telco) pela Gameloft e para os tablets 3D Lume Pad 1 e 2 da Leia, validando efeito 3D, performance, controles e requisitos da loja; além de lançamentos web no CrazyGames`,
           ],
         },
         more: {
@@ -226,11 +228,11 @@ export const experience: { title: L; jobs: Job[] }[] = [
             pt: '4–6 projetos simultâneos · 4–8 release candidates validados por mês · time de QA de 4–6',
           },
           note: {
-            en: `Titles tested include Pro Kick Simulator (${reachOf('Pro Kick Simulator', 'en')}) and PSG Football Freestyle (${reachOf('PSG Football Freestyle', 'en')})`,
-            pt: `Títulos testados incluem Pro Kick Simulator (${reachOf('Pro Kick Simulator', 'pt')}) e PSG Football Freestyle (${reachOf('PSG Football Freestyle', 'pt')})`,
+            en: `Titles tested include Football Tycoon (${reachOf('Football Tycoon (Soccer Tycoon)', 'en')} on Fortnite), Tuning Cars Tycoon (${reachOf('Tuning Cars Tycoon', 'en')}), Pro Kick Simulator (${reachOf('Pro Kick Simulator', 'en')}) and PSG Football Freestyle (${reachOf('PSG Football Freestyle', 'en')})`,
+            pt: `Títulos testados incluem Football Tycoon (${reachOf('Football Tycoon (Soccer Tycoon)', 'pt')} no Fortnite), Tuning Cars Tycoon (${reachOf('Tuning Cars Tycoon', 'pt')}), Pro Kick Simulator (${reachOf('Pro Kick Simulator', 'pt')}) e PSG Football Freestyle (${reachOf('PSG Football Freestyle', 'pt')})`,
           },
         },
-        platforms: 'Roblox · Fortnite/UEFN · The Sandbox (Web3) · Mobile · PC · LumePad 3D',
+        platforms: 'Roblox · Fortnite/UEFN · The Sandbox (Web3) · Mobile · PC · Lume Pad 3D',
         tools:
           'Jira · ClickUp · Postman · REST · JSON · DevTools · adb/logcat · Android Studio · TestFlight · Google Play Console · Firebase Crashlytics · GameAnalytics · Firebase · Roblox Analytics · Git · UEFN · Roblox Studio · Unity',
       },
@@ -340,8 +342,8 @@ export const skills: { title: L; items: L<string[]> }[] = [
   {
     title: { en: 'Game QA', pt: 'Game QA' },
     items: {
-      en: ['Gameplay testing', 'Multiplayer testing', 'FTUE / onboarding', 'UX testing', 'Controller testing (gamepad on PC)', 'Accessibility QA', 'Localization QA'],
-      pt: ['Testes de gameplay', 'Testes multiplayer', 'FTUE / onboarding', 'Testes de UX', 'Testes com controle (gamepad no PC)', 'QA de acessibilidade', 'QA de localização'],
+      en: ['Gameplay testing', 'Multiplayer testing', 'FTUE / onboarding', 'UX testing', 'Controller testing (gamepad on PC)', '3D display testing (Lume Pad)', 'Accessibility QA', 'Localization QA'],
+      pt: ['Testes de gameplay', 'Testes multiplayer', 'FTUE / onboarding', 'Testes de UX', 'Testes com controle (gamepad no PC)', 'Testes de display 3D (Lume Pad)', 'QA de acessibilidade', 'QA de localização'],
     },
   },
   {
@@ -354,8 +356,8 @@ export const skills: { title: L; items: L<string[]> }[] = [
   {
     title: { en: 'Platform compliance', pt: 'Compliance de plataforma' },
     items: {
-      en: ['App Store', 'Google Play', 'Roblox', 'Fortnite/UEFN', 'The Sandbox', 'Web3', 'Telco (carrier stores)', 'Leia Appstore (LumePad 3D)'],
-      pt: ['App Store', 'Google Play', 'Roblox', 'Fortnite/UEFN', 'The Sandbox', 'Web3', 'Telco (lojas de operadoras)', 'Leia Appstore (LumePad 3D)'],
+      en: ['App Store', 'Google Play', 'Roblox', 'Fortnite/UEFN', 'The Sandbox', 'Web3', 'Telco (carrier stores)', 'Leia Appstore (Lume Pad 3D)'],
+      pt: ['App Store', 'Google Play', 'Roblox', 'Fortnite/UEFN', 'The Sandbox', 'Web3', 'Telco (lojas de operadoras)', 'Leia Appstore (Lume Pad 3D)'],
     },
   },
   {

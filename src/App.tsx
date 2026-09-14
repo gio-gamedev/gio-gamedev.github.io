@@ -8,6 +8,7 @@ import { Skills } from './components/Skills';
 import { Footer } from './components/Footer';
 import { Header } from './components/Header';
 import { Hero } from './components/Hero';
+import { ProjectGallery } from './components/ProjectGallery';
 import { Projects } from './components/Projects';
 import { WorkSamples } from './components/WorkSamples';
 import { ui } from './content/ui';
@@ -27,7 +28,7 @@ const sections: ComponentType<{ index: string }>[] = [
 ];
 
 export function App() {
-  const { t } = useLang();
+  const { page, t } = useLang();
 
   // Printing (or "Save as PDF") expands every collapsed section, then restores it.
   useEffect(() => {
@@ -52,10 +53,16 @@ export function App() {
       </a>
       <Header />
       <main id="main">
-        <Hero />
-        {sections.map((SectionComponent, i) => (
-          <SectionComponent key={i} index={String(i + 1).padStart(2, '0')} />
-        ))}
+        {page === 'projects' ? (
+          <ProjectGallery />
+        ) : (
+          <>
+            <Hero />
+            {sections.map((SectionComponent, i) => (
+              <SectionComponent key={i} index={String(i + 1).padStart(2, '0')} />
+            ))}
+          </>
+        )}
       </main>
       <Footer />
     </>

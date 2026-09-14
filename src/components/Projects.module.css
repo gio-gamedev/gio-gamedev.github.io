@@ -8,3 +8,28 @@
 .featured > li {
   display: flex;
 }
+
+.more {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem 1.5rem;
+  margin-top: clamp(28px, 4vw, 40px);
+  padding: 1.25rem 1.4rem;
+  border: 1px solid var(--accent-line);
+  border-radius: var(--radius);
+  background: var(--accent-soft);
+}
+
+.moreTitle {
+  font-size: 1.15rem;
+}
+
+.moreCounts {
+  max-width: 70ch;
+  margin-top: 0.35rem;
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  color: var(--text-muted);
+}

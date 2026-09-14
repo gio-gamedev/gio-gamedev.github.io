@@ -7,12 +7,13 @@ import { StrictMode } from 'react';
 import { createRoot, hydrateRoot } from 'react-dom/client';
 import { App } from './App';
 import { LanguageProvider } from './i18n/LanguageContext';
-import { langFromPath } from './i18n/routes';
+import { routeFromPath } from './i18n/routes';
 
 const container = document.getElementById('root')!;
+const { lang, page } = routeFromPath(location.pathname);
 const app = (
   <StrictMode>
-    <LanguageProvider lang={langFromPath(location.pathname)}>
+    <LanguageProvider lang={lang} page={page}>
       <App />
     </LanguageProvider>
   </StrictMode>

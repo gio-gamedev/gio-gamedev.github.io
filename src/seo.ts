@@ -1,32 +1,32 @@
 import { award, certifications, education, languageList, profile, skills } from './content/profile';
+import { projectName, projects } from './content/projects';
 import { SITE_URL } from './content/site';
 import { qaYears } from './content/stats';
 import type { Lang } from './content/types';
 import { ui } from './content/ui';
+import type { Page } from './i18n/routes';
 
 export { SITE_URL };
 
-const pageUrl: Record<Lang, string> = { en: `${SITE_URL}/`, pt: `${SITE_URL}/pt/` };
+const pageUrl: Record<Page, Record<Lang, string>> = {
+  home: { en: `${SITE_URL}/`, pt: `${SITE_URL}/pt/` },
+  projects: { en: `${SITE_URL}/projects/`, pt: `${SITE_URL}/pt/projetos/` },
+};
 const ogLocale: Record<Lang, string> = { en: 'en_US', pt: 'pt_BR' };
 const htmlLang: Record<Lang, string> = { en: 'en', pt: 'pt-BR' };
 
 const escapeHtml = (s: string) =>
   s.replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 
-/** <head> tags for one language page: meta, Open Graph, hreflang and schema.org ProfilePage data. */
-export function headTags(lang: Lang): { htmlLang: string; tags: string } {
-  const other: Lang = lang === 'en' ? 'pt' : 'en';
-  const title = escapeHtml(ui.meta.title[lang]);
-  const description = ui.meta.description[lang](qaYears);
-
-  // Structured data that search engines and screening tools read without parsing the layout.
-  const person = {
+/** Structured data about Giovanni that search engines and screening tools read without parsing the layout. */
+function person(lang: Lang, description: string) {
+  return {
     '@type': 'Person',
     name: profile.name,
     alternateName: 'Giovanni da Silva Mariano',
     jobTitle: ui.meta.jobTitle[lang],
     description,
-    url: pageUrl[lang],
+    url: pageUrl.home[lang],
     image: `${SITE_URL}/avatar.webp`,
     email: `mailto:${profile.links.email}`,
     address: { '@type': 'PostalAddress', addressCountry: 'BR' },
@@ -50,32 +50,65 @@ export function headTags(lang: Lang): { htmlLang: string; tags: string } {
       'Fortnite (UEFN)',
       'The Sandbox',
       'Mobile games',
+      'Game porting',
       'Platform compliance',
       'Release validation',
     ],
     knowsLanguage: languageList.map((l) => ({ '@type': 'Language', name: l.name.en, alternateName: l.code })),
     sameAs: [profile.links.linkedin, profile.links.github],
   };
+}
 
-  const profilePage = {
-    '@context': 'https://schema.org',
-    '@type': 'ProfilePage',
-    url: pageUrl[lang],
-    inLanguage: htmlLang[lang],
-    dateModified: __BUILD_DATE__,
-    mainEntity: person,
-  };
+/** <head> tags for one page in one language: meta, Open Graph, hreflang and schema.org data. */
+export function headTags(lang: Lang, page: Page = 'home'): { htmlLang: string; tags: string } {
+  const other: Lang = lang === 'en' ? 'pt' : 'en';
+  const url = pageUrl[page][lang];
+  const rawTitle = page === 'home' ? ui.meta.title[lang] : ui.meta.galleryTitle[lang];
+  const title = escapeHtml(rawTitle);
+  const description =
+    page === 'home' ? ui.meta.description[lang](qaYears) : ui.meta.galleryDescription[lang](projects.length);
+
+  const data =
+    page === 'home'
+      ? {
+          '@context': 'https://schema.org',
+          '@type': 'ProfilePage',
+          url,
+          inLanguage: htmlLang[lang],
+          dateModified: __BUILD_DATE__,
+          mainEntity: person(lang, description),
+        }
+      : {
+          '@context': 'https://schema.org',
+          '@type': 'CollectionPage',
+          name: rawTitle,
+          url,
+          inLanguage: htmlLang[lang],
+          dateModified: __BUILD_DATE__,
+          description,
+          about: { '@type': 'Person', name: profile.name, url: pageUrl.home[lang] },
+          mainEntity: {
+            '@type': 'ItemList',
+            numberOfItems: projects.length,
+            itemListElement: projects.map((p, i) => ({
+              '@type': 'ListItem',
+              position: i + 1,
+              name: projectName(p, lang),
+              ...(p.links?.[0] ? { url: p.links[0] } : {}),
+            })),
+          },
+        };
 
   const tags = [
     `<title>${title}</title>`,
     `<meta name="description" content="${escapeHtml(description)}" />`,
-    `<link rel="canonical" href="${pageUrl[lang]}" />`,
-    `<link rel="alternate" hreflang="en" href="${pageUrl.en}" />`,
-    `<link rel="alternate" hreflang="pt-BR" href="${pageUrl.pt}" />`,
-    `<link rel="alternate" hreflang="x-default" href="${pageUrl.en}" />`,
+    `<link rel="canonical" href="${url}" />`,
+    `<link rel="alternate" hreflang="en" href="${pageUrl[page].en}" />`,
+    `<link rel="alternate" hreflang="pt-BR" href="${pageUrl[page].pt}" />`,
+    `<link rel="alternate" hreflang="x-default" href="${pageUrl[page].en}" />`,
     `<link rel="alternate" type="application/json" href="${SITE_URL}/resume.json" title="JSON Resume" />`,
-    `<meta property="og:type" content="profile" />`,
-    `<meta property="og:url" content="${pageUrl[lang]}" />`,
+    `<meta property="og:type" content="${page === 'home' ? 'profile' : 'website'}" />`,
+    `<meta property="og:url" content="${url}" />`,
     `<meta property="og:title" content="${title}" />`,
     `<meta property="og:description" content="${escapeHtml(description)}" />`,
     `<meta property="og:locale" content="${ogLocale[lang]}" />`,
@@ -85,7 +118,7 @@ export function headTags(lang: Lang): { htmlLang: string; tags: string } {
     `<meta property="og:image:height" content="630" />`,
     `<meta property="og:image:alt" content="${escapeHtml(ui.meta.ogImageAlt[lang])}" />`,
     `<meta name="twitter:card" content="summary_large_image" />`,
-    `<script type="application/ld+json">${JSON.stringify(profilePage).replace(/</g, '\\u003c')}</script>`,
+    `<script type="application/ld+json">${JSON.stringify(data).replace(/</g, '\\u003c')}</script>`,
   ];
 
   return { htmlLang: htmlLang[lang], tags: tags.join('\n    ') };

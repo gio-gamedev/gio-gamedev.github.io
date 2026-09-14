@@ -89,9 +89,6 @@
 }
 
 .reach {
-  display: flex;
-  align-items: baseline;
-  gap: 0.4rem;
   margin-top: -0.2rem;
   font-size: 0.88rem;
   color: var(--text-muted);
@@ -149,13 +146,19 @@
   list-style: none;
 }
 
+.links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.1rem 1rem;
+  margin-top: auto;
+  padding-top: 0.35rem;
+}
+
 .link {
   display: inline-flex;
   align-items: center;
   gap: 0.4rem;
   min-height: 32px;
-  margin-top: auto;
-  padding-top: 0.35rem;
   font-size: 0.88rem;
   font-weight: 500;
   text-decoration: none;

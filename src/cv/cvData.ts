@@ -11,7 +11,7 @@ import {
   skills,
 } from '../content/profile';
 import { categoryInfo, featuredProjects, gameCount, projectName } from '../content/projects';
-import { formatReach } from '../content/reach';
+import { formatReachList } from '../content/reach';
 import { SITE_URL } from '../content/site';
 import type { L, Lang } from '../content/types';
 
@@ -101,7 +101,7 @@ export function cvData(lang: Lang): CvData {
             items: featuredProjects.map((p) =>
               [
                 `${projectName(p, lang)} (${[t(categoryInfo[p.category].label), p.studio].filter(Boolean).join(', ')})`,
-                p.reach ? formatReach(p.reach, lang) : '',
+                formatReachList(p.reach, lang),
               ]
                 .filter(Boolean)
                 .join(' — '),

@@ -1,5 +1,5 @@
 import AxeBuilder from '@axe-core/playwright';
-import { expect, test } from '@playwright/test';
+import { expect, test, type Page } from '@playwright/test';
 
 const pages = [
   {
@@ -8,6 +8,7 @@ const pages = [
     section: 'Selected QA Projects',
     cv: '/cv/Giovanni-Mariano-Game-QA-EN',
     caixa: 'CAIXA Universe',
+    minutes: '110M+',
   },
   {
     path: '/pt/',
@@ -15,22 +16,38 @@ const pages = [
     section: 'Projetos de QA em destaque',
     cv: '/cv/Giovanni-Mariano-Game-QA-PT',
     caixa: 'Universo CAIXA',
+    minutes: '110 mi+',
   },
 ];
+
+const galleries = [
+  { path: '/projects/', lang: 'en', title: /^All \d+ projects$/, other: '/pt/projetos/', switchTo: 'PT – Português' },
+  { path: '/pt/projetos/', lang: 'pt-BR', title: /^Todos os \d+ projetos$/, other: '/projects/', switchTo: 'EN – English' },
+];
+
+async function expectNoConsoleErrors(tab: Page, path: string, check: () => Promise<void>) {
+  const errors: string[] = [];
+  tab.on('console', (message) => message.type() === 'error' && errors.push(message.text()));
+  tab.on('pageerror', (error) => errors.push(error.message));
+  await tab.goto(path);
+  await check();
+  await tab.waitForLoadState('networkidle');
+  expect(errors).toEqual([]);
+}
+
+async function expectNoAxeViolations(tab: Page) {
+  const results = await new AxeBuilder({ page: tab }).withTags(['wcag2a', 'wcag2aa', 'wcag21aa']).analyze();
+  expect(results.violations.map((v) => `${v.id}: ${v.nodes.map((n) => n.target.join(' ')).join(', ')}`)).toEqual([]);
+}
 
 for (const page of pages) {
   test.describe(`page ${page.path}`, () => {
     test('renders the prerendered content without console errors', async ({ page: tab }) => {
-      const errors: string[] = [];
-      tab.on('console', (message) => message.type() === 'error' && errors.push(message.text()));
-      tab.on('pageerror', (error) => errors.push(error.message));
-
-      await tab.goto(page.path);
-      await expect(tab.locator('html')).toHaveAttribute('lang', page.lang);
-      await expect(tab.getByRole('heading', { level: 1 })).toHaveText('Giovanni S. Mariano');
-      await expect(tab.getByRole('heading', { name: page.section })).toBeVisible();
-      await tab.waitForLoadState('networkidle');
-      expect(errors).toEqual([]);
+      await expectNoConsoleErrors(tab, page.path, async () => {
+        await expect(tab.locator('html')).toHaveAttribute('lang', page.lang);
+        await expect(tab.getByRole('heading', { level: 1 })).toHaveText('Giovanni S. Mariano');
+        await expect(tab.getByRole('heading', { name: page.section })).toBeVisible();
+      });
     });
 
     for (const theme of ['dark', 'light'] as const) {
@@ -38,10 +55,7 @@ for (const page of pages) {
         await tab.addInitScript((value) => localStorage.setItem('theme', value), theme);
         await tab.goto(page.path);
         await expect(tab.locator('html')).toHaveAttribute('data-theme', theme);
-        const results = await new AxeBuilder({ page: tab }).withTags(['wcag2a', 'wcag2aa', 'wcag21aa']).analyze();
-        expect(results.violations.map((v) => `${v.id}: ${v.nodes.map((n) => n.target.join(' ')).join(', ')}`)).toEqual(
-          [],
-        );
+        await expectNoAxeViolations(tab);
       });
     }
 
@@ -60,11 +74,54 @@ for (const page of pages) {
       await expect(tab.getByRole('heading', { level: 3, name: page.caixa })).toBeVisible();
     });
 
-    test('every featured project has cover art', async ({ page: tab }) => {
+    test('has 8 featured projects with cover art and public figures', async ({ page: tab }) => {
       await tab.goto(page.path);
       const cards = tab.locator('#projects article');
       await expect(cards).toHaveCount(8);
       await expect(tab.locator('#projects article img')).toHaveCount(8);
+      await expect(cards.filter({ hasText: 'Football Tycoon' })).toContainText(page.minutes);
+    });
+
+    test('links to the full project gallery', async ({ page: tab }) => {
+      await tab.goto(page.path);
+      await tab.locator('#projects a.btn-primary').click();
+      await expect(tab.getByRole('heading', { level: 1 })).toHaveText(/\d+/);
+    });
+  });
+}
+
+for (const gallery of galleries) {
+  test.describe(`gallery ${gallery.path}`, () => {
+    test('lists every project once, without console errors', async ({ page: tab }) => {
+      await expectNoConsoleErrors(tab, gallery.path, async () => {
+        await expect(tab.locator('html')).toHaveAttribute('lang', gallery.lang);
+        await expect(tab.getByRole('heading', { level: 1 })).toHaveText(gallery.title);
+      });
+      const total = Number((await tab.getByRole('heading', { level: 1 }).textContent())?.match(/\d+/)?.[0]);
+      await expect(tab.locator('#gallery li:not([hidden]) article')).toHaveCount(total);
+    });
+
+    test('filters by platform', async ({ page: tab }) => {
+      await tab.goto(gallery.path);
+      const fortnite = tab.getByRole('button', { name: /Fortnite\/UEFN/ });
+      await fortnite.click();
+      await expect(fortnite).toHaveAttribute('aria-pressed', 'true');
+      await expect(tab.locator('#gallery li:not([hidden]) article')).toHaveCount(21);
+    });
+
+    for (const theme of ['dark', 'light'] as const) {
+      test(`has no WCAG A/AA violations in the ${theme} theme`, async ({ page: tab }) => {
+        await tab.addInitScript((value) => localStorage.setItem('theme', value), theme);
+        await tab.goto(gallery.path);
+        await expect(tab.locator('html')).toHaveAttribute('data-theme', theme);
+        await expectNoAxeViolations(tab);
+      });
+    }
+
+    test('switches language on the same page', async ({ page: tab }) => {
+      await tab.goto(gallery.path);
+      await tab.getByRole('link', { name: gallery.switchTo }).click();
+      await expect(tab).toHaveURL(new RegExp(`${gallery.other}$`));
     });
   });
 }
@@ -121,7 +178,7 @@ test('draft samples never ship in the production build', async ({ page, request 
   }
 });
 
-test('machine-readable resume files are served', async ({ request }) => {
+test('machine-readable files and sitemap are served', async ({ request }) => {
   const resume = await (await request.get('/resume.json')).json();
   expect(resume.basics.name).toBe('Giovanni S. Mariano');
   expect(resume.basics.label).toBe('Game QA Analyst');
@@ -129,5 +186,8 @@ test('machine-readable resume files are served', async ({ request }) => {
   const llms = await (await request.get('/llms.txt')).text();
   expect(llms).toContain('# Giovanni S. Mariano — Game QA Analyst');
   expect(llms).toContain('Logic Pic (Mobile, Space Bit Games)');
+  expect(llms).toContain('280M+ minutes played on Fortnite');
   expect(llms).not.toContain('Goal Rush');
+  const sitemap = await (await request.get('/sitemap.xml')).text();
+  expect(sitemap.match(/<loc>/g)).toHaveLength(4);
 });

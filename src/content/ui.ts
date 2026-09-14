@@ -1,5 +1,5 @@
 import { gameCount } from './projects';
-import { compactCount, totalReach } from './reach';
+import { compactCount, fortniteMinutes, totalReach } from './reach';
 import type { L } from './types';
 
 /** Interface labels. Long-form content lives in profile.ts, projects.ts and workSamples.ts. */
@@ -11,9 +11,19 @@ export const ui = {
     },
     description: {
       en: (years: number) =>
-        `Game QA Analyst — ${years} years in game studios, ${gameCount}+ game projects tested across Roblox, Fortnite (UEFN), The Sandbox, mobile and PC, with ${compactCount(totalReach, 'en')} downloads and visits. Work samples, projects and resume.`,
+        `Game QA Analyst — ${years} years in game studios, ${gameCount}+ game projects tested across Roblox, Fortnite (UEFN), The Sandbox, mobile, PC and 3D tablets, with ${compactCount(totalReach, 'en')} players, downloads and visits. Work samples, projects and resume.`,
       pt: (years: number) =>
-        `Analista de QA de games — ${years} anos em estúdios, mais de ${gameCount} projetos testados em Roblox, Fortnite (UEFN), The Sandbox, mobile e PC, com ${compactCount(totalReach, 'pt')} de downloads e visitas. Amostras, projetos e currículo.`,
+        `Analista de QA de games — ${years} anos em estúdios, mais de ${gameCount} projetos testados em Roblox, Fortnite (UEFN), The Sandbox, mobile, PC e tablets 3D, com ${compactCount(totalReach, 'pt')} de jogadores, downloads e visitas. Amostras, projetos e currículo.`,
+    },
+    galleryTitle: {
+      en: 'All game projects — Giovanni S. Mariano, Game QA',
+      pt: 'Todos os projetos de games — Giovanni S. Mariano, QA de Games',
+    },
+    galleryDescription: {
+      en: (n: number) =>
+        `All ${n} projects Giovanni S. Mariano tested as QA, by platform: Roblox, Fortnite (UEFN), The Sandbox, mobile, PC, ports to telco stores and Lume Pad 3D tablets, and web apps.`,
+      pt: (n: number) =>
+        `Os ${n} projetos que Giovanni S. Mariano testou como QA, por plataforma: Roblox, Fortnite (UEFN), The Sandbox, mobile, PC, portes para lojas telco e tablets 3D Lume Pad, e aplicações web.`,
     },
     jobTitle: { en: 'Game QA Analyst', pt: 'Analista de QA de Games' },
     ogImageAlt: {
@@ -45,6 +55,10 @@ export const ui = {
     docx: { en: 'Resume in Word (.docx)', pt: 'Currículo em Word (.docx)' },
     samples: { en: 'See work samples', pt: 'Ver amostras de trabalho' },
     award: { en: 'Best Team QA — Meta Testathon 2024', pt: 'Melhor Time de QA — Meta Testathon 2024' },
+    minutes: {
+      en: `${compactCount(fortniteMinutes, 'en')} minutes played on Fortnite`,
+      pt: `${compactCount(fortniteMinutes, 'pt')} minutos jogados no Fortnite`,
+    },
   },
   snapshot: {
     title: { en: 'Recruiter snapshot', pt: 'Resumo para recrutadores' },
@@ -80,10 +94,15 @@ export const ui = {
     focus: { en: 'Main focus', pt: 'Foco principal' },
     did: { en: 'What I did', pt: 'O que eu fiz' },
     highlight: { en: 'Highlight', pt: 'Destaque' },
-    brands: { en: 'Brands and IPs I have tested for', pt: 'Marcas e IPs em que trabalhei' },
-    indexTitle: {
-      en: (n: number) => `All ${n} projects by platform`,
-      pt: (n: number) => `Todos os ${n} projetos por plataforma`,
+    brands: { en: 'Brands, IPs and partners', pt: 'Marcas, IPs e parceiros' },
+    moreTitle: { en: 'Every project, with images', pt: 'Todos os projetos, com imagens' },
+    seeAll: {
+      en: (n: number) => `See all ${n} projects`,
+      pt: (n: number) => `Ver todos os ${n} projetos`,
+    },
+    byOrigin: {
+      en: (studio: string) => `by ${studio}`,
+      pt: (studio: string) => `de ${studio}`,
     },
     // Mirrors universalTesting in projects.ts (functional + regression on every project).
     universal: {
@@ -93,9 +112,22 @@ export const ui = {
     scope: { en: 'Typical scope', pt: 'Escopo típico' },
     featured: { en: 'Featured project', pt: 'Projeto em destaque' },
     publicNote: {
-      en: 'Download and visit counts are public store and platform figures, rounded down.',
-      pt: 'Os números de downloads e visitas são dados públicos das lojas e plataformas, arredondados para baixo.',
+      en: 'Download, visit, player and playtime counts are public store and platform figures, rounded down.',
+      pt: 'Os números de downloads, visitas, jogadores e tempo jogado são dados públicos das lojas e plataformas, arredondados para baixo.',
     },
+  },
+  gallery: {
+    title: {
+      en: (n: number) => `All ${n} projects`,
+      pt: (n: number) => `Todos os ${n} projetos`,
+    },
+    intro: {
+      en: `Every game and app I have tested as QA (${gameCount}+ games), grouped by platform. On each one I run QA through every development phase, with feedback documents and first-time experience reports. At Hermit Crab Game Studio unless noted.`,
+      pt: `Todos os jogos e aplicações que testei como QA (mais de ${gameCount} jogos), por plataforma. Em cada um, faço QA em todas as fases do desenvolvimento, com documentos de feedback e relatórios de primeira experiência. Na Hermit Crab Game Studio, salvo indicação.`,
+    },
+    back: { en: 'Back to the portfolio', pt: 'Voltar ao portfólio' },
+    filters: { en: 'Filter by platform', pt: 'Filtrar por plataforma' },
+    all: { en: 'All', pt: 'Todos' },
   },
   experience: {
     more: {

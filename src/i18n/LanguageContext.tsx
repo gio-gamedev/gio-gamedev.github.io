@@ -1,16 +1,18 @@
 import { createContext, useContext, useMemo, type ReactNode } from 'react';
 import type { L, Lang } from '../content/types';
+import type { Page } from './routes';
 
 type LanguageContextValue = {
   lang: Lang;
+  page: Page;
   t: <T>(value: L<T>) => T;
 };
 
 const LanguageContext = createContext<LanguageContextValue | null>(null);
 
-/** The language comes from the page URL (see routes.ts); switching language is a link to the other page. */
-export function LanguageProvider({ lang, children }: { lang: Lang; children: ReactNode }) {
-  const value = useMemo<LanguageContextValue>(() => ({ lang, t: (v) => v[lang] }), [lang]);
+/** Language and page come from the URL (see routes.ts); switching language is a link to the other page. */
+export function LanguageProvider({ lang, page = 'home', children }: { lang: Lang; page?: Page; children: ReactNode }) {
+  const value = useMemo<LanguageContextValue>(() => ({ lang, page, t: (v) => v[lang] }), [lang, page]);
   return <LanguageContext.Provider value={value}>{children}</LanguageContext.Provider>;
 }
 
