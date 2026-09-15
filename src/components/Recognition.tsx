@@ -1,13 +1,22 @@
-import { recognition, testimonial } from '../content/profile';
+import { useState } from 'react';
+import { recognition, testimonial, type Photo } from '../content/profile';
 import { ui } from '../content/ui';
 import { useLang } from '../i18n/LanguageContext';
 import { Icon } from './Icon';
+import { Lightbox } from './Lightbox';
 import { Section } from './Section';
 import styles from './Recognition.module.css';
 
-/** The Testathon team award (every member credited) and a testimonial, as text. */
+const photoUrl = (file: string, width: number) => `${import.meta.env.BASE_URL}testathon/${file}-${width}.webp`;
+const photoSrcSet = (photo: Photo) => photo.widths.map((w) => `${photoUrl(photo.file, w)} ${w}w`).join(', ');
+
+/**
+ * The Testathon team award (every member credited, event photos with nobody named) and the
+ * testimonial, quoted exactly in its original Portuguese on both versions of the site.
+ */
 export function Recognition({ index }: { index: string }) {
   const { lang, t } = useLang();
+  const [open, setOpen] = useState<Photo | null>(null);
 
   return (
     <Section id="recognition" index={index} title={t(ui.sections.recognition)}>
@@ -42,27 +51,53 @@ export function Recognition({ index }: { index: string }) {
 
         <figure className={styles.quote}>
           <p className={styles.label}>{t(ui.recognition.testimonial)}</p>
-          <blockquote lang={lang === 'pt' ? 'pt-BR' : 'en'}>
-            <p>{lang === 'pt' ? testimonial.quote : testimonial.translation}</p>
+          {lang === 'en' && <p className={styles.original}>{t(ui.recognition.original)}</p>}
+          <blockquote lang="pt-BR">
+            <p>{testimonial.quote}</p>
           </blockquote>
           <figcaption className={styles.caption}>
-            <strong>{testimonial.author}</strong>
+            <a className={styles.author} href={testimonial.url} target="_blank" rel="noreferrer">
+              {testimonial.author}
+              <Icon name="linkedin" size={14} />
+              <span className="sr-only"> — LinkedIn {t(ui.a11y.newTab)}</span>
+            </a>
             <span>{t(testimonial.role)}</span>
             <span className={styles.context}>{t(testimonial.context)}</span>
           </figcaption>
-          {lang === 'en' && (
-            <>
-              <p className={styles.translated}>{t(ui.recognition.translated)}</p>
-              <details className={`disclosure ${styles.original}`}>
-                <summary>{t(ui.recognition.original)}</summary>
-                <p className="disclosure-body" lang="pt-BR">
-                  {testimonial.quote}
-                </p>
-              </details>
-            </>
-          )}
         </figure>
       </div>
+
+      <div className={styles.photos}>
+        <h3 className={styles.label}>{t(ui.recognition.photos)}</h3>
+        <ul className={styles.photoGrid}>
+          {recognition.photos.map((photo, i) => (
+            <li key={photo.file} className={i === 0 ? styles.photoMain : undefined}>
+              <figure>
+                <button type="button" className={styles.photo} onClick={() => setOpen(photo)} aria-haspopup="dialog">
+                  <img
+                    src={photoUrl(photo.file, photo.widths[0])}
+                    srcSet={photoSrcSet(photo)}
+                    sizes={i === 0 ? '(max-width: 760px) calc(100vw - 32px), 700px' : '(max-width: 760px) calc(50vw - 24px), 350px'}
+                    alt={t(photo.alt)}
+                    width={photo.width}
+                    height={photo.height}
+                    loading="lazy"
+                    decoding="async"
+                  />
+                  <span className="sr-only"> — {t(ui.labels.enlarge)}</span>
+                </button>
+                <figcaption className={styles.photoCaption}>{t(photo.caption)}</figcaption>
+              </figure>
+            </li>
+          ))}
+        </ul>
+      </div>
+
+      <Lightbox open={open !== null} title={open ? t(open.caption) : ''} closeLabel={t(ui.labels.close)} onClose={() => setOpen(null)}>
+        {open && (
+          <img src={photoUrl(open.file, open.widths[open.widths.length - 1])} srcSet={photoSrcSet(open)} sizes="92vw" alt={t(open.alt)} width={open.width} height={open.height} />
+        )}
+      </Lightbox>
     </Section>
   );
 }

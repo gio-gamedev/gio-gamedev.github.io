@@ -17,7 +17,7 @@ npm run build          # tipos + bundle + pré-renderização + checagem de "sem
 npm run preview        # serve o build localmente
 npm run cv             # build + gera os currículos em PDF em public/cv/ (usa o Chrome local)
 npm run og             # gera public/og-image.png a partir de scripts/og.html
-npm run catalog        # confere as capas contra o pacote de imagens (só local; precisa de images/)
+npm run catalog        # confere as capas contra o manifesto do pacote de imagens (só local; precisa de images/)
 npm run test:e2e       # Playwright + axe no build (rode npm run build antes)
 ```
 
@@ -40,10 +40,10 @@ Todo o texto fica em `src/content/`, separado dos componentes. Cada texto traduz
 
 | Arquivo | O que tem |
 |---|---|
-| `profile.ts` | Nome, título, resumo, experiência, competências, prêmio, depoimento, formação e certificados |
-| `projects.ts` | O catálogo, os destaques (contexto, contribuição e evidência) e as categorias |
+| `profile.ts` | Nome, título, resumo, experiência, competências, prêmio (com fotos), depoimento, formação, EF SET e certificados |
+| `projects.ts` | O catálogo, os destaques (contexto, contribuição e página pública) e as categorias |
+| `covers.ts` | Gerado: larguras reais e enquadramento de cada capa em `public/covers/` |
 | `reach.ts` | Números públicos por projeto, com fonte e mês da consulta |
-| `evidence.ts` | A avaliação técnica de QA de 2022 (trecho e link do PDF anonimizado) |
 | `ui.ts` | Rótulos da interface e meta tags |
 | `stats.ts` | Anos de experiência, calculados pela data do build |
 
@@ -53,11 +53,11 @@ Regras de conteúdo:
 
 - Nada de fatos inventados: um dado pendente fica fora do site até ser confirmado.
 - Números públicos aparecem só por projeto, com fonte e data; nunca somados.
-- Um destaque precisa de contexto, contribuição e evidência pública, ou o build falha.
+- Um destaque precisa de capa, contexto, contribuição e página pública, ou o build falha.
 
 ## Arquivos públicos e locais
 
-- `public/` vai para o site: capas, certificados (com a data de nascimento mascarada nos diplomas), o PDF anonimizado da avaliação de 2022 e os currículos.
+- `public/` vai para o site: capas (`covers/<slug>-<largura>.webp`, sem ampliar o original), fotos do Testathon, certificados (data de nascimento mascarada nos diplomas; o PDF do EF SET é o original) e os currículos.
 - `images/` (fotos e pacote de imagens) e `private/` (anotações locais) ficam fora do git. Só o site é público.
 
 ### Tema

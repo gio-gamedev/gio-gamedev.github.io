@@ -27,13 +27,14 @@ async function copyText(text: string) {
 export function Contact({ index }: { index: string }) {
   const { t } = useLang();
   const { links } = profile;
-  const [copied, setCopied] = useState(false);
+  const [copied, setCopied] = useState<'email' | 'discord' | null>(null);
   const cv = t(profile.cv);
   const docx = t(profile.cvDocx);
+  const copy = (what: 'email' | 'discord', text: string) => copyText(text).then(() => setCopied(what));
 
   useEffect(() => {
     if (!copied) return;
-    const timer = window.setTimeout(() => setCopied(false), 2500);
+    const timer = window.setTimeout(() => setCopied(null), 2500);
     return () => window.clearTimeout(timer);
   }, [copied]);
 
@@ -56,9 +57,9 @@ export function Contact({ index }: { index: string }) {
                 {links.email}
               </a>
               {/* mailto: does nothing for people on webmail, so offer a copy too. */}
-              <button type="button" className="btn btn-ghost" onClick={() => copyText(links.email).then(() => setCopied(true))}>
-                <Icon name={copied ? 'check' : 'copy'} />
-                {t(copied ? ui.contact.copied : ui.contact.copy)}
+              <button type="button" className="btn btn-ghost" onClick={() => copy('email', links.email)}>
+                <Icon name={copied === 'email' ? 'check' : 'copy'} />
+                {t(copied === 'email' ? ui.contact.copied : ui.contact.copy)}
               </button>
               <a className="btn btn-ghost" href={links.linkedin} target="_blank" rel="noreferrer">
                 <Icon name="linkedin" />
@@ -68,6 +69,16 @@ export function Contact({ index }: { index: string }) {
                 <Icon name="github" />
                 GitHub
               </a>
+              {/* Discord has no public profile URL for usernames, so the button copies it. */}
+              <button
+                type="button"
+                className="btn btn-ghost"
+                onClick={() => copy('discord', links.discord)}
+                aria-label={`${t(copied === 'discord' ? ui.contact.discordCopied : ui.contact.copyDiscord)}: ${links.discord}`}
+              >
+                <Icon name={copied === 'discord' ? 'check' : 'discord'} />
+                Discord: {links.discord}
+              </button>
             </div>
           </div>
 
@@ -96,7 +107,7 @@ export function Contact({ index }: { index: string }) {
           </div>
 
           <p className="sr-only" aria-live="polite">
-            {copied ? t(ui.contact.copied) : ''}
+            {copied === 'email' ? t(ui.contact.copied) : copied === 'discord' ? t(ui.contact.discordCopied) : ''}
           </p>
         </div>
       </div>

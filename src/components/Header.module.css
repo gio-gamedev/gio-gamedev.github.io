@@ -13,6 +13,7 @@
 
 .header[data-solid] {
   background: var(--header-bg);
+  -webkit-backdrop-filter: blur(12px);
   backdrop-filter: blur(12px);
   border-bottom-color: var(--border);
 }
@@ -164,7 +165,8 @@
   }
 }
 
-@media (max-width: 1100px) {
+/* Five links fit down to about 960 px (1024 px screens keep the full nav). */
+@media (max-width: 960px) {
   .actions {
     margin-left: auto;
   }

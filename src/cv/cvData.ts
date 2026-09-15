@@ -1,5 +1,17 @@
-import { fullDate, monthYear, present } from '../content/dates';
-import { approach, certificates, education, experience, gameDev, languages, profile, recognition, skills } from '../content/profile';
+import { monthYear, present } from '../content/dates';
+import {
+  academicProjects,
+  certificates,
+  education,
+  efset,
+  experience,
+  languages,
+  otherCertificates,
+  profile,
+  recognition,
+  skills,
+  summary,
+} from '../content/profile';
 import { categoryInfo, featuredProjects, projectName } from '../content/projects';
 import { formatReachWithSource } from '../content/reach';
 import { SITE_URL } from '../content/site';
@@ -28,7 +40,7 @@ const heading = {
   projects: { en: 'Selected Projects', pt: 'Projetos em Destaque' },
   awards: { en: 'Awards', pt: 'Prêmios' },
   education: { en: 'Education', pt: 'Formação' },
-  gameDev: { en: 'Game Development Background', pt: 'Desenvolvimento de Jogos' },
+  academic: { en: 'Academic Projects', pt: 'Projetos Acadêmicos' },
   certifications: { en: 'Certifications', pt: 'Certificações' },
   languages: { en: 'Languages', pt: 'Idiomas' },
   // Fixed "100+" so the resume text doesn't go stale as the catalog grows.
@@ -37,9 +49,6 @@ const heading = {
     pt: 'Mais de 100 jogos testados. Títulos selecionados (os números públicos são de cada produto e de todo o time):',
   },
   teamAward: { en: 'team award', pt: 'prêmio de equipe' },
-  course: { en: 'course', pt: 'curso' },
-  conferral: { en: 'degree conferred', pt: 'colação de grau em' },
-  diploma: { en: 'diploma issued', pt: 'diploma emitido em' },
 } satisfies Record<string, L>;
 
 const plain = (text: string) => text.replace(/\*\*/g, '');
@@ -48,7 +57,8 @@ const bare = (url: string) => url.replace(/^https?:\/\//, '');
 export function cvData(lang: Lang): CvData {
   const t = <T>(value: L<T>) => value[lang];
   const { links } = profile;
-  const jobs = experience.flatMap((group) => group.jobs);
+  const dates = (job: { start: string; end?: string }) =>
+    `${monthYear(job.start, lang)} – ${job.end ? monthYear(job.end, lang) : t(present)}`;
 
   return {
     name: profile.name,
@@ -58,29 +68,40 @@ export function cvData(lang: Lang): CvData {
       { text: links.email, href: `mailto:${links.email}` },
       { text: bare(links.linkedin), href: links.linkedin },
       { text: bare(links.github), href: links.github },
+      { text: `Discord: ${links.discord}` },
       { text: bare(SITE_URL), href: `${SITE_URL}/` },
     ],
     sections: [
       {
         heading: t(heading.summary),
         blocks: [
-          { kind: 'p', text: `${plain(t(approach.lead))} ${t(approach.technical)}` },
+          { kind: 'p', text: `${plain(t(summary.lead))} ${t(summary.technical)}` },
           { kind: 'p', text: `${t(profile.location)}. ${t(profile.availability)}.` },
         ],
       },
       {
         heading: t(heading.skills),
-        blocks: skills.map((group) => ({ kind: 'p', label: t(group.title), text: t(group.items).join(', ') })),
+        // Items like "SQL · REST APIs · JSON" use commas here, so one separator runs through the line.
+        blocks: skills.map((group) => ({
+          kind: 'p',
+          label: t(group.title),
+          text: t(group.items)
+            .map((item) => item.replace(/ · /g, ', '))
+            .join(', '),
+        })),
       },
       {
         heading: t(heading.experience),
-        blocks: jobs.map((job) => ({
-          kind: 'job',
-          title: `${t(job.role)} — ${job.company}`,
-          dates: `${monthYear(job.start, lang)} – ${job.end ? monthYear(job.end, lang) : t(present)}`,
-          bullets: t(job.bullets),
-          notes: job.highlight ? [t(job.highlight.stats)] : [],
-        })),
+        // Game QA roles in full; earlier technology roles with their first line only.
+        blocks: experience.flatMap((group) =>
+          group.jobs.map((job): CvBlock => ({
+            kind: 'job',
+            title: `${t(job.role)} — ${job.company}`,
+            dates: dates(job),
+            bullets: group.compact ? t(job.bullets).slice(0, 1) : t(job.bullets),
+            notes: job.note ? [t(job.note)] : [],
+          })),
+        ),
       },
       {
         heading: t(heading.projects),
@@ -110,43 +131,39 @@ export function cvData(lang: Lang): CvData {
         blocks: [
           {
             kind: 'list',
-            items: education.map((item) => {
-              const dates = [
-                `${t(heading.course)} ${monthYear(item.start, lang)} – ${monthYear(item.end, lang)}`,
-                ...(item.conferral ? [`${t(heading.conferral)} ${fullDate(item.conferral, lang)}`] : []),
-                ...(!item.conferral && item.diploma ? [`${t(heading.diploma)} ${fullDate(item.diploma, lang)}`] : []),
-              ].join('; ');
-              return `${t(item.degree)} — ${item.institution} (${dates})`;
-            }),
+            items: education.map(
+              (item) =>
+                `${t(item.degree)} — ${item.institution} (${monthYear(item.start, lang)} – ${monthYear(item.end, lang)}${
+                  item.note ? `; ${t(item.note)}` : ''
+                })`,
+            ),
           },
         ],
       },
       {
-        // Kept short to hold the resume at two pages: game jams and GDDs only, with the note on the
-        // first item of each. The site has the rest.
-        heading: t(heading.gameDev),
-        blocks: gameDev.groups
-          .filter((group) => group.label.en === 'Game jams' || group.label.en === 'Game design documents')
-          .map((group) => ({
+        heading: t(heading.academic),
+        blocks: [
+          {
             kind: 'p',
-            label: t(group.label),
-            text: group.items
-              .map((item, i) => {
-                const name = typeof item.name === 'string' ? item.name : t(item.name);
-                return i === 0 && item.note ? `${name} (${t(item.note)})` : name;
-              })
-              .join(', '),
-          })),
+            text: academicProjects.items
+              .map((item) => `${item.name}${item.start ? ` (${item.start.slice(0, 4)})` : ''}: ${t(item.note)}`)
+              .join('; '),
+          },
+        ],
       },
       {
         heading: t(heading.certifications),
         blocks: [
           {
-            kind: 'p',
-            text: certificates
-              .filter((c) => !c.masked)
-              .map((c) => `${t(c.name)}, ${c.issuer}, ${c.year}`)
-              .join('; '),
+            kind: 'list',
+            items: [
+              `${t(efset.name)} — ${efset.score} ${efset.level} (${efset.sections
+                // "Leitura (Reading)" → "Leitura": no nested parentheses.
+                .map((s) => `${t(s.name).replace(/ \(.+\)$/, '')} ${s.score} ${s.level}`)
+                .join('; ')}), ${t(efset.date)} — ${bare(efset.verify)}`,
+              ...certificates.map((c) => `${t(c.name)}, ${c.issuer}, ${c.year}`),
+              t(otherCertificates[0]),
+            ],
           },
         ],
       },

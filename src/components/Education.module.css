@@ -1,6 +1,6 @@
 .grid {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(0, 1.55fr);
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.4fr);
   gap: var(--space-6);
   align-items: start;
 }
@@ -34,7 +34,8 @@
 
 .degree {
   display: grid;
-  gap: 0.1rem;
+  justify-items: start;
+  gap: 0.15rem;
 }
 
 .degreeTitle {
@@ -48,48 +49,145 @@
   font-size: 0.92rem;
 }
 
-.dates {
-  display: grid;
-  gap: 0.2rem;
-  margin: var(--space-2) 0 0;
-  font-size: 0.84rem;
-}
-
-.dates div {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0 0.5rem;
-}
-
-.dates dt {
-  min-width: 9.5rem;
-  color: var(--text-dim);
-}
-
-.dates dd {
-  margin: 0;
+.period {
+  font-size: 0.88rem;
   color: var(--text);
 }
 
-.note {
+.diploma {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  min-height: 36px;
   margin-top: var(--space-1);
-  font-size: 0.82rem;
-  color: var(--text-muted);
+  padding: 0.3rem 0.8rem;
+  border: 1px solid var(--border-strong);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--accent);
+  font: inherit;
+  font-size: 0.86rem;
+  font-weight: 500;
+  cursor: zoom-in;
+}
+
+.diploma:hover {
+  border-color: var(--accent-line);
+  background: var(--accent-soft);
 }
 
 .languages {
+  display: grid;
+  gap: var(--space-2);
+  list-style: none;
+  font-size: 0.92rem;
   color: var(--text-muted);
+}
+
+.languages strong {
+  font-weight: 600;
+  color: var(--text);
 }
 
 .certs {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(min(100%, 176px), 1fr));
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: var(--space-4);
   list-style: none;
 }
 
 .certs li {
   display: flex;
+}
+
+/* EF SET: scores as text, full width above the image certificates. */
+.efsetItem {
+  grid-column: 1 / -1;
+}
+
+.efset {
+  display: grid;
+  flex: 1;
+  gap: var(--space-3);
+  padding: var(--space-5);
+  border: 1px solid var(--accent-line);
+  border-radius: var(--radius-sm);
+  background: var(--surface);
+}
+
+.efsetHead {
+  display: grid;
+  gap: 0.1rem;
+}
+
+.efsetName {
+  font-family: var(--font-display);
+  font-size: 1.05rem;
+  font-weight: 600;
+}
+
+.scores {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--space-3);
+  margin: 0;
+}
+
+.scores div {
+  padding: var(--space-3);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--bg-elev);
+}
+
+.scores dt {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+}
+
+.scores dd {
+  margin: 0.2rem 0 0;
+  font-size: 0.86rem;
+  color: var(--text-muted);
+}
+
+.scores strong {
+  display: block;
+  font-family: var(--font-display);
+  font-size: 1.3rem;
+  color: var(--text);
+}
+
+.overall {
+  border-color: var(--accent-line) !important;
+}
+
+.scope {
+  font-size: 0.84rem;
+  color: var(--text-muted);
+}
+
+.efsetLinks {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2) var(--space-5);
+}
+
+.efsetLinks a {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  min-height: 36px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.efsetLinks a:hover {
+  text-decoration: underline;
 }
 
 .cert {
@@ -106,15 +204,12 @@
   text-align: left;
   cursor: zoom-in;
   overflow: hidden;
-  transition:
-    border-color 0.2s ease,
-    transform 0.2s ease;
+  transition: border-color 0.2s ease;
 }
 
 .cert:hover,
 .cert:focus-visible {
   border-color: var(--accent-line);
-  transform: translateY(-2px);
 }
 
 .thumb {
@@ -133,15 +228,19 @@
 
 .certName {
   padding-inline: var(--space-3);
-  font-size: 0.88rem;
+  font-size: 0.9rem;
   font-weight: 600;
   line-height: 1.3;
 }
 
 .certMeta {
   padding-inline: var(--space-3);
-  font-size: 0.78rem;
+  font-size: 0.8rem;
   color: var(--text-muted);
+}
+
+.efsetHead .certMeta {
+  padding-inline: 0;
 }
 
 .more {
@@ -159,38 +258,28 @@
   color: var(--accent);
 }
 
-.gdGroup {
-  margin-top: 0.9rem;
-}
-
-.gdLabel {
-  margin-bottom: 0.4rem;
-  font-size: 0.9rem;
-  font-weight: 600;
-  color: var(--text);
-}
-
-.gdList {
+.academic {
   display: grid;
-  gap: 0.3rem;
+  gap: var(--space-2);
   padding-left: 1.1rem;
   font-size: 0.92rem;
 }
 
-.gdList li::marker {
+.academic li::marker {
   color: var(--accent);
 }
 
-.gdName {
+.academicName {
   font-weight: 500;
   color: var(--text);
 }
 
-.gdNote {
+.academicDate,
+.academicNote {
   color: var(--text-muted);
 }
 
-.gdLinks {
+.academicLinks {
   display: flex;
   flex-wrap: wrap;
   gap: 0.5rem 1.25rem;
@@ -198,12 +287,18 @@
   list-style: none;
 }
 
-.gdLinks a {
+.academicLinks a {
   display: inline-flex;
   align-items: center;
   gap: 0.35rem;
   min-height: 32px;
   font-weight: 500;
+}
+
+.scanDetails {
+  margin-top: var(--space-3);
+  font-size: 0.88rem;
+  color: var(--text-muted);
 }
 
 @media (max-width: 900px) {
@@ -212,9 +307,9 @@
   }
 }
 
-@media (prefers-reduced-motion: reduce) {
-  .cert:hover,
-  .cert:focus-visible {
-    transform: none;
+@media (max-width: 520px) {
+  .certs,
+  .scores {
+    grid-template-columns: 1fr;
   }
 }

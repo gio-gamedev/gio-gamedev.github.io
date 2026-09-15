@@ -1,51 +1,49 @@
 import { useState } from 'react';
 import { coverOf, coverSrcSet, coverUrl, projectSlug, type Project } from '../content/projects';
+import { Icon } from './Icon';
 import styles from './Cover.module.css';
 
-type Props = { project: Project; name: string; sizes: string };
+type Props = { project: Project; sizes: string };
 
 /**
- * Cover art for cards and catalog tiles. Wide art fills the 16:9 frame; a square store icon sits
- * on a blurred copy of itself (same file), so it is never stretched or left floating in an empty
- * box. Without art, or if the file fails to load, a placeholder shows the title. The images are
- * decorative (alt=""): the title is always the card's heading right below.
+ * Cover art for cards and catalog tiles, framed per image: art close to 16:9 fills the frame; icons,
+ * 4:3, portrait and very wide art are shown whole over a blurred copy of the same file, so nothing
+ * is stretched or has its title cut. Without a confirmed image (or if the file fails) a neutral
+ * placeholder shows no text: the title is the heading right below. Images are decorative (alt="").
  */
-export function Cover({ project, name, sizes }: Props) {
+export function Cover({ project, sizes }: Props) {
   const [failed, setFailed] = useState(false);
-  const cover = coverOf(project);
+  const art = coverOf(project);
   const slug = projectSlug(project);
-  const onError = () => setFailed(true);
 
-  if (!cover || failed) {
+  if (!art || failed) {
     return (
       <span className={styles.placeholder} aria-hidden="true">
-        {name}
+        <Icon name="image" size={26} />
       </span>
     );
   }
 
-  if (cover === 'square') {
-    const src = coverUrl(slug);
-    return (
-      <>
-        <img className={styles.backdrop} src={src} alt="" aria-hidden="true" width={480} height={480} loading="lazy" decoding="async" />
-        <img className={styles.icon} src={src} alt="" width={480} height={480} loading="lazy" decoding="async" onError={onError} />
-      </>
-    );
-  }
-
-  return (
+  const image = (
     <img
-      className={styles.wide}
-      src={coverUrl(`${slug}-400`)}
-      srcSet={coverSrcSet(slug)}
+      className={art.fit === 'cover' ? styles.cover : styles.contain}
+      src={coverUrl(slug, art.widths[0])}
+      srcSet={coverSrcSet(slug, art)}
       sizes={sizes}
       alt=""
-      width={800}
-      height={450}
+      width={art.width}
+      height={art.height}
       loading="lazy"
       decoding="async"
-      onError={onError}
+      onError={() => setFailed(true)}
     />
+  );
+
+  if (art.fit === 'cover') return image;
+  return (
+    <>
+      <img className={styles.backdrop} src={coverUrl(slug, art.widths[0])} alt="" aria-hidden="true" loading="lazy" decoding="async" />
+      {image}
+    </>
   );
 }

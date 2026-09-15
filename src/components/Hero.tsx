@@ -9,6 +9,7 @@ import styles from './Hero.module.css';
 export function Hero() {
   const { t } = useLang();
   const { links } = profile;
+  const cv = t(profile.cv);
 
   return (
     <section id="top" className={styles.hero} aria-labelledby="hero-title">
@@ -31,8 +32,9 @@ export function Hero() {
               {t(ui.hero.projects)}
               <Icon name="arrowRight" size={16} />
             </a>
-            <a className="btn btn-ghost" href="#contact">
-              {t(ui.hero.contact)}
+            <a className="btn btn-ghost" href={cv} download={cv.split('/').pop()} aria-label={t(ui.hero.resumeLabel)}>
+              <Icon name="download" size={16} />
+              {t(ui.hero.resume)}
             </a>
           </div>
 

@@ -1,7 +1,6 @@
 import { useEffect, type ComponentType } from 'react';
 import { Contact } from './components/Contact';
 import { Education } from './components/Education';
-import { Evidence } from './components/Evidence';
 import { Experience } from './components/Experience';
 import { Footer } from './components/Footer';
 import { Header } from './components/Header';
@@ -12,9 +11,9 @@ import { Recognition } from './components/Recognition';
 import { ui } from './content/ui';
 import { useLang } from './i18n/LanguageContext';
 
-// Proof first (selected projects, a real QA document), then experience, recognition, education
-// and contact. Sections are numbered in this order.
-const sections: ComponentType<{ index: string }>[] = [Projects, Evidence, Experience, Recognition, Education, Contact];
+// Selected projects first, then experience, recognition, education and contact. Sections are
+// numbered in this order.
+const sections: ComponentType<{ index: string }>[] = [Projects, Experience, Recognition, Education, Contact];
 
 export function App() {
   const { page, t } = useLang();

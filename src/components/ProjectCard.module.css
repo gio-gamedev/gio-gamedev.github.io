@@ -1,5 +1,5 @@
+/* Not a link as a whole (only the page link at the bottom is), so no hover lift. */
 .card {
-  --placeholder-size: 1.35rem;
   display: flex;
   flex-direction: column;
   width: 100%;
@@ -7,19 +7,6 @@
   border-radius: var(--radius);
   background: var(--surface);
   overflow: hidden;
-  transition:
-    transform 0.2s ease,
-    border-color 0.2s ease,
-    box-shadow 0.2s ease;
-}
-
-.card:hover,
-.card:focus-within {
-  transform: translateY(-3px);
-  border-color: var(--accent-line);
-  box-shadow:
-    var(--shadow),
-    0 0 0 1px var(--accent-line);
 }
 
 .media {
@@ -34,7 +21,7 @@
   flex: 1;
   flex-direction: column;
   gap: var(--space-3);
-  padding: var(--space-5) var(--space-5) var(--space-6);
+  padding: var(--space-5) var(--space-5) var(--space-4);
 }
 
 .head {
@@ -46,7 +33,7 @@
 
 .platforms {
   font-family: var(--font-mono);
-  font-size: 0.72rem;
+  font-size: 0.74rem;
   color: var(--text-dim);
 }
 
@@ -55,59 +42,52 @@
   line-height: 1.2;
 }
 
-.reach {
-  padding: var(--space-3) var(--space-3) var(--space-2);
-  border: 1px solid color-mix(in srgb, var(--highlight) 28%, transparent);
-  border-radius: var(--radius-sm);
-  background: var(--highlight-soft);
-}
-
-.figures {
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--space-1) var(--space-4);
-  list-style: none;
-  font-size: 0.86rem;
+.context {
+  font-size: 0.92rem;
   color: var(--text-muted);
 }
 
-.figures strong {
-  font-family: var(--font-display);
-  font-size: 1.3rem;
-  font-weight: 700;
-  color: var(--highlight-text);
-}
-
-.source {
-  margin-top: var(--space-1);
-  font-size: 0.74rem;
-  color: var(--text-muted);
-}
-
-.facts {
-  display: flex;
-  flex: 1;
-  flex-direction: column;
-  gap: var(--space-3);
-  margin: 0;
-}
-
-.facts dt {
+.label {
   font-family: var(--font-mono);
-  font-size: 0.68rem;
+  font-size: 0.7rem;
   letter-spacing: 0.08em;
   text-transform: uppercase;
   color: var(--accent);
 }
 
-.facts dd {
-  margin: var(--space-1) 0 0;
+.points {
+  display: grid;
+  gap: var(--space-1);
+  margin-top: var(--space-2);
+  padding-left: 1.1rem;
   font-size: 0.9rem;
+  color: var(--text);
+}
+
+.points li::marker {
+  color: var(--accent);
+}
+
+/* Public product figures: plain text, less weight than the QA content above. */
+.reach {
+  font-size: 0.86rem;
   color: var(--text-muted);
 }
 
-/* Evidence sits at the bottom, so cards in a row line up. */
-.evidence {
+.reach strong {
+  font-weight: 600;
+  color: var(--text);
+}
+
+.source {
+  display: block;
+  margin-top: 0.15rem;
+  font-size: 0.78rem;
+  color: var(--text-dim);
+}
+
+/* The link sits at the bottom, so the links of a row line up. */
+.footer {
   margin-top: auto;
   padding-top: var(--space-3);
   border-top: 1px solid var(--border);
@@ -117,25 +97,12 @@
   display: inline-flex;
   align-items: center;
   gap: 0.4rem;
-  min-height: 32px;
-  font-size: 0.9rem;
-  font-weight: 500;
+  min-height: 36px;
+  font-size: 0.92rem;
+  font-weight: 600;
   text-decoration: none;
 }
 
 .link:hover {
   text-decoration: underline;
-}
-
-.evidenceNote {
-  display: block;
-  font-size: 0.76rem;
-  color: var(--text-dim);
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .card:hover,
-  .card:focus-within {
-    transform: none;
-  }
 }

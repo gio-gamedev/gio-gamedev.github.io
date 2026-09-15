@@ -14,3 +14,11 @@ export const qaYears = yearsSince('2022-09');
 export const techYears = qaYears + 3;
 
 export const buildYear = buildDate.getUTCFullYear();
+
+const numberWords = {
+  en: ['zero', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine', 'ten'],
+  pt: ['zero', 'um', 'dois', 'três', 'quatro', 'cinco', 'seis', 'sete', 'oito', 'nove', 'dez'],
+};
+
+/** "four" / "quatro" for small numbers in running text; digits above ten. */
+export const numberWord = (n: number, lang: 'en' | 'pt') => numberWords[lang][n] ?? String(n);

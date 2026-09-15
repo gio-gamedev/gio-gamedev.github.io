@@ -26,6 +26,7 @@
   padding: var(--space-3) var(--gutter);
   border-bottom: 1px solid var(--border);
   background: color-mix(in srgb, var(--bg) 94%, transparent);
+  -webkit-backdrop-filter: blur(10px);
   backdrop-filter: blur(10px);
 }
 
@@ -100,11 +101,15 @@
   cursor: default;
 }
 
+.filtersWrap {
+  position: relative;
+  margin-top: var(--space-3);
+}
+
 .filters {
   display: flex;
   flex-wrap: wrap;
   gap: 0.45rem;
-  margin-top: var(--space-3);
 }
 
 .filter {
@@ -219,8 +224,8 @@
   display: none;
 }
 
+/* A tile is not a link as a whole (only its store links are), so it has no hover lift. */
 .tile {
-  --placeholder-size: 1rem;
   display: flex;
   flex-direction: column;
   width: 100%;
@@ -229,15 +234,6 @@
   background: var(--surface);
   overflow: hidden;
   scroll-margin-top: 220px;
-  transition:
-    border-color 0.2s ease,
-    transform 0.2s ease;
-}
-
-.tile:hover,
-.tile:focus-within {
-  border-color: var(--accent-line);
-  transform: translateY(-2px);
 }
 
 .tile:target {
@@ -277,9 +273,8 @@
 }
 
 .reach strong {
-  font-family: var(--font-display);
-  font-size: 0.95rem;
-  color: var(--highlight-text);
+  font-weight: 600;
+  color: var(--text);
 }
 
 .source {
@@ -334,8 +329,14 @@
   margin-top: 0.2rem;
 }
 
-/* Phones: the toolbar scrolls away (a sticky one would take a third of the screen), filters sit
-   on one scrollable line and tiles become a compact list with a square thumbnail. */
+/* Only on phones, once the toolbar has scrolled away (hidden otherwise). */
+.toSearch {
+  display: none;
+}
+
+/* Phones: the toolbar scrolls away (a sticky one would take a third of the screen) and a button
+   brings it back; filters sit on one line that visibly scrolls (the last chip fades at the edge);
+   tiles become a compact list with a square thumbnail. */
 @media (max-width: 640px) {
   .toolbar {
     position: static;
@@ -347,8 +348,36 @@
   .filters {
     flex-wrap: nowrap;
     overflow-x: auto;
-    padding-bottom: 0.25rem;
+    padding-bottom: 0.4rem;
+    padding-right: 2.5rem;
+    scroll-snap-type: x proximity;
     scrollbar-width: thin;
+    -webkit-mask-image: linear-gradient(to right, #000 calc(100% - 3rem), transparent);
+    mask-image: linear-gradient(to right, #000 calc(100% - 3rem), transparent);
+  }
+
+  .filter {
+    scroll-snap-align: start;
+  }
+
+  .toSearch:not([hidden]) {
+    position: fixed;
+    right: 16px;
+    bottom: 16px;
+    z-index: 30;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    min-height: 48px;
+    padding: 0 1.1rem;
+    border: 0;
+    border-radius: 999px;
+    background: var(--accent);
+    color: var(--on-accent);
+    font: inherit;
+    font-weight: 600;
+    box-shadow: var(--shadow);
+    cursor: pointer;
   }
 }
 
@@ -359,7 +388,6 @@
   }
 
   .tile {
-    --placeholder-size: 0.62rem;
     flex-direction: row;
   }
 
@@ -372,12 +400,5 @@
 
   .body {
     padding: 0.6rem 0.75rem;
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .tile:hover,
-  .tile:focus-within {
-    transform: none;
   }
 }

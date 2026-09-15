@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, type MouseEvent } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { profile } from '../content/profile';
 import type { Lang } from '../content/types';
 import { ui } from '../content/ui';
@@ -10,7 +10,6 @@ import styles from './Header.module.css';
 
 const links = [
   ['projects', ui.nav.projects],
-  ['evidence', ui.nav.evidence],
   ['experience', ui.nav.experience],
   ['recognition', ui.nav.recognition],
   ['education', ui.nav.education],
@@ -23,18 +22,14 @@ const langs: { code: Lang; hrefLang: string; label: string }[] = [
   { code: 'en', hrefLang: 'en', label: 'EN – English' },
 ];
 
-// Keep the reader's place when switching language.
-function keepHash(e: MouseEvent<HTMLAnchorElement>) {
-  if (!location.hash) return;
-  e.preventDefault();
-  location.href = `${e.currentTarget.getAttribute('href')}${location.hash}`;
-}
-
 export function Header() {
   const { lang, page, t } = useLang();
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [active, setActive] = useState<string | null>(null);
+  // The language links carry the current search, filter and section (?p=…&q=…#…), so switching
+  // language keeps the reader's place. Empty in the prerendered HTML; filled after hydration.
+  const [suffix, setSuffix] = useState('');
   const headerRef = useRef<HTMLElement>(null);
   const navRef = useRef<HTMLElement>(null);
   const menuButtonRef = useRef<HTMLButtonElement>(null);
@@ -42,6 +37,15 @@ export function Header() {
   // On other pages the section links lead back to the home page.
   const home = pagePath(lang, 'home');
   const anchor = (id: string) => (page === 'home' ? `#${id}` : `${home}#${id}`);
+
+  // "urlchange" is sent by the catalog when its filters change the URL.
+  useEffect(() => {
+    const update = () => setSuffix(`${location.search}${location.hash}`);
+    update();
+    const events = ['hashchange', 'popstate', 'urlchange'];
+    events.forEach((name) => window.addEventListener(name, update));
+    return () => events.forEach((name) => window.removeEventListener(name, update));
+  }, []);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 8);
@@ -120,12 +124,11 @@ export function Header() {
             {langs.map((l) => (
               <a
                 key={l.code}
-                href={pagePath(l.code, page)}
+                href={`${pagePath(l.code, page)}${suffix}`}
                 hrefLang={l.hrefLang}
                 lang={l.hrefLang}
                 aria-label={l.label}
                 aria-current={lang === l.code ? 'page' : undefined}
-                onClick={keepHash}
               >
                 {l.code.toUpperCase()}
               </a>

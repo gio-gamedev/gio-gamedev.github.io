@@ -145,20 +145,34 @@ html {
 }
 
 body {
+  position: relative;
   margin: 0;
   min-height: 100vh;
   background-color: var(--bg);
   background-image:
     radial-gradient(1000px 520px at 85% -120px, color-mix(in srgb, var(--accent) 13%, transparent), transparent 70%),
-    radial-gradient(800px 480px at -10% 12%, color-mix(in srgb, var(--highlight) 6%, transparent), transparent 70%),
-    linear-gradient(var(--grid-line) 1px, transparent 1px),
-    linear-gradient(90deg, var(--grid-line) 1px, transparent 1px);
-  background-size: auto, auto, 48px 48px, 48px 48px;
+    radial-gradient(800px 480px at -10% 12%, color-mix(in srgb, var(--highlight) 6%, transparent), transparent 70%);
   color: var(--text);
   font-family: var(--font-body);
   font-size: 1rem;
   line-height: 1.6;
   -webkit-font-smoothing: antialiased;
+}
+
+/* The grid only behind the top of the page; it fades out before the long text sections. */
+body::before {
+  content: '';
+  position: absolute;
+  inset: 0 0 auto;
+  z-index: -1;
+  height: 960px;
+  background-image:
+    linear-gradient(var(--grid-line) 1px, transparent 1px),
+    linear-gradient(90deg, var(--grid-line) 1px, transparent 1px);
+  background-size: 48px 48px;
+  -webkit-mask-image: linear-gradient(to bottom, #000 30%, transparent);
+  mask-image: linear-gradient(to bottom, #000 30%, transparent);
+  pointer-events: none;
 }
 
 img {

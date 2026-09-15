@@ -1,7 +1,7 @@
 import { appCount, gameCount } from './projects';
 import type { L } from './types';
 
-/** Interface labels. Long-form content lives in profile.ts, projects.ts and evidence.ts. */
+/** Interface labels. Long-form content lives in profile.ts and projects.ts. */
 export const ui = {
   meta: {
     title: {
@@ -10,9 +10,9 @@ export const ui = {
     },
     description: {
       en: (years: number) =>
-        `Game QA Analyst with ${years} years in game studios: ${gameCount} games tested on Roblox, Fortnite (UEFN), The Sandbox, mobile, PC and 3D tablets. Selected projects, a real QA assessment, experience and resume.`,
+        `Game QA Analyst with ${years} years in game studios: ${gameCount} games tested on Roblox, Fortnite (UEFN), The Sandbox, mobile, PC and 3D tablets. Selected projects, experience, recognition and resume.`,
       pt: (years: number) =>
-        `Analista de QA de Jogos com ${years} anos em estúdios: ${gameCount} jogos testados em Roblox, Fortnite (UEFN), The Sandbox, mobile, PC e tablets 3D. Projetos selecionados, uma avaliação de QA real, experiência e currículo.`,
+        `Analista de QA de Jogos com ${years} anos em estúdios: ${gameCount} jogos testados em Roblox, Fortnite (UEFN), The Sandbox, mobile, PC e tablets 3D. Projetos selecionados, experiência, reconhecimento e currículo.`,
     },
     galleryTitle: {
       en: 'Game QA catalog — Giovanni S. Mariano',
@@ -40,7 +40,6 @@ export const ui = {
   },
   nav: {
     projects: { en: 'Projects', pt: 'Projetos' },
-    evidence: { en: 'Evidence', pt: 'Evidência' },
     experience: { en: 'Experience', pt: 'Experiência' },
     recognition: { en: 'Recognition', pt: 'Reconhecimento' },
     education: { en: 'Education', pt: 'Formação' },
@@ -51,8 +50,9 @@ export const ui = {
     resumeLabel: { en: 'Download resume (PDF)', pt: 'Baixar currículo (PDF)' },
   },
   hero: {
-    projects: { en: 'Selected projects', pt: 'Projetos selecionados' },
-    contact: { en: 'Resume & contact', pt: 'Currículo e contato' },
+    projects: { en: 'View projects', pt: 'Ver projetos' },
+    resume: { en: 'Download resume', pt: 'Baixar currículo' },
+    resumeLabel: { en: 'Download resume (PDF, English)', pt: 'Baixar currículo (PDF, português)' },
     photo: { en: 'Photo of Giovanni S. Mariano', pt: 'Foto de Giovanni S. Mariano' },
     facts: { en: 'At a glance', pt: 'Em resumo' },
   },
@@ -66,23 +66,12 @@ export const ui = {
       en: `Six of the ${gameCount} games I have tested, across platforms. At Hermit Crab Game Studio unless noted.`,
       pt: `Seis dos ${gameCount} jogos que testei, em plataformas diferentes. Na Hermit Crab Game Studio, salvo indicação.`,
     },
-    evidence: { en: 'QA Evidence', pt: 'Evidência de QA' },
-    evidenceSubtitle: {
-      en: 'A real test document I wrote and ran, and how I run QA day to day.',
-      pt: 'Um documento de teste real que escrevi e executei, e como conduzo QA no dia a dia.',
-    },
     experience: { en: 'Work Experience', pt: 'Experiência profissional' },
     recognition: { en: 'Recognition', pt: 'Reconhecimento' },
     education: { en: 'Education & Certificates', pt: 'Formação e certificados' },
   },
   projects: {
-    context: { en: 'Context', pt: 'Contexto' },
     contribution: { en: 'My contribution', pt: 'Minha contribuição' },
-    evidence: { en: 'Evidence', pt: 'Evidência' },
-    evidenceNote: {
-      en: 'Public page: it confirms the product, not my role.',
-      pt: 'Página pública: comprova o produto, não a minha participação.',
-    },
     brands: { en: 'Brands, IPs and partners', pt: 'Marcas, IPs e parceiros' },
     catalogTitle: { en: 'Full catalog', pt: 'Catálogo completo' },
     seeAll: {
@@ -104,8 +93,8 @@ export const ui = {
     },
     scope: { en: 'Typical scope', pt: 'Escopo típico' },
     publicNote: {
-      en: 'Figures are public product numbers from stores and platforms, rounded down, with their source and the month they were checked. They reflect the whole team’s work, not my individual QA.',
-      pt: 'Os números são dados públicos do produto nas lojas e plataformas, arredondados para baixo, com a fonte e o mês da consulta. Refletem o trabalho de todo o time, não o meu QA individual.',
+      en: 'Figures are public product numbers from stores and platforms, with their source and the month checked. They reflect the whole team’s work.',
+      pt: 'Os números são dados públicos do produto nas lojas e plataformas, com a fonte e o mês da consulta. Refletem o trabalho de todo o time.',
     },
   },
   gallery: {
@@ -124,6 +113,8 @@ export const ui = {
     all: { en: 'All', pt: 'Todos' },
     search: { en: 'Search titles', pt: 'Buscar títulos' },
     searchPlaceholder: { en: 'Title, studio or platform', pt: 'Título, estúdio ou plataforma' },
+    toSearch: { en: 'Back to search and filters', pt: 'Voltar à busca e aos filtros' },
+    toSearchShort: { en: 'Search', pt: 'Buscar' },
     results: {
       en: (n: number) => `${n} ${n === 1 ? 'title' : 'titles'}`,
       pt: (n: number) => `${n} ${n === 1 ? 'título' : 'títulos'}`,
@@ -134,15 +125,12 @@ export const ui = {
       pt: 'Nenhum título corresponde à busca. Tente outra palavra ou limpe os filtros.',
     },
   },
-  evidence: {
-    open: { en: 'Open the anonymized PDF', pt: 'Abrir o PDF anonimizado' },
-    details: { en: 'See test cases and findings (excerpt)', pt: 'Ver casos de teste e achados (trecho)' },
-    casesTitle: { en: 'Test cases (excerpt, every failure included)', pt: 'Casos de teste (trecho, com todas as falhas)' },
-    findingsTitle: { en: 'Findings log', pt: 'Registro de achados' },
-    approach: { en: 'How I run QA', pt: 'Como eu conduzo QA' },
-  },
   experience: {
     skills: { en: 'Skills & tools', pt: 'Competências e ferramentas' },
+    earlier: {
+      en: (range: string) => `Earlier technology roles (${range})`,
+      pt: (range: string) => `Cargos anteriores em tecnologia (${range})`,
+    },
   },
   recognition: {
     team: { en: 'Team', pt: 'Equipe' },
@@ -152,8 +140,8 @@ export const ui = {
       pt: (name: string) => `${name} no LinkedIn`,
     },
     testimonial: { en: 'Testimonial', pt: 'Depoimento' },
-    translated: { en: 'Translated from Portuguese.', pt: '' },
-    original: { en: 'Read the original (Portuguese)', pt: '' },
+    original: { en: 'Original recommendation in Portuguese', pt: '' },
+    photos: { en: 'Event photos', pt: 'Fotos do evento' },
   },
   labels: {
     platforms: { en: 'Platforms', pt: 'Plataformas' },
@@ -162,12 +150,16 @@ export const ui = {
     certificates: { en: 'Selected certificates', pt: 'Certificados em destaque' },
     otherCertificates: { en: 'Other courses and certificates', pt: 'Outros cursos e certificados' },
     languages: { en: 'Languages', pt: 'Idiomas' },
-    course: { en: 'Course', pt: 'Curso' },
     conferral: { en: 'Degree conferred', pt: 'Colação de grau' },
     diploma: { en: 'Diploma issued', pt: 'Diploma emitido' },
+    viewDiploma: { en: 'View diploma', pt: 'Ver diploma' },
     close: { en: 'Close', pt: 'Fechar' },
     birthDateHidden: { en: 'birth date hidden', pt: 'data de nascimento ocultada' },
     enlarge: { en: 'enlarge', pt: 'ampliar' },
+    overall: { en: 'Overall', pt: 'Resultado geral' },
+    issued: { en: 'Issued', pt: 'Emitido em' },
+    certificatePdf: { en: 'EF SET certificate (PDF)', pt: 'Certificado EF SET (PDF)' },
+    verify: { en: 'Verify at cert.efset.org', pt: 'Verificar em cert.efset.org' },
   },
   contact: {
     title: { en: "Let's connect", pt: 'Vamos conversar' },
@@ -177,6 +169,8 @@ export const ui = {
     },
     copy: { en: 'Copy email', pt: 'Copiar e-mail' },
     copied: { en: 'Email copied', pt: 'E-mail copiado' },
+    copyDiscord: { en: 'Copy Discord username', pt: 'Copiar usuário do Discord' },
+    discordCopied: { en: 'Discord username copied', pt: 'Usuário do Discord copiado' },
     resume: { en: 'Resume', pt: 'Currículo' },
   },
   footer: {

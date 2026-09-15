@@ -70,18 +70,11 @@
   color: var(--accent);
 }
 
-.highlight {
+.note {
   margin-top: var(--space-4);
-  padding: var(--space-3) var(--space-4);
-  border: 1px solid var(--highlight-line);
-  border-radius: var(--radius-sm);
-  background: var(--highlight-soft);
-}
-
-.highlight strong {
-  font-size: 0.92rem;
-  font-weight: 600;
-  color: var(--highlight-text);
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: var(--text);
 }
 
 .meta {
@@ -111,18 +104,22 @@
   color: var(--text-muted);
 }
 
-/* Earlier technology roles: one line each, no cards. */
+/* Earlier technology roles: collapsed, one line each, aligned with the period column above. */
+.earlier {
+  margin-top: var(--space-5);
+}
+
 .compact {
   list-style: none;
-  border-top: 1px solid var(--border);
+  padding: 0 var(--space-4) var(--space-2);
 }
 
 .compactItem {
   display: grid;
-  grid-template-columns: 170px minmax(0, 1fr);
+  grid-template-columns: calc(170px - var(--space-4)) minmax(0, 1fr);
   gap: var(--space-6);
   padding: var(--space-4) 0;
-  border-bottom: 1px solid var(--border);
+  border-top: 1px solid var(--border);
 }
 
 .compactItem .period {

@@ -1,15 +1,14 @@
 import { useState } from 'react';
 import { fullDate, monthYear } from '../content/dates';
 import {
+  academicProjects,
   certificates,
   education,
-  gameDev,
-  languages,
+  efset,
+  languageList,
   otherCertificates,
-  type Certificate,
-  type GameDevItem,
+  type Scan,
 } from '../content/profile';
-import type { L } from '../content/types';
 import { ui } from '../content/ui';
 import { useLang } from '../i18n/LanguageContext';
 import { Icon } from './Icon';
@@ -17,70 +16,127 @@ import { Lightbox } from './Lightbox';
 import { Section } from './Section';
 import styles from './Education.module.css';
 
-const itemKey = (item: GameDevItem) => (typeof item.name === 'string' ? item.name : item.name.en);
-const certUrl = (file: string) => `${import.meta.env.BASE_URL}certificados/${file}.webp`;
+const scanUrl = (file: string) => `${import.meta.env.BASE_URL}certificados/${file}.webp`;
 
-/** Degrees with course, conferral and diploma dates kept apart; selected certificates open in a dialog. */
+type Open = { scan: Scan; title: string; alt: string; details: string[] };
+
+/**
+ * Degrees with course, institution and period (the diploma, with its administrative dates, opens in
+ * a dialog); selected certificates, with the EF SET scores as text; the rest collapsed.
+ */
 export function Education({ index }: { index: string }) {
   const { lang, t } = useLang();
-  const [open, setOpen] = useState<Certificate | null>(null);
-  const text = (value: string | L) => (typeof value === 'string' ? value : t(value));
-  const describe = (c: Certificate) =>
-    `${t(c.name)} — ${c.issuer}, ${t(c.date)}${c.masked ? ` (${t(ui.labels.birthDateHidden)})` : ''}`;
+  const [open, setOpen] = useState<Open | null>(null);
 
   return (
     <Section id="education" index={index} title={t(ui.sections.education)}>
       <div className={styles.grid}>
-        <div className={styles.card}>
+        {/* Both columns: a label, then the content, so their top edges line up. */}
+        <div>
           <h3 className={styles.cardTitle}>{t(ui.labels.education)}</h3>
-          <ul className={styles.degrees}>
-            {education.map((item) => (
-              <li key={item.institution} className={styles.degree}>
-                <p className={styles.degreeTitle}>{t(item.degree)}</p>
-                <p className={styles.institution}>{item.institution}</p>
-                <dl className={styles.dates}>
-                  <div>
-                    <dt>{t(ui.labels.course)}</dt>
-                    <dd>
-                      <time dateTime={item.start}>{monthYear(item.start, lang)}</time> –{' '}
-                      <time dateTime={item.end}>{monthYear(item.end, lang)}</time>
-                    </dd>
-                  </div>
-                  {item.conferral && (
-                    <div>
-                      <dt>{t(ui.labels.conferral)}</dt>
-                      <dd>
-                        <time dateTime={item.conferral}>{fullDate(item.conferral, lang)}</time>
-                      </dd>
-                    </div>
+          <div className={styles.card}>
+            <ul className={styles.degrees}>
+              {education.map((item) => (
+                <li key={item.institution} className={styles.degree}>
+                  <p className={styles.degreeTitle}>{t(item.degree)}</p>
+                  <p className={styles.institution}>{item.institution}</p>
+                  <p className={styles.period}>
+                    <time dateTime={item.start}>{monthYear(item.start, lang)}</time> –{' '}
+                    <time dateTime={item.end}>{monthYear(item.end, lang)}</time>
+                    {item.note && ` · ${t(item.note)}`}
+                  </p>
+                  {item.scan && (
+                    <button
+                      type="button"
+                      className={styles.diploma}
+                      aria-haspopup="dialog"
+                      onClick={() =>
+                        setOpen({
+                          scan: item.scan!,
+                          title: `${t(ui.labels.viewDiploma)} — ${t(item.degree)}`,
+                          alt: `${t(item.degree)} — ${item.institution} (${t(ui.labels.birthDateHidden)})`,
+                          details: [
+                            ...(item.conferral ? [`${t(ui.labels.conferral)}: ${fullDate(item.conferral, lang)}`] : []),
+                            ...(item.diploma ? [`${t(ui.labels.diploma)}: ${fullDate(item.diploma, lang)}`] : []),
+                          ],
+                        })
+                      }
+                    >
+                      <Icon name="image" size={16} />
+                      {t(ui.labels.viewDiploma)}
+                      <span className="sr-only"> — {t(item.degree)}</span>
+                    </button>
                   )}
-                  {item.diploma && (
-                    <div>
-                      <dt>{t(ui.labels.diploma)}</dt>
-                      <dd>
-                        <time dateTime={item.diploma}>{fullDate(item.diploma, lang)}</time>
-                      </dd>
-                    </div>
-                  )}
-                </dl>
-                {item.note && <p className={styles.note}>{t(item.note)}</p>}
-              </li>
-            ))}
-          </ul>
+                </li>
+              ))}
+            </ul>
 
-          <h3 className={`${styles.cardTitle} ${styles.spaced}`}>{t(ui.labels.languages)}</h3>
-          <p className={styles.languages}>{t(languages)}</p>
+            <h4 className={`${styles.cardTitle} ${styles.spaced}`}>{t(ui.labels.languages)}</h4>
+            <ul className={styles.languages}>
+              {languageList.map((item) => (
+                <li key={item.code}>
+                  <strong>{t(item.name)}:</strong> {t(item.level)}
+                </li>
+              ))}
+            </ul>
+          </div>
         </div>
 
         <div>
           <h3 className={styles.cardTitle}>{t(ui.labels.certificates)}</h3>
           <ul className={styles.certs}>
+            <li className={styles.efsetItem}>
+              <article className={styles.efset} aria-labelledby="efset-title">
+                <div className={styles.efsetHead}>
+                  <p id="efset-title" className={styles.efsetName}>
+                    {t(efset.name)}
+                  </p>
+                  <p className={styles.certMeta}>
+                    {efset.issuer} · {t(ui.labels.issued)} <time dateTime={efset.iso}>{t(efset.date)}</time>
+                  </p>
+                </div>
+                <dl className={styles.scores}>
+                  <div className={styles.overall}>
+                    <dt>{t(ui.labels.overall)}</dt>
+                    <dd>
+                      <strong>{efset.score}</strong> {efset.level}
+                    </dd>
+                  </div>
+                  {efset.sections.map((section) => (
+                    <div key={section.score}>
+                      <dt>{t(section.name)}</dt>
+                      <dd>
+                        <strong>{section.score}</strong> {section.level}
+                      </dd>
+                    </div>
+                  ))}
+                </dl>
+                <p className={styles.scope}>{t(efset.scope)}</p>
+                <p className={styles.efsetLinks}>
+                  <a href={efset.pdf} type="application/pdf" target="_blank" rel="noreferrer">
+                    <Icon name="download" size={16} />
+                    {t(ui.labels.certificatePdf)}
+                    <span className="sr-only"> {t(ui.a11y.newTab)}</span>
+                  </a>
+                  <a href={efset.verify} target="_blank" rel="noreferrer">
+                    <Icon name="external" size={15} />
+                    {t(ui.labels.verify)}
+                    <span className="sr-only"> {t(ui.a11y.newTab)}</span>
+                  </a>
+                </p>
+              </article>
+            </li>
             {certificates.map((c) => (
               <li key={c.image}>
-                <button type="button" className={styles.cert} onClick={() => setOpen(c)} aria-haspopup="dialog">
+                <button
+                  type="button"
+                  className={styles.cert}
+                  aria-haspopup="dialog"
+                  onClick={() => setOpen({ scan: c, title: t(c.name), alt: `${t(c.name)} — ${c.issuer}, ${t(c.date)}`, details: [] })}
+                >
                   <span className={styles.thumb}>
                     <img
-                      src={certUrl(`${c.image}-480`)}
+                      src={scanUrl(`${c.image}-480`)}
                       alt=""
                       width={c.thumb.width}
                       height={c.thumb.height}
@@ -110,30 +166,31 @@ export function Education({ index }: { index: string }) {
       </details>
 
       <details className={`disclosure ${styles.more}`}>
-        <summary>{t(gameDev.title)}</summary>
+        <summary>{t(academicProjects.title)}</summary>
         <div className="disclosure-body">
-          <p>{t(gameDev.intro)}</p>
-          {gameDev.groups.map((group) => (
-            <div key={group.label.en} className={styles.gdGroup}>
-              <p className={styles.gdLabel}>{t(group.label)}</p>
-              <ul className={styles.gdList}>
-                {group.items.map((item) => (
-                  <li key={itemKey(item)}>
-                    {item.link ? (
-                      <a href={item.link} target="_blank" rel="noreferrer">
-                        {text(item.name)}
-                      </a>
-                    ) : (
-                      <span className={styles.gdName}>{text(item.name)}</span>
-                    )}
-                    {item.note && <span className={styles.gdNote}> — {t(item.note)}</span>}
-                  </li>
-                ))}
-              </ul>
-            </div>
-          ))}
-          <ul className={styles.gdLinks}>
-            {gameDev.links.map((link) => (
+          <ul className={styles.academic}>
+            {academicProjects.items.map((item) => (
+              <li key={item.name}>
+                {item.link ? (
+                  <a href={item.link} target="_blank" rel="noreferrer">
+                    {item.name}
+                  </a>
+                ) : (
+                  <span className={styles.academicName}>{item.name}</span>
+                )}
+                {item.start && item.end && (
+                  <span className={styles.academicDate}>
+                    {' '}
+                    (<time dateTime={item.start}>{monthYear(item.start, lang)}</time> –{' '}
+                    <time dateTime={item.end}>{monthYear(item.end, lang)}</time>)
+                  </span>
+                )}
+                <span className={styles.academicNote}> — {t(item.note)}</span>
+              </li>
+            ))}
+          </ul>
+          <ul className={styles.academicLinks}>
+            {academicProjects.links.map((link) => (
               <li key={link.url}>
                 <a href={link.url} target="_blank" rel="noreferrer">
                   {link.label}
@@ -145,8 +202,13 @@ export function Education({ index }: { index: string }) {
         </div>
       </details>
 
-      <Lightbox open={open !== null} title={open ? t(open.name) : ''} closeLabel={t(ui.labels.close)} onClose={() => setOpen(null)}>
-        {open && <img src={certUrl(open.image)} alt={describe(open)} width={open.size.width} height={open.size.height} />}
+      <Lightbox open={open !== null} title={open?.title ?? ''} closeLabel={t(ui.labels.close)} onClose={() => setOpen(null)}>
+        {open && (
+          <>
+            <img src={scanUrl(open.scan.image)} alt={open.alt} width={open.scan.size.width} height={open.scan.size.height} />
+            {open.details.length > 0 && <p className={styles.scanDetails}>{open.details.join(' · ')}</p>}
+          </>
+        )}
       </Lightbox>
     </Section>
   );

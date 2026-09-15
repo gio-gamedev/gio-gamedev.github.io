@@ -1,16 +1,17 @@
-import { useEffect, useState, type CSSProperties } from 'react';
+import { useEffect, useRef, useState, type CSSProperties } from 'react';
 import {
   categories,
   categoryInfo,
   categoryNote,
   categoryScope,
+  coverOf,
   inCategory,
+  isFeatured,
+  linkLabel,
   projectKey,
   projectName,
   projectSlug,
   projects,
-  storeLabel,
-  storeName,
   testingLabels,
   universalTesting,
   type Category,
@@ -27,7 +28,7 @@ import styles from './ProjectGallery.module.css';
 
 type Filter = Category | 'all';
 
-/** URL value of a platform filter: "fortnite-uefn", "the-sandbox". */
+/** URL value of a platform filter: "fortnite-uefn", "the-sandbox" (the same in both languages). */
 const slugOf = (category: Category) => category.toLowerCase().replace(/[^a-z]+/g, '-');
 const fold = (text: string) =>
   text
@@ -35,18 +36,22 @@ const fold = (text: string) =>
     .replace(/[̀-ͯ]/g, '')
     .toLowerCase();
 
-// Featured first, then by public reach, then alphabetical.
-const weight = (p: Project) => {
+// Titles with a confirmed image first (the rest keep a neutral frame at the end of each group),
+// then featured, then by public reach, then alphabetical.
+const firstReach = (p: Project) => {
   const first = p.reach?.[0];
-  return (p.selected ? 1e12 : 0) + (first && first.kind !== 'rating' ? first.count : 0);
+  return first && first.kind !== 'rating' ? first.count : 0;
 };
+const order = (a: Project, b: Project) =>
+  Number(Boolean(coverOf(b))) - Number(Boolean(coverOf(a))) ||
+  Number(isFeatured(b)) - Number(isFeatured(a)) ||
+  firstReach(b) - firstReach(a) ||
+  projectKey(a).localeCompare(projectKey(b));
 
 const groups = categories.map((category) => ({
   category,
   slug: slugOf(category),
-  items: projects
-    .filter((p) => inCategory(p, category))
-    .sort((a, b) => weight(b) - weight(a) || projectKey(a).localeCompare(projectKey(b))),
+  items: projects.filter((p) => inCategory(p, category)).sort(order),
 }));
 
 /** Everything a search matches: both titles, the former title, studios, platforms and category. */
@@ -70,41 +75,78 @@ const haystack = new Map(
 const totalFor = (filter: Filter) =>
   filter === 'all' ? projects.length : projects.filter((p) => inCategory(p, filter)).length;
 
+const currentUrl = () => `${location.pathname}${location.search}${location.hash}`;
+const urlFor = (filter: Filter, query: string) => {
+  const params = new URLSearchParams();
+  if (filter !== 'all') params.set('p', slugOf(filter));
+  if (query.trim()) params.set('q', query.trim());
+  const search = params.toString();
+  return `${location.pathname}${search ? `?${search}` : ''}${location.hash}`;
+};
+// Lets the header update its language links, which carry the filters along.
+const announce = () => window.dispatchEvent(new Event('urlchange'));
+
 /** Every title, grouped by platform, with search, platform filters and a shareable URL. */
 export function ProjectGallery() {
   const { lang, t } = useLang();
   const [filter, setFilter] = useState<Filter>('all');
   const [query, setQuery] = useState('');
   const [ready, setReady] = useState(false);
+  const [toolbarVisible, setToolbarVisible] = useState(true);
+  const toolbarRef = useRef<HTMLDivElement>(null);
+  const searchRef = useRef<HTMLInputElement>(null);
 
   // Shareable state (?p=<platform>&q=<search>), read after hydration so the prerendered page
-  // (everything shown) matches the first client render.
+  // (everything shown) matches the first client render. Back and forward restore it too.
   useEffect(() => {
-    const params = new URLSearchParams(location.search);
-    const fromUrl = categories.find((c) => slugOf(c) === params.get('p'));
-    if (fromUrl) setFilter(fromUrl);
-    setQuery(params.get('q') ?? '');
+    const readUrl = () => {
+      const params = new URLSearchParams(location.search);
+      setFilter(categories.find((c) => slugOf(c) === params.get('p')) ?? 'all');
+      setQuery(params.get('q') ?? '');
+    };
+    readUrl();
     setReady(true);
+    window.addEventListener('popstate', readUrl);
+    return () => window.removeEventListener('popstate', readUrl);
   }, []);
 
+  // Typing replaces the current history entry; picking a filter adds one (see choose).
   useEffect(() => {
     if (!ready) return;
-    const params = new URLSearchParams();
-    if (filter !== 'all') params.set('p', slugOf(filter));
-    if (query.trim()) params.set('q', query.trim());
-    const search = params.toString();
-    history.replaceState(null, '', `${location.pathname}${search ? `?${search}` : ''}${location.hash}`);
+    const url = urlFor(filter, query);
+    if (url === currentUrl()) return;
+    history.replaceState(null, '', url);
+    announce();
   }, [ready, filter, query]);
+
+  // Phones: the toolbar scrolls away, so a button brings it back once it is out of view.
+  useEffect(() => {
+    const toolbar = toolbarRef.current;
+    if (!toolbar) return;
+    const observer = new IntersectionObserver(([entry]) => setToolbarVisible(entry.isIntersecting));
+    observer.observe(toolbar);
+    return () => observer.disconnect();
+  }, []);
+
+  const choose = (next: Filter, nextQuery = query) => {
+    setFilter(next);
+    setQuery(nextQuery);
+    const url = urlFor(next, nextQuery);
+    if (url === currentUrl()) return;
+    history.pushState(null, '', url);
+    announce();
+  };
+
+  const backToSearch = () => {
+    toolbarRef.current?.scrollIntoView({ block: 'start' });
+    searchRef.current?.focus({ preventScroll: true });
+  };
 
   const q = fold(query.trim());
   const matches = (p: Project) => !q || (haystack.get(p) ?? '').includes(q);
   // "All" lists each title once, under its main platform; a platform filter also shows its ports.
   const shown = (p: Project, group: Category) => (filter === 'all' ? p.category === group : filter === group) && matches(p);
   const count = projects.filter((p) => (filter === 'all' || inCategory(p, filter)) && matches(p)).length;
-  const clear = () => {
-    setFilter('all');
-    setQuery('');
-  };
 
   return (
     <Section
@@ -119,12 +161,13 @@ export function ProjectGallery() {
         </a>
       }
     >
-      <div className={styles.toolbar}>
+      <div ref={toolbarRef} className={styles.toolbar}>
         <div className={styles.searchRow}>
           <label className={styles.search}>
             <span className="sr-only">{t(ui.gallery.search)}</span>
             <Icon name="search" size={18} />
             <input
+              ref={searchRef}
               type="search"
               value={query}
               placeholder={t(ui.gallery.searchPlaceholder)}
@@ -136,18 +179,20 @@ export function ProjectGallery() {
           <p className={styles.results} aria-live="polite">
             {t(ui.gallery.results)(count)}
           </p>
-          <button type="button" className={styles.clear} onClick={clear} disabled={filter === 'all' && !query}>
+          <button type="button" className={styles.clear} onClick={() => choose('all', '')} disabled={filter === 'all' && !query}>
             {t(ui.gallery.clear)}
           </button>
         </div>
 
-        <div className={styles.filters} role="group" aria-label={t(ui.gallery.filters)}>
-          {(['all', ...categories] as Filter[]).map((f) => (
-            <button key={f} type="button" className={styles.filter} aria-pressed={filter === f} onClick={() => setFilter(f)}>
-              {f === 'all' ? t(ui.gallery.all) : t(categoryInfo[f].label)}
-              <span className={styles.filterCount}>{totalFor(f)}</span>
-            </button>
-          ))}
+        <div className={styles.filtersWrap}>
+          <div className={styles.filters} role="group" aria-label={t(ui.gallery.filters)}>
+            {(['all', ...categories] as Filter[]).map((f) => (
+              <button key={f} type="button" className={styles.filter} aria-pressed={filter === f} onClick={() => choose(f)}>
+                {f === 'all' ? t(ui.gallery.all) : t(categoryInfo[f].label)}
+                <span className={styles.filterCount}>{totalFor(f)}</span>
+              </button>
+            ))}
+          </div>
         </div>
       </div>
 
@@ -195,6 +240,11 @@ export function ProjectGallery() {
           <p>{t(ui.projects.publicNote)}</p>
         </div>
       </div>
+
+      <button type="button" className={styles.toSearch} hidden={toolbarVisible} onClick={backToSearch} aria-label={t(ui.gallery.toSearch)}>
+        <Icon name="search" size={18} />
+        <span aria-hidden="true">{t(ui.gallery.toSearchShort)}</span>
+      </button>
     </Section>
   );
 }
@@ -215,7 +265,7 @@ function Tile({ project }: { project: Project }) {
   return (
     <article className={styles.tile} id={`p-${projectSlug(project)}`}>
       <div className={styles.media}>
-        <Cover project={project} name={name} sizes="(max-width: 560px) 88px, 300px" />
+        <Cover project={project} sizes="(max-width: 560px) 88px, 280px" />
       </div>
       <div className={styles.body}>
         <h3 className={styles.name}>{name}</h3>
@@ -237,8 +287,14 @@ function Tile({ project }: { project: Project }) {
         {links.length > 0 && (
           <p className={styles.links}>
             {links.map((url) => (
-              <a key={url} href={url} target="_blank" rel="noreferrer" aria-label={`${name} — ${t(storeLabel(url))}`}>
-                {storeName(url)}
+              <a
+                key={url}
+                href={url}
+                target="_blank"
+                rel="noreferrer"
+                aria-label={`${name} — ${t(linkLabel(url).long)} ${t(ui.a11y.newTab)}`}
+              >
+                {t(linkLabel(url).short)}
                 <Icon name="external" size={12} />
               </a>
             ))}

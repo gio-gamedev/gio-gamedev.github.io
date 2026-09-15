@@ -1,4 +1,4 @@
-import { covers } from './covers';
+import { covers, type CoverArt } from './covers';
 import { reach, type Reach } from './reach';
 import type { L, Lang, Tone } from './types';
 
@@ -40,13 +40,12 @@ export type Project = {
   origin?: string;
   /** Partner storefronts; these also list the game under Publishing. */
   ports?: Port[];
-  selected?: boolean;
-  /** Featured projects: the product and platform (a period only when publicly confirmed). */
+  /** Featured projects: the product and platform, in one line. */
   context?: L;
-  /** Featured projects: what Giovanni did on it, from confirmed facts only. */
-  contribution?: L;
-  /** Public page that shows the product, when it is not the first store link. */
-  evidence?: { url: string; label: L };
+  /** Featured projects: two or three short points on what Giovanni did, from confirmed facts only. */
+  contribution?: L<string[]>;
+  /** Public page of the product for the featured card, when it is not the first store link. */
+  page?: string;
   /** Release status, such as a demo. */
   status?: L;
   /** Store or play links, main one first. */
@@ -144,8 +143,8 @@ export const slugify = (text: string) =>
 
 export const projectSlug = (project: Project) => slugify(projectKey(project));
 
-/** 'wide' (16:9 art) or 'square' (icon), from the generated src/content/covers.ts; undefined without art. */
-export const coverOf = (project: Project) => covers[projectSlug(project)];
+/** Cover art from the generated src/content/covers.ts; undefined while the title has no confirmed image. */
+export const coverOf = (project: Project): CoverArt | undefined => covers[projectSlug(project)];
 
 const p = (name: string | L, category: Category, extra: Partial<Project> = {}): Project => {
   const key = typeof name === 'string' ? name : name.en;
@@ -179,28 +178,26 @@ const bothPorts = (name: string, origin: string) =>
 
 export const projects: Project[] = [
   // Roblox
-  p({ en: 'CAIXA Universe', pt: 'Universo CAIXA' }, 'Roblox', {
-    selected: true,
-    links: [roblox('131872423586473')],
-    context: {
-      en: 'Branded Roblox experience for CAIXA, the Brazilian federal bank.',
-      pt: 'Experiência de marca da CAIXA no Roblox.',
-    },
-    contribution: {
-      en: 'Tested the gameplay flow, UX and multiplayer sessions against Roblox platform requirements; defects documented for development and fixes checked with regression passes.',
-      pt: 'Testes do fluxo de gameplay, da UX e das sessões multiplayer frente aos requisitos da plataforma Roblox; defeitos documentados para o desenvolvimento e correções conferidas com regressão.',
-    },
-  }),
+  p({ en: 'CAIXA Universe', pt: 'Universo CAIXA' }, 'Roblox', { links: [roblox('131872423586473')] }),
+  // The Roblox page (86365208170090) showed "Title Unavailable" on 2026-09-15; the project page of
+  // a programmer on the same team documents the game for Hermit Crab Game Studio.
   p('Pro Kick Simulator', 'Roblox', {
-    selected: true,
-    links: [roblox('86365208170090')],
+    links: ['https://www.joaofelipe.com.br/games/pro-kick-simulator/'],
     context: {
-      en: 'Football simulator on Roblox with progression systems, live on the platform.',
-      pt: 'Simulador de futebol no Roblox com sistemas de progressão, publicado na plataforma.',
+      en: 'Football training simulator on Roblox, with progression systems.',
+      pt: 'Simulador de treino de futebol no Roblox, com sistemas de progressão.',
     },
     contribution: {
-      en: 'Functional and regression testing of gameplay mechanics, progression and multiplayer sessions, plus Roblox platform requirements. Defects reported with steps and evidence, fixes verified.',
-      pt: 'Testes funcionais e de regressão das mecânicas de gameplay, da progressão e das sessões multiplayer, além dos requisitos da plataforma Roblox. Defeitos relatados com passos e evidências, e correções verificadas.',
+      en: [
+        'Functional and regression testing of gameplay mechanics, progression and multiplayer sessions',
+        'Roblox platform requirements',
+        'Defects reported with steps and evidence; fixes verified',
+      ],
+      pt: [
+        'Testes funcionais e de regressão das mecânicas, da progressão e das sessões multiplayer',
+        'Requisitos da plataforma Roblox',
+        'Defeitos relatados com passos e evidências; correções verificadas',
+      ],
     },
   }),
   p('Corrida do Galo', 'Roblox', { links: [roblox('95423176261993')] }),
@@ -215,20 +212,24 @@ export const projects: Project[] = [
   p('Slap Tower', 'Roblox'),
   p({ en: 'Pro Soccer Simulator', pt: 'Simulador de Futebol Profissional' }, 'Roblox'),
   p('Push Players for a Pet', 'Roblox'),
-  p("Mimi's Dream Builders!", 'Roblox'),
+  // Launch announcement by the partner (the image comes from the same post).
+  p("Mimi's Dream Builders!", 'Roblox', {
+    links: [
+      'https://getprosperouskids.com/post/empowering-the-next-generation-smobler-partners-with-prosperous-kids-to-launch-mimi-s-dream-builders-on-roblox',
+    ],
+  }),
 
   // Fortnite / UEFN
   p('Tuning Cars Tycoon', 'Fortnite/UEFN', { links: [fortnite('5473-4322-7315')] }),
   p('Football Tycoon (Soccer Tycoon)', 'Fortnite/UEFN', {
-    selected: true,
     links: [fortnite('8773-9657-5309')],
     context: {
       en: 'Football tycoon island in Fortnite, built in UEFN and updated live.',
       pt: 'Ilha de tycoon de futebol no Fortnite, feita no UEFN e atualizada ao vivo.',
     },
     contribution: {
-      en: 'Tested progression, economy and multiplayer sessions, with regression passes on live updates and checks against Fortnite publishing requirements.',
-      pt: 'Testes de progressão, economia e sessões multiplayer, com regressão nas atualizações live e checagem dos requisitos de publicação do Fortnite.',
+      en: ['Progression, economy and multiplayer sessions', 'Regression passes on live updates', 'Fortnite publishing requirements'],
+      pt: ['Progressão, economia e sessões multiplayer', 'Regressão nas atualizações live', 'Requisitos de publicação do Fortnite'],
     },
   }),
   p('World Soccer Tycoon', 'Fortnite/UEFN', { links: [fortnite('8861-6784-3687')] }),
@@ -253,20 +254,16 @@ export const projects: Project[] = [
 
   // The Sandbox
   p('The Walking Dead: Through the Tower', 'The Sandbox', {
-    selected: true,
     context: {
-      en: 'Licensed The Walking Dead experience in The Sandbox (Web3), part of The Sandbox Alpha Season 3 (Oct–Dec 2023).',
-      pt: 'Experiência licenciada de The Walking Dead no The Sandbox (Web3), parte da Alpha Season 3 do The Sandbox (out–dez/2023).',
+      en: 'Licensed The Walking Dead experience in The Sandbox (Web3).',
+      pt: 'Experiência licenciada de The Walking Dead no The Sandbox (Web3).',
     },
     contribution: {
-      en: 'Tested the gameplay flow, UX and multiplayer of a licensed IP experience against The Sandbox platform requirements.',
-      pt: 'Testes do fluxo de gameplay, da UX e do multiplayer de uma experiência de IP licenciada frente aos requisitos da plataforma The Sandbox.',
+      en: ['Gameplay flow, UX and multiplayer of a licensed IP experience', 'The Sandbox platform requirements'],
+      pt: ['Fluxo de gameplay, UX e multiplayer de uma experiência de IP licenciada', 'Requisitos da plataforma The Sandbox'],
     },
     // The experience is no longer live; the game's wiki documents it.
-    evidence: {
-      url: 'https://walkingdead.fandom.com/wiki/The_Walking_Dead:_The_Sandbox',
-      label: { en: 'Read about it on the wiki', pt: 'Ver na wiki do jogo' },
-    },
+    page: 'https://walkingdead.fandom.com/wiki/The_Walking_Dead:_The_Sandbox',
   }),
   p('Stonebridge — Dungeon Siege', 'The Sandbox'),
   p('Dungeon Siege: Farmlands', 'The Sandbox'),
@@ -276,8 +273,15 @@ export const projects: Project[] = [
       'https://www.sandbox.game/en/experiences/Jamiroquai%20-%20Escape%20The%20Insanity/2607ac60-fd5c-42b0-ac01-d593b9b29490/page/',
     ],
   }),
-  p("Spinnin' Records — World's Biggest Demo Drop", 'The Sandbox'),
-  p('Deepak Chopra — Oasis of Quantum Consciousness', 'The Sandbox'),
+  // Official announcements of the experiences (The Sandbox blog; press release).
+  p("Spinnin' Records — World's Biggest Demo Drop", 'The Sandbox', {
+    links: ['https://sandboxgame.medium.com/the-worlds-biggest-demo-drop-dj-contest-is-coming-to-the-metaverse-31724010069e'],
+  }),
+  p('Deepak Chopra — Oasis of Quantum Consciousness', 'The Sandbox', {
+    links: [
+      'https://www.businesswire.com/news/home/20250415980265/en/Deepak-Chopra-MDs-New-Virtual-Meditation-Haven-Launches-in-The-Sandbox',
+    ],
+  }),
   // Official trailer on Metapeace's channel.
   p('Nobel Land by Metapeace', 'The Sandbox', { links: ['https://www.youtube.com/watch?v=aSkNru8u0Rs'] }),
   p('SurreaLisbon', 'The Sandbox'),
@@ -293,7 +297,6 @@ export const projects: Project[] = [
 
   // Mobile
   p('Logic Pic', 'Mobile', {
-    selected: true,
     studio: 'Space Bit Games',
     links: [play('br.com.tapps.logicpic')],
     context: {
@@ -301,20 +304,35 @@ export const projects: Project[] = [
       pt: 'Jogo de quebra-cabeça lógico com imagens para iOS e Android.',
     },
     contribution: {
-      en: 'Manual QA on functionality, usability, stability and player experience: test scenarios created and run, defects documented with clear reproduction steps.',
-      pt: 'QA manual de funcionalidade, usabilidade, estabilidade e experiência do jogador: cenários de teste criados e executados, e defeitos documentados com passos claros de reprodução.',
+      en: [
+        'Manual QA on functionality, usability, stability and player experience',
+        'Test scenarios created and run',
+        'Defects documented with clear reproduction steps',
+      ],
+      pt: [
+        'QA manual de funcionalidade, usabilidade, estabilidade e experiência do jogador',
+        'Cenários de teste criados e executados',
+        'Defeitos documentados com passos claros de reprodução',
+      ],
     },
   }),
   p('Rumble Kong League', 'Mobile', {
-    selected: true,
     links: [play('com.hermitcrabstudio.f2p.rl'), appStore('6471519344')],
     context: {
       en: '3v3 basketball game for iOS and Android.',
       pt: 'Jogo de basquete 3v3 para iOS e Android.',
     },
     contribution: {
-      en: 'Tested 3v3 multiplayer matches, compatibility across low-end, mid-range and reference devices, and App Store and Google Play release requirements.',
-      pt: 'Testes das partidas multiplayer 3v3, da compatibilidade em aparelhos de entrada, intermediários e de referência, e dos requisitos de lançamento na App Store e no Google Play.',
+      en: [
+        '3v3 multiplayer matches',
+        'Compatibility on low-end, mid-range and reference devices',
+        'App Store and Google Play release requirements',
+      ],
+      pt: [
+        'Partidas multiplayer 3v3',
+        'Compatibilidade em aparelhos de entrada, intermediários e de referência',
+        'Requisitos de lançamento na App Store e no Google Play',
+      ],
     },
   }),
   p('Arcane Merge – Fantasy Mix', 'Mobile', {
@@ -353,9 +371,18 @@ export const projects: Project[] = [
   p('Arsenal Freestyle Show', 'Mobile'),
 
   // PC / Steam
+  // Not the mobile game Sportia Football Cup (or its Gameloft port).
   p('Sportia', 'Steam', {
-    links: ['https://store.steampowered.com/app/3897390/Sportia/'],
+    links: ['https://store.steampowered.com/app/3897390/'],
     status: { en: 'Demo on Steam · release planned for 2027', pt: 'Demo na Steam · lançamento previsto para 2027' },
+    context: {
+      en: 'Sports game for PC with a demo on Steam; separate from the mobile game Sportia Football Cup.',
+      pt: 'Jogo de esportes para PC, com demo na Steam; diferente do jogo mobile Sportia Football Cup.',
+    },
+    contribution: {
+      en: ['QA on the PC version for Steam: functional and regression testing'],
+      pt: ['QA na versão para PC da Steam: testes funcionais e de regressão'],
+    },
   }),
 
   // Publishing & ports: Gameloft (telco stores)
@@ -404,7 +431,7 @@ export const projects: Project[] = [
   lumePad('Vacuum Guy'),
 
   // Applications
-  p('eClub — Benefits Platform', 'Applications'),
+  p('eClub — Benefits Platform', 'Applications', { links: ['https://hermitcrabstudio.com/portfolio/eclub'] }),
   p('Flamengo (eClub)', 'Applications'),
   p('Grêmio (eClub)', 'Applications'),
   p('Vasco (eClub)', 'Applications'),
@@ -430,58 +457,53 @@ export const appCount = projects.length - gameCount;
 export const portCount =
   Math.floor(projects.filter((x) => x.ports?.some((port) => port !== 'CrazyGames')).length / 10) * 10;
 
-/** Short store name for a secondary link: "App Store", "CrazyGames". */
-export function storeName(url: string): string {
+/** Plain link names: the visible label ("Steam") and the accessible one ("View on Steam"). */
+export function linkLabel(url: string): { short: L; long: L } {
   const host = new URL(url).hostname;
-  if (host.includes('steampowered')) return 'Steam';
-  if (host.includes('play.google')) return 'Google Play';
-  if (host.includes('apps.apple')) return 'App Store';
-  if (host.includes('crazygames')) return 'CrazyGames';
-  if (host.includes('roblox')) return 'Roblox';
-  if (host.includes('fortnite')) return 'Fortnite';
-  if (host.includes('sandbox.game')) return 'The Sandbox';
-  if (host.includes('youtube')) return 'YouTube';
-  if (host.includes('fandom')) return 'Wiki';
-  return host;
+  const same = (text: string): L => ({ en: text, pt: text });
+  if (host.includes('steampowered')) return { short: same('Steam'), long: { en: 'View on Steam', pt: 'Ver na Steam' } };
+  if (host.includes('play.google')) return { short: same('Google Play'), long: { en: 'View on Google Play', pt: 'Ver no Google Play' } };
+  if (host.includes('apps.apple')) return { short: same('App Store'), long: { en: 'View on the App Store', pt: 'Ver na App Store' } };
+  if (host.includes('crazygames')) return { short: same('CrazyGames'), long: { en: 'Play on CrazyGames', pt: 'Jogar no CrazyGames' } };
+  if (host.includes('roblox')) return { short: same('Roblox'), long: { en: 'Play on Roblox', pt: 'Jogar no Roblox' } };
+  if (host.includes('fortnite')) return { short: same('Fortnite'), long: { en: 'Play in Fortnite', pt: 'Jogar no Fortnite' } };
+  if (host.includes('sandbox.game')) return { short: same('The Sandbox'), long: { en: 'Play in The Sandbox', pt: 'Jogar no The Sandbox' } };
+  if (host.includes('youtube')) return { short: same('Trailer'), long: { en: 'Watch the trailer', pt: 'Ver o trailer' } };
+  if (host.includes('fandom')) return { short: same('Wiki'), long: { en: 'Read about it on the wiki', pt: 'Ver na wiki' } };
+  if (host.includes('hermitcrabstudio')) {
+    return { short: { en: 'Studio page', pt: 'Página do estúdio' }, long: { en: 'Studio page', pt: 'Página do estúdio' } };
+  }
+  if (host.includes('joaofelipe')) {
+    return { short: { en: 'Project page', pt: 'Página do projeto' }, long: { en: 'Project page', pt: 'Página do projeto' } };
+  }
+  if (/medium\.com|businesswire|getprosperouskids/.test(host)) {
+    return { short: { en: 'Announcement', pt: 'Anúncio' }, long: { en: 'Read the announcement', pt: 'Ver o anúncio' } };
+  }
+  return { short: { en: 'Link', pt: 'Link' }, long: { en: 'Open link', pt: 'Abrir link' } };
 }
 
-export function storeLabel(url: string): L {
-  const host = new URL(url).hostname;
-  if (host.includes('steampowered')) return { en: 'View on Steam', pt: 'Ver na Steam' };
-  if (host.includes('play.google')) return { en: 'View on Google Play', pt: 'Ver no Google Play' };
-  if (host.includes('apps.apple')) return { en: 'View on the App Store', pt: 'Ver na App Store' };
-  if (host.includes('crazygames')) return { en: 'Play on CrazyGames', pt: 'Jogar no CrazyGames' };
-  if (host.includes('roblox')) return { en: 'Play on Roblox', pt: 'Jogar no Roblox' };
-  if (host.includes('fortnite')) return { en: 'Play in Fortnite', pt: 'Jogar no Fortnite' };
-  if (host.includes('sandbox.game')) return { en: 'Play in The Sandbox', pt: 'Jogar no The Sandbox' };
-  if (host.includes('youtube')) return { en: 'Watch the trailer', pt: 'Ver o trailer' };
-  return { en: 'Open link', pt: 'Abrir link' };
-}
+/** The public page linked from a featured card: an explicit one, or the main store link. */
+export const pageOf = (project: Project): string | undefined => project.page ?? project.links?.[0];
 
-/** The public page used as evidence of the product: an explicit one, or the main store link. */
-export function evidenceOf(project: Project): { url: string; label: L } | undefined {
-  if (project.evidence) return project.evidence;
-  const url = project.links?.[0];
-  return url ? { url, label: storeLabel(url) } : undefined;
-}
-
-/** Mixed platforms, strongest public reach first, every card with real cover art. */
+/** Mixed platforms, each card with real cover art. */
 const featuredOrder = [
+  'Sportia',
   'Pro Kick Simulator',
   'Football Tycoon (Soccer Tycoon)',
   'Logic Pic',
-  'CAIXA Universe',
-  'The Walking Dead: Through the Tower',
   'Rumble Kong League',
+  'The Walking Dead: Through the Tower',
 ];
 
-// A featured card must say what Giovanni did and point to public evidence; the build fails otherwise.
+export const isFeatured = (project: Project) => featuredOrder.includes(projectKey(project));
+
+// A featured card must say what Giovanni did and link a public page; the build fails otherwise.
 export const featuredProjects = featuredOrder.map((key) => {
   const project = projects.find((x) => projectKey(x) === key);
   if (!project) throw new Error(`Featured project not found: ${key}`);
   if (!coverOf(project)) throw new Error(`Featured project without a cover: ${key}`);
   if (!project.context || !project.contribution) throw new Error(`Featured project without context or contribution: ${key}`);
-  if (!evidenceOf(project)) throw new Error(`Featured project without public evidence: ${key}`);
+  if (!pageOf(project)) throw new Error(`Featured project without a public page: ${key}`);
   return project;
 });
 
@@ -500,10 +522,10 @@ export const categoryScope = Object.fromEntries(
   ]),
 ) as Record<Category, Testing[]>;
 
-export const coverUrl = (file: string) => `${import.meta.env.BASE_URL}covers/${file}.webp`;
+export const coverUrl = (slug: string, width: number) => `${import.meta.env.BASE_URL}covers/${slug}-${width}.webp`;
 
-/** Wide covers ship at 800 and 400 px; square icons ship at one size. */
-export const coverSrcSet = (slug: string) => `${coverUrl(`${slug}-400`)} 400w, ${coverUrl(slug)} 800w`;
+/** Every generated width, with its real pixel width as the descriptor. */
+export const coverSrcSet = (slug: string, art: CoverArt) => art.widths.map((w) => `${coverUrl(slug, w)} ${w}w`).join(', ');
 
 /** Brands, IPs and partners from the projects above, for the brand strip. */
 export const brands = [
