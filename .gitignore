@@ -5,6 +5,8 @@ test-results
 playwright-report
 # Source photos; optimized copies live in public/
 images/
+# Local notes (changelog, pending items, LinkedIn guide, catalog status); only the site is public
+private/
 *.local
 *.log
 .DS_Store

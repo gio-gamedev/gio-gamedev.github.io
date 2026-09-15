@@ -8,6 +8,9 @@ h1 { margin: 0; font-size: 19pt; }
 h2 { margin: 8pt 0 3pt; padding-bottom: 2pt; border-bottom: 1px solid #999; font-size: 10.5pt; letter-spacing: 0.04em; text-transform: uppercase; }
 h3 { margin: 6pt 0 0; font-size: 9.8pt; }
 h2, h3, .dates { break-after: avoid; }
+.keep { break-inside: avoid; }
+.keep ul { margin-bottom: 0; }
+ul.rest { margin-top: 1pt; }
 p { margin: 2.5pt 0; }
 ul { margin: 2pt 0 0; padding-left: 13pt; }
 li { margin: 1pt 0; break-inside: avoid; }

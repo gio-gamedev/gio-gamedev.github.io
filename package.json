@@ -6,9 +6,9 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build && vite build --ssr src/entry-server.tsx --outDir dist-ssr && node scripts/prerender.mjs && node scripts/check-colors.mjs",
-    "build:review": "tsc && vite build --mode review && vite build --ssr src/entry-server.tsx --outDir dist-ssr --mode review && node scripts/prerender.mjs",
     "preview": "vite preview",
     "cv": "npm run build && node scripts/cv-pdf.mjs",
+    "catalog": "node scripts/catalog-status.mjs",
     "og": "node scripts/og-image.mjs",
     "test:e2e": "playwright test"
   },

@@ -10,10 +10,10 @@ import styles from './Header.module.css';
 
 const links = [
   ['projects', ui.nav.projects],
-  ['samples', ui.nav.samples],
+  ['evidence', ui.nav.evidence],
   ['experience', ui.nav.experience],
-  ['approach', ui.nav.approach],
-  ['skills', ui.nav.skills],
+  ['recognition', ui.nav.recognition],
+  ['education', ui.nav.education],
   ['contact', ui.nav.contact],
 ] as const;
 

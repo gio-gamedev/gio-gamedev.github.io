@@ -1,4 +1,4 @@
-import { award, certifications, education, languageList, profile, skills } from './content/profile';
+import { certificates, education, languageList, profile, recognition, skills } from './content/profile';
 import { projectName, projects } from './content/projects';
 import { SITE_URL } from './content/site';
 import { qaYears } from './content/stats';
@@ -38,12 +38,12 @@ function person(lang: Lang, description: string) {
       skills: skills.flatMap((group) => group.items.en).join(', '),
     },
     alumniOf: education.map((item) => ({ '@type': 'EducationalOrganization', name: item.institution })),
-    hasCredential: certifications.map((c) => ({
+    hasCredential: certificates.map((c) => ({
       '@type': 'EducationalOccupationalCredential',
       name: c.name.en,
-      ...(c.issuer ? { recognizedBy: { '@type': 'Organization', name: c.issuer } } : {}),
+      recognizedBy: { '@type': 'Organization', name: c.issuer },
     })),
-    award: `${award.title.en} (${award.org})`,
+    award: `${recognition.result.en} — ${recognition.event} ${recognition.year} (team award)`,
     knowsAbout: [
       'Game QA',
       'Roblox',

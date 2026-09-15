@@ -8,7 +8,7 @@ import { cvData, type CvBlock } from './cvData';
 
 export const cvTitle: L = {
   en: `${profile.name} — Game QA Analyst — Resume`,
-  pt: `${profile.name} — Analista de QA de Games — Currículo`,
+  pt: `${profile.name} — Analista de QA de Jogos — Currículo`,
 };
 
 export function CvDocument({ lang }: { lang: Lang }) {
@@ -63,20 +63,32 @@ function Block({ block }: { block: CvBlock }) {
         </ul>
       );
 
-    case 'job':
+    case 'job': {
+      const [first, ...rest] = block.bullets;
       return (
         <article>
-          <h3>{block.title}</h3>
-          <p className="dates">{block.dates}</p>
-          <ul>
-            {block.bullets.map((bullet) => (
-              <li key={bullet}>{bullet}</li>
-            ))}
-          </ul>
+          {/* The role heading, its dates and the first bullet never split across a page break. */}
+          <div className="keep">
+            <h3>{block.title}</h3>
+            <p className="dates">{block.dates}</p>
+            {first && (
+              <ul>
+                <li>{first}</li>
+              </ul>
+            )}
+          </div>
+          {rest.length > 0 && (
+            <ul className="rest">
+              {rest.map((bullet) => (
+                <li key={bullet}>{bullet}</li>
+              ))}
+            </ul>
+          )}
           {block.notes.map((note) => (
             <p key={note}>{note}</p>
           ))}
         </article>
       );
+    }
   }
 }

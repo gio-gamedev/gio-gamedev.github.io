@@ -1,12 +1,17 @@
+import { monthYear } from './dates';
 import type { L, Lang } from './types';
 
 export type ReachKind = 'downloads' | 'visits' | 'players' | 'minutes' | 'peak' | 'rating';
-export type Reach = { count: number; kind: ReachKind };
+export type ReachSource = 'play' | 'appbrain' | 'roblox' | 'fortnitegg' | 'designer';
+export type Reach = { count: number; kind: ReachKind; source: ReachSource };
+
+/** Month every figure below was last checked (2026-09-14). */
+export const REACH_CHECKED = '2026-09';
 
 /**
- * Public reach of titles Giovanni tested, rounded down, at most two figures per title. Shown on the
- * site without the source; the sources and raw figures stay here so the numbers can be re-checked.
- * Checked on 2026-09-14.
+ * Public reach of titles Giovanni tested, rounded down, at most two figures per title. Each figure
+ * is shown on its own project with its source and the month it was checked. These are product
+ * numbers for the whole team's work, so they are never summed across titles or units.
  * - Stores: Google Play download buckets; AppBrain for PSG (before the game left the stores).
  * - Roblox: games API visit counts.
  * - Fortnite: minutes played and all-time peak from fortnite.gg; unique players from the public
@@ -15,68 +20,58 @@ export type Reach = { count: number; kind: ReachKind };
  */
 export const reach: Record<string, Reach[]> = {
   // Google Play, "5M+ downloads" (br.com.tapps.logicpic)
-  'Logic Pic': [{ count: 5_000_000, kind: 'downloads' }],
+  'Logic Pic': [{ count: 5_000_000, kind: 'downloads', source: 'play' }],
   // AppBrain, 1.6M+ downloads before the game left the stores
-  'PSG Football Freestyle': [{ count: 1_600_000, kind: 'downloads' }],
+  'PSG Football Freestyle': [{ count: 1_600_000, kind: 'downloads', source: 'appbrain' }],
   // Roblox games API: 1,156,992 visits
-  'Pro Kick Simulator': [{ count: 1_100_000, kind: 'visits' }],
+  'Pro Kick Simulator': [{ count: 1_100_000, kind: 'visits', source: 'roblox' }],
   // Roblox games API: 149,236 visits
-  'CAIXA Universe': [{ count: 140_000, kind: 'visits' }],
+  'CAIXA Universe': [{ count: 140_000, kind: 'visits', source: 'roblox' }],
   // Roblox games API: 80,845 visits
-  'Corrida do Galo': [{ count: 80_000, kind: 'visits' }],
+  'Corrida do Galo': [{ count: 80_000, kind: 'visits', source: 'roblox' }],
   // Google Play, "50K+ downloads" (com.hermitcrabstudio.f2p.rl)
-  'Rumble Kong League': [{ count: 50_000, kind: 'downloads' }],
+  'Rumble Kong League': [{ count: 50_000, kind: 'downloads', source: 'play' }],
   // Google Play, "50K+ downloads" (com.byaliens.spacebit.arcanemerge)
-  'Arcane Merge – Fantasy Mix': [{ count: 50_000, kind: 'downloads' }],
+  'Arcane Merge – Fantasy Mix': [{ count: 50_000, kind: 'downloads', source: 'play' }],
   // Roblox games API: 35,928 visits
-  'Vasco Universe': [{ count: 35_000, kind: 'visits' }],
+  'Vasco Universe': [{ count: 35_000, kind: 'visits', source: 'roblox' }],
   // Google Play, "10K+ downloads" (com.hermitcrabstudio.f2p.allstarsmerge)
-  'All Stars Merge': [{ count: 10_000, kind: 'downloads' }],
+  'All Stars Merge': [{ count: 10_000, kind: 'downloads', source: 'play' }],
 
   // Fortnite. 5473-4322-7315: 2M+ unique players (Gabriel), 40.4M minutes
   'Tuning Cars Tycoon': [
-    { count: 2_000_000, kind: 'players' },
-    { count: 40_000_000, kind: 'minutes' },
+    { count: 2_000_000, kind: 'players', source: 'designer' },
+    { count: 40_000_000, kind: 'minutes', source: 'fortnitegg' },
   ],
   // 8773-9657-5309: 110.7M minutes, all-time peak 18,990
   'Football Tycoon (Soccer Tycoon)': [
-    { count: 110_000_000, kind: 'minutes' },
-    { count: 18_000, kind: 'peak' },
+    { count: 110_000_000, kind: 'minutes', source: 'fortnitegg' },
+    { count: 18_000, kind: 'peak', source: 'fortnitegg' },
   ],
   // 8861-6784-3687: 800K+ unique players (Gabriel), 36.7M minutes
   'World Soccer Tycoon': [
-    { count: 800_000, kind: 'players' },
-    { count: 36_000_000, kind: 'minutes' },
+    { count: 800_000, kind: 'players', source: 'designer' },
+    { count: 36_000_000, kind: 'minutes', source: 'fortnitegg' },
   ],
   // 3286-6093-6738: 800K+ unique players (Gabriel), 20.9M minutes
   'Surf Tycoon': [
-    { count: 800_000, kind: 'players' },
-    { count: 20_000_000, kind: 'minutes' },
+    { count: 800_000, kind: 'players', source: 'designer' },
+    { count: 20_000_000, kind: 'minutes', source: 'fortnitegg' },
   ],
   // 0543-1357-2916: 24.7M minutes
-  'Skate Tycoon': [{ count: 24_000_000, kind: 'minutes' }],
+  'Skate Tycoon': [{ count: 24_000_000, kind: 'minutes', source: 'fortnitegg' }],
   // 0752-0223-8137: 18.1M minutes
-  'Baseball Tycoon': [{ count: 18_000_000, kind: 'minutes' }],
+  'Baseball Tycoon': [{ count: 18_000_000, kind: 'minutes', source: 'fortnitegg' }],
   // 1701-7859-9582: 16.2M minutes
-  'Soccer Team Tycoon': [{ count: 16_000_000, kind: 'minutes' }],
+  'Soccer Team Tycoon': [{ count: 16_000_000, kind: 'minutes', source: 'fortnitegg' }],
   // 6081-4755-9263: 8M minutes
-  'Football Tycoon 2': [{ count: 8_000_000, kind: 'minutes' }],
+  'Football Tycoon 2': [{ count: 8_000_000, kind: 'minutes', source: 'fortnitegg' }],
   // 3737-8784-3421: 2.6M minutes
-  'American Football Tycoon': [{ count: 2_000_000, kind: 'minutes' }],
+  'American Football Tycoon': [{ count: 2_000_000, kind: 'minutes', source: 'fortnitegg' }],
 
   // The Sandbox: 4.8/5 player rating (Gabriel's portfolio)
-  'Stonebridge — Dungeon Siege': [{ count: 4.8, kind: 'rating' }],
+  'Stonebridge — Dungeon Siege': [{ count: 4.8, kind: 'rating', source: 'designer' }],
 };
-
-/** Minutes played on every Fortnite island in the project list (fortnite.gg, 2026-09-14). */
-const fortniteIslandMinutes = [
-  110.7e6, 40.4e6, 36.7e6, 24.7e6, 20.9e6, 18.1e6, 16.2e6, 8e6, 2.6e6, 954.8e3, 926.7e3, 300.9e3, 252.8e3,
-  200.1e3, 118.2e3, 115.6e3, 111.8e3, 26.4e3, 2.1e3,
-];
-
-/** Every Fortnite minute above, rounded down to tens of millions: "280M+". */
-export const fortniteMinutes =
-  Math.floor(fortniteIslandMinutes.reduce((sum, minutes) => sum + minutes, 0) / 10_000_000) * 10_000_000;
 
 export const reachKindLabel: Record<ReachKind, L> = {
   downloads: { en: 'downloads', pt: 'downloads' },
@@ -85,6 +80,14 @@ export const reachKindLabel: Record<ReachKind, L> = {
   minutes: { en: 'minutes played', pt: 'minutos jogados' },
   peak: { en: 'peak concurrent players', pt: 'jogadores simultâneos (pico)' },
   rating: { en: 'player rating', pt: 'nota dos jogadores' },
+};
+
+export const reachSourceLabel: Record<ReachSource, L> = {
+  play: { en: 'Google Play', pt: 'Google Play' },
+  appbrain: { en: 'AppBrain', pt: 'AppBrain' },
+  roblox: { en: 'Roblox', pt: 'Roblox' },
+  fortnitegg: { en: 'fortnite.gg', pt: 'fortnite.gg' },
+  designer: { en: "the game designer's public portfolio", pt: 'portfólio público do game designer' },
 };
 
 /** "1.1M+" / "1,1 mi+", "140K+" / "140 mil+". */
@@ -109,13 +112,24 @@ export const formatReach = (r: Reach, lang: Lang) => `${reachValue(r, lang)} ${r
 export const formatReachList = (list: Reach[] | undefined, lang: Lang) =>
   (list ?? []).map((r) => formatReach(r, lang)).join(' · ');
 
-const audience: ReachKind[] = ['downloads', 'visits', 'players'];
+const checkedLabel = (lang: Lang) =>
+  lang === 'pt' ? monthYear(REACH_CHECKED, 'pt').replace(' ', '/') : monthYear(REACH_CHECKED, 'en');
 
-/** Players, downloads and visits across every title above (not minutes, peaks or ratings), rounded down to millions: "11M+". */
-export const totalReach =
-  Math.floor(
-    Object.values(reach)
-      .flat()
-      .filter((r) => audience.includes(r.kind))
-      .reduce((sum, r) => sum + r.count, 0) / 1_000_000,
-  ) * 1_000_000;
+/** "Roblox, Sep 2026" / "fortnite.gg, set/2026". */
+export function reachSourceShort(list: Reach[] | undefined, lang: Lang): string {
+  if (!list?.length) return '';
+  const names = [...new Set(list.map((r) => r.source))].map((source) => reachSourceLabel[source][lang]);
+  return `${names.join(lang === 'pt' ? ' e ' : ' and ')}, ${checkedLabel(lang)}`;
+}
+
+/** "Source: Roblox, Sep 2026" / "Fontes: … e fortnite.gg, set/2026". */
+export function reachSource(list: Reach[] | undefined, lang: Lang): string {
+  if (!list?.length) return '';
+  const plural = new Set(list.map((r) => r.source)).size > 1;
+  const label = lang === 'pt' ? (plural ? 'Fontes' : 'Fonte') : plural ? 'Sources' : 'Source';
+  return `${label}: ${reachSourceShort(list, lang)}`;
+}
+
+/** "1.1M+ visits (Roblox, Sep 2026)", for the resume and the machine-readable files. */
+export const formatReachWithSource = (list: Reach[] | undefined, lang: Lang) =>
+  list?.length ? `${formatReachList(list, lang)} (${reachSourceShort(list, lang)})` : '';

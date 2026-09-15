@@ -1,22 +1,13 @@
-import { monthYear, present } from '../content/dates';
-import {
-  approach,
-  award,
-  certifications,
-  education,
-  experience,
-  gameDev,
-  languages,
-  profile,
-  skills,
-} from '../content/profile';
-import { categoryInfo, featuredProjects, gameCount, projectName } from '../content/projects';
-import { formatReachList } from '../content/reach';
+import { fullDate, monthYear, present } from '../content/dates';
+import { approach, certificates, education, experience, gameDev, languages, profile, recognition, skills } from '../content/profile';
+import { categoryInfo, featuredProjects, projectName } from '../content/projects';
+import { formatReachWithSource } from '../content/reach';
 import { SITE_URL } from '../content/site';
 import type { L, Lang } from '../content/types';
 
 // One source for both resumes: CvDocument renders it to HTML (printed to PDF), scripts/cv-docx.mjs
-// writes it as Word. ATS-friendly: one column, standard headings, plain text.
+// writes it as Word. ATS-friendly: one column, standard headings, plain selectable text, no hidden
+// or repeated keywords.
 
 export type CvBlock =
   | { kind: 'p'; label?: string; text: string }
@@ -37,15 +28,18 @@ const heading = {
   projects: { en: 'Selected Projects', pt: 'Projetos em Destaque' },
   awards: { en: 'Awards', pt: 'Prêmios' },
   education: { en: 'Education', pt: 'Formação' },
-  gameDev: { en: 'Game Development Background', pt: 'Desenvolvimento de Games' },
+  gameDev: { en: 'Game Development Background', pt: 'Desenvolvimento de Jogos' },
   certifications: { en: 'Certifications', pt: 'Certificações' },
   languages: { en: 'Languages', pt: 'Idiomas' },
-  tools: { en: 'Tools', pt: 'Ferramentas' },
-  platforms: { en: 'Platforms', pt: 'Plataformas' },
+  // Fixed "100+" so the resume text doesn't go stale as the catalog grows.
   projectsLead: {
-    en: `${gameCount}+ game projects tested. Selected titles:`,
-    pt: `Mais de ${gameCount} projetos de games testados. Títulos selecionados:`,
+    en: '100+ games tested. Selected titles (public figures belong to each product and its whole team):',
+    pt: 'Mais de 100 jogos testados. Títulos selecionados (os números públicos são de cada produto e de todo o time):',
   },
+  teamAward: { en: 'team award', pt: 'prêmio de equipe' },
+  course: { en: 'course', pt: 'curso' },
+  conferral: { en: 'degree conferred', pt: 'colação de grau em' },
+  diploma: { en: 'diploma issued', pt: 'diploma emitido em' },
 } satisfies Record<string, L>;
 
 const plain = (text: string) => text.replace(/\*\*/g, '');
@@ -71,7 +65,7 @@ export function cvData(lang: Lang): CvData {
         heading: t(heading.summary),
         blocks: [
           { kind: 'p', text: `${plain(t(approach.lead))} ${t(approach.technical)}` },
-          { kind: 'p', text: `${t(profile.openTo)}. ${t(profile.availability)}.` },
+          { kind: 'p', text: `${t(profile.location)}. ${t(profile.availability)}.` },
         ],
       },
       {
@@ -84,12 +78,8 @@ export function cvData(lang: Lang): CvData {
           kind: 'job',
           title: `${t(job.role)} — ${job.company}`,
           dates: `${monthYear(job.start, lang)} – ${job.end ? monthYear(job.end, lang) : t(present)}`,
-          bullets: [...t(job.bullets), ...(job.more ? t(job.more) : [])],
-          notes: [
-            ...(job.highlight ? [t(job.highlight.stats)] : []),
-            // Per-job tool lines stay on the site; the Skills section already lists every tool.
-            ...(job.highlight?.note ? [t(job.highlight.note)] : []),
-          ],
+          bullets: t(job.bullets),
+          notes: job.highlight ? [t(job.highlight.stats)] : [],
         })),
       },
       {
@@ -101,7 +91,7 @@ export function cvData(lang: Lang): CvData {
             items: featuredProjects.map((p) =>
               [
                 `${projectName(p, lang)} (${[t(categoryInfo[p.category].label), p.studio].filter(Boolean).join(', ')})`,
-                formatReachList(p.reach, lang),
+                formatReachWithSource(p.reach, lang),
               ]
                 .filter(Boolean)
                 .join(' — '),
@@ -111,20 +101,29 @@ export function cvData(lang: Lang): CvData {
       },
       {
         heading: t(heading.awards),
-        blocks: [{ kind: 'p', text: `${t(award.title)} (${award.org})` }],
+        blocks: [
+          { kind: 'p', text: `${t(recognition.result)} — ${recognition.event} (${recognition.year}), ${t(heading.teamAward)}` },
+        ],
       },
       {
         heading: t(heading.education),
         blocks: [
           {
             kind: 'list',
-            items: education.map((item) => `${t(item.degree)} — ${item.institution} (${item.start}–${item.end})`),
+            items: education.map((item) => {
+              const dates = [
+                `${t(heading.course)} ${monthYear(item.start, lang)} – ${monthYear(item.end, lang)}`,
+                ...(item.conferral ? [`${t(heading.conferral)} ${fullDate(item.conferral, lang)}`] : []),
+                ...(!item.conferral && item.diploma ? [`${t(heading.diploma)} ${fullDate(item.diploma, lang)}`] : []),
+              ].join('; ');
+              return `${t(item.degree)} — ${item.institution} (${dates})`;
+            }),
           },
         ],
       },
       {
         // Kept short to hold the resume at two pages: game jams and GDDs only, with the note on the
-        // first item of each (the Producer credit and the requirements count). The site has the rest.
+        // first item of each. The site has the rest.
         heading: t(heading.gameDev),
         blocks: gameDev.groups
           .filter((group) => group.label.en === 'Game jams' || group.label.en === 'Game design documents')
@@ -142,7 +141,13 @@ export function cvData(lang: Lang): CvData {
       {
         heading: t(heading.certifications),
         blocks: [
-          { kind: 'p', text: certifications.map((c) => [t(c.name), c.issuer, c.year].filter(Boolean).join(', ')).join('; ') },
+          {
+            kind: 'p',
+            text: certificates
+              .filter((c) => !c.masked)
+              .map((c) => `${t(c.name)}, ${c.issuer}, ${c.year}`)
+              .join('; '),
+          },
         ],
       },
       {

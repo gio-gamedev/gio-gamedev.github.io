@@ -24,7 +24,8 @@ export type IconName =
   | 'moon'
   | 'list'
   | 'flag'
-  | 'compass';
+  | 'compass'
+  | 'search';
 
 const strokePaths: Record<Exclude<IconName, 'linkedin' | 'github'>, ReactNode> = {
   mail: (
@@ -128,6 +129,12 @@ const strokePaths: Record<Exclude<IconName, 'linkedin' | 'github'>, ReactNode> =
     <>
       <circle cx="12" cy="12" r="9" />
       <path d="m15.5 8.5-2 5-5 2 2-5z" />
+    </>
+  ),
+  search: (
+    <>
+      <circle cx="11" cy="11" r="6.5" />
+      <path d="m20 20-4.2-4.2" />
     </>
   ),
 };

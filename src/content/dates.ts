@@ -12,3 +12,10 @@ export function monthYear(iso: string, lang: Lang): string {
   const [year, month] = iso.split('-').map(Number);
   return `${months[lang][month - 1]} ${year}`;
 }
+
+/** "2019-02-22" → "Feb 22, 2019" / "22/02/2019". */
+export function fullDate(iso: string, lang: Lang): string {
+  const [year, month, day] = iso.split('-');
+  if (lang === 'pt') return `${day}/${month}/${year}`;
+  return `${months.en[Number(month) - 1]} ${Number(day)}, ${year}`;
+}

@@ -29,6 +29,8 @@ export type Port = 'Gameloft' | 'Lume Pad' | 'CrazyGames';
 export type Project = {
   /** A plain string when the title is the same in both languages. */
   name: string | L;
+  /** Former title of the same game. */
+  aka?: string;
   category: Category;
   platforms: string[];
   testing: Testing[];
@@ -39,7 +41,12 @@ export type Project = {
   /** Partner storefronts; these also list the game under Publishing. */
   ports?: Port[];
   selected?: boolean;
-  focus?: L;
+  /** Featured projects: the product and platform (a period only when publicly confirmed). */
+  context?: L;
+  /** Featured projects: what Giovanni did on it, from confirmed facts only. */
+  contribution?: L;
+  /** Public page that shows the product, when it is not the first store link. */
+  evidence?: { url: string; label: L };
   /** Release status, such as a demo. */
   status?: L;
   /** Store or play links, main one first. */
@@ -126,7 +133,7 @@ export const projectKey = (project: Project) => (typeof project.name === 'string
 export const projectName = (project: Project, lang: Lang) =>
   typeof project.name === 'string' ? project.name : project.name[lang];
 
-/** Must match the cover import script. */
+/** Must match the cover import script and the asset package folder names. */
 export const slugify = (text: string) =>
   text
     .normalize('NFD')
@@ -175,17 +182,25 @@ export const projects: Project[] = [
   p({ en: 'CAIXA Universe', pt: 'Universo CAIXA' }, 'Roblox', {
     selected: true,
     links: [roblox('131872423586473')],
-    focus: {
-      en: 'Branded experience · gameplay flow · platform requirements',
-      pt: 'Experiência de marca · fluxo de gameplay · requisitos da plataforma',
+    context: {
+      en: 'Branded Roblox experience for CAIXA, the Brazilian federal bank.',
+      pt: 'Experiência de marca da CAIXA no Roblox.',
+    },
+    contribution: {
+      en: 'Tested the gameplay flow, UX and multiplayer sessions against Roblox platform requirements; defects documented for development and fixes checked with regression passes.',
+      pt: 'Testes do fluxo de gameplay, da UX e das sessões multiplayer frente aos requisitos da plataforma Roblox; defeitos documentados para o desenvolvimento e correções conferidas com regressão.',
     },
   }),
   p('Pro Kick Simulator', 'Roblox', {
     selected: true,
     links: [roblox('86365208170090')],
-    focus: {
-      en: 'Gameplay mechanics · progression systems · Roblox platform validation',
-      pt: 'Mecânicas de gameplay · sistemas de progressão · validação na plataforma Roblox',
+    context: {
+      en: 'Football simulator on Roblox with progression systems, live on the platform.',
+      pt: 'Simulador de futebol no Roblox com sistemas de progressão, publicado na plataforma.',
+    },
+    contribution: {
+      en: 'Functional and regression testing of gameplay mechanics, progression and multiplayer sessions, plus Roblox platform requirements. Defects reported with steps and evidence, fixes verified.',
+      pt: 'Testes funcionais e de regressão das mecânicas de gameplay, da progressão e das sessões multiplayer, além dos requisitos da plataforma Roblox. Defeitos relatados com passos e evidências, e correções verificadas.',
     },
   }),
   p('Corrida do Galo', 'Roblox', { links: [roblox('95423176261993')] }),
@@ -203,30 +218,20 @@ export const projects: Project[] = [
   p("Mimi's Dream Builders!", 'Roblox'),
 
   // Fortnite / UEFN
-  p('Tuning Cars Tycoon', 'Fortnite/UEFN', {
-    selected: true,
-    links: [fortnite('5473-4322-7315')],
-    focus: {
-      en: 'Car customization tycoon · economy and progression · multiplayer sessions',
-      pt: 'Tycoon de customização de carros · economia e progressão · sessões multiplayer',
-    },
-  }),
+  p('Tuning Cars Tycoon', 'Fortnite/UEFN', { links: [fortnite('5473-4322-7315')] }),
   p('Football Tycoon (Soccer Tycoon)', 'Fortnite/UEFN', {
     selected: true,
     links: [fortnite('8773-9657-5309')],
-    focus: {
-      en: 'Football tycoon · progression and economy · live updates',
-      pt: 'Tycoon de futebol · progressão e economia · atualizações live',
+    context: {
+      en: 'Football tycoon island in Fortnite, built in UEFN and updated live.',
+      pt: 'Ilha de tycoon de futebol no Fortnite, feita no UEFN e atualizada ao vivo.',
+    },
+    contribution: {
+      en: 'Tested progression, economy and multiplayer sessions, with regression passes on live updates and checks against Fortnite publishing requirements.',
+      pt: 'Testes de progressão, economia e sessões multiplayer, com regressão nas atualizações live e checagem dos requisitos de publicação do Fortnite.',
     },
   }),
-  p('World Soccer Tycoon', 'Fortnite/UEFN', {
-    selected: true,
-    links: [fortnite('8861-6784-3687')],
-    focus: {
-      en: 'Multiplayer sessions · progression · player state validation',
-      pt: 'Sessões multiplayer · progressão · validação de estado do jogador',
-    },
-  }),
+  p('World Soccer Tycoon', 'Fortnite/UEFN', { links: [fortnite('8861-6784-3687')] }),
   p('Skate Tycoon', 'Fortnite/UEFN', { links: [fortnite('0543-1357-2916')] }),
   p('Surf Tycoon', 'Fortnite/UEFN', { links: [fortnite('3286-6093-6738')] }),
   p('Baseball Tycoon', 'Fortnite/UEFN', { links: [fortnite('0752-0223-8137')] }),
@@ -242,16 +247,25 @@ export const projects: Project[] = [
   p('Street Champions', 'Fortnite/UEFN', { links: [fortnite('0178-0443-6758')] }),
   p('Red vs. Blue - Paintball', 'Fortnite/UEFN', { links: [fortnite('6571-7622-8921')] }),
   p('Prop Hunt - Rio', 'Fortnite/UEFN', { links: [fortnite('9234-4701-5715')] }),
-  p('Coconuts vs Pirates', 'Fortnite/UEFN', { links: [fortnite('0534-2548-0763')] }),
-  p('Island Defense', 'Fortnite/UEFN'),
+  // Same island as the former "Island Defense" (confirmed by Giovanni).
+  p('Coconuts vs Pirates', 'Fortnite/UEFN', { aka: 'Island Defense', links: [fortnite('0534-2548-0763')] }),
   p('Winter Sports', 'Fortnite/UEFN'),
 
   // The Sandbox
   p('The Walking Dead: Through the Tower', 'The Sandbox', {
     selected: true,
-    focus: {
-      en: 'Licensed IP experience · gameplay flow · platform requirements',
-      pt: 'Experiência de IP licenciada · fluxo de gameplay · requisitos da plataforma',
+    context: {
+      en: 'Licensed The Walking Dead experience in The Sandbox (Web3), part of The Sandbox Alpha Season 3 (Oct–Dec 2023).',
+      pt: 'Experiência licenciada de The Walking Dead no The Sandbox (Web3), parte da Alpha Season 3 do The Sandbox (out–dez/2023).',
+    },
+    contribution: {
+      en: 'Tested the gameplay flow, UX and multiplayer of a licensed IP experience against The Sandbox platform requirements.',
+      pt: 'Testes do fluxo de gameplay, da UX e do multiplayer de uma experiência de IP licenciada frente aos requisitos da plataforma The Sandbox.',
+    },
+    // The experience is no longer live; the game's wiki documents it.
+    evidence: {
+      url: 'https://walkingdead.fandom.com/wiki/The_Walking_Dead:_The_Sandbox',
+      label: { en: 'Read about it on the wiki', pt: 'Ver na wiki do jogo' },
     },
   }),
   p('Stonebridge — Dungeon Siege', 'The Sandbox'),
@@ -282,17 +296,25 @@ export const projects: Project[] = [
     selected: true,
     studio: 'Space Bit Games',
     links: [play('br.com.tapps.logicpic')],
-    focus: {
-      en: 'Mobile compatibility · device coverage · store submission',
-      pt: 'Compatibilidade mobile · cobertura de dispositivos · submissão às lojas',
+    context: {
+      en: 'Picture-logic puzzle game for iOS and Android.',
+      pt: 'Jogo de quebra-cabeça lógico com imagens para iOS e Android.',
+    },
+    contribution: {
+      en: 'Manual QA on functionality, usability, stability and player experience: test scenarios created and run, defects documented with clear reproduction steps.',
+      pt: 'QA manual de funcionalidade, usabilidade, estabilidade e experiência do jogador: cenários de teste criados e executados, e defeitos documentados com passos claros de reprodução.',
     },
   }),
   p('Rumble Kong League', 'Mobile', {
     selected: true,
     links: [play('com.hermitcrabstudio.f2p.rl'), appStore('6471519344')],
-    focus: {
-      en: '3v3 multiplayer matches · device compatibility · store release',
-      pt: 'Partidas multiplayer 3v3 · compatibilidade de dispositivos · lançamento nas lojas',
+    context: {
+      en: '3v3 basketball game for iOS and Android.',
+      pt: 'Jogo de basquete 3v3 para iOS e Android.',
+    },
+    contribution: {
+      en: 'Tested 3v3 multiplayer matches, compatibility across low-end, mid-range and reference devices, and App Store and Google Play release requirements.',
+      pt: 'Testes das partidas multiplayer 3v3, da compatibilidade em aparelhos de entrada, intermediários e de referência, e dos requisitos de lançamento na App Store e no Google Play.',
     },
   }),
   p('Arcane Merge – Fantasy Mix', 'Mobile', {
@@ -398,29 +420,68 @@ export const inCategory = (project: Project, category: Category) =>
 /** Games only (the Applications category is web products, not games). */
 export const gameProjects = projects.filter((project) => project.category !== 'Applications');
 
-/** Shown as "110+": the game count rounded down to the ten. */
-export const gameCount = Math.floor(gameProjects.length / 10) * 10;
+/** Unique games in the catalog, shown as the exact number. */
+export const gameCount = gameProjects.length;
 
-/** Ports to Gameloft (telco) and Lume Pad, rounded down to the ten. */
+/** Web applications in the catalog. */
+export const appCount = projects.length - gameCount;
+
+/** Ports to Gameloft (telco) and Lume Pad, rounded down to the ten ("40+"). */
 export const portCount =
   Math.floor(projects.filter((x) => x.ports?.some((port) => port !== 'CrazyGames')).length / 10) * 10;
+
+/** Short store name for a secondary link: "App Store", "CrazyGames". */
+export function storeName(url: string): string {
+  const host = new URL(url).hostname;
+  if (host.includes('steampowered')) return 'Steam';
+  if (host.includes('play.google')) return 'Google Play';
+  if (host.includes('apps.apple')) return 'App Store';
+  if (host.includes('crazygames')) return 'CrazyGames';
+  if (host.includes('roblox')) return 'Roblox';
+  if (host.includes('fortnite')) return 'Fortnite';
+  if (host.includes('sandbox.game')) return 'The Sandbox';
+  if (host.includes('youtube')) return 'YouTube';
+  if (host.includes('fandom')) return 'Wiki';
+  return host;
+}
+
+export function storeLabel(url: string): L {
+  const host = new URL(url).hostname;
+  if (host.includes('steampowered')) return { en: 'View on Steam', pt: 'Ver na Steam' };
+  if (host.includes('play.google')) return { en: 'View on Google Play', pt: 'Ver no Google Play' };
+  if (host.includes('apps.apple')) return { en: 'View on the App Store', pt: 'Ver na App Store' };
+  if (host.includes('crazygames')) return { en: 'Play on CrazyGames', pt: 'Jogar no CrazyGames' };
+  if (host.includes('roblox')) return { en: 'Play on Roblox', pt: 'Jogar no Roblox' };
+  if (host.includes('fortnite')) return { en: 'Play in Fortnite', pt: 'Jogar no Fortnite' };
+  if (host.includes('sandbox.game')) return { en: 'Play in The Sandbox', pt: 'Jogar no The Sandbox' };
+  if (host.includes('youtube')) return { en: 'Watch the trailer', pt: 'Ver o trailer' };
+  return { en: 'Open link', pt: 'Abrir link' };
+}
+
+/** The public page used as evidence of the product: an explicit one, or the main store link. */
+export function evidenceOf(project: Project): { url: string; label: L } | undefined {
+  if (project.evidence) return project.evidence;
+  const url = project.links?.[0];
+  return url ? { url, label: storeLabel(url) } : undefined;
+}
 
 /** Mixed platforms, strongest public reach first, every card with real cover art. */
 const featuredOrder = [
   'Pro Kick Simulator',
+  'Football Tycoon (Soccer Tycoon)',
   'Logic Pic',
   'CAIXA Universe',
   'The Walking Dead: Through the Tower',
-  'Tuning Cars Tycoon',
   'Rumble Kong League',
-  'Football Tycoon (Soccer Tycoon)',
-  'World Soccer Tycoon',
 ];
 
+// A featured card must say what Giovanni did and point to public evidence; the build fails otherwise.
 export const featuredProjects = featuredOrder.map((key) => {
   const project = projects.find((x) => projectKey(x) === key);
   if (!project) throw new Error(`Featured project not found: ${key}`);
   if (!coverOf(project)) throw new Error(`Featured project without a cover: ${key}`);
+  if (!project.context || !project.contribution) throw new Error(`Featured project without context or contribution: ${key}`);
+  if (!evidenceOf(project)) throw new Error(`Featured project without public evidence: ${key}`);
   return project;
 });
 
@@ -438,33 +499,6 @@ export const categoryScope = Object.fromEntries(
     ),
   ]),
 ) as Record<Category, Testing[]>;
-
-/** Short store name for a secondary link: "App Store", "CrazyGames". */
-export function storeName(url: string): string {
-  const host = new URL(url).hostname;
-  if (host.includes('steampowered')) return 'Steam';
-  if (host.includes('play.google')) return 'Google Play';
-  if (host.includes('apps.apple')) return 'App Store';
-  if (host.includes('crazygames')) return 'CrazyGames';
-  if (host.includes('roblox')) return 'Roblox';
-  if (host.includes('fortnite')) return 'Fortnite';
-  if (host.includes('sandbox.game')) return 'The Sandbox';
-  if (host.includes('youtube')) return 'YouTube';
-  return host;
-}
-
-export function storeLabel(url: string): L {
-  const host = new URL(url).hostname;
-  if (host.includes('steampowered')) return { en: 'View on Steam', pt: 'Ver na Steam' };
-  if (host.includes('play.google')) return { en: 'View on Google Play', pt: 'Ver no Google Play' };
-  if (host.includes('apps.apple')) return { en: 'View on the App Store', pt: 'Ver na App Store' };
-  if (host.includes('crazygames')) return { en: 'Play on CrazyGames', pt: 'Jogar no CrazyGames' };
-  if (host.includes('roblox')) return { en: 'Play on Roblox', pt: 'Jogar no Roblox' };
-  if (host.includes('fortnite')) return { en: 'Play in Fortnite', pt: 'Jogar no Fortnite' };
-  if (host.includes('sandbox.game')) return { en: 'Play in The Sandbox', pt: 'Jogar no The Sandbox' };
-  if (host.includes('youtube')) return { en: 'Watch the trailer', pt: 'Ver o trailer' };
-  return { en: 'Open link', pt: 'Abrir link' };
-}
 
 export const coverUrl = (file: string) => `${import.meta.env.BASE_URL}covers/${file}.webp`;
 

@@ -1,31 +1,20 @@
 import { useEffect, type ComponentType } from 'react';
-import { Approach } from './components/Approach';
-import { Awards } from './components/Awards';
 import { Contact } from './components/Contact';
 import { Education } from './components/Education';
+import { Evidence } from './components/Evidence';
 import { Experience } from './components/Experience';
-import { Skills } from './components/Skills';
 import { Footer } from './components/Footer';
 import { Header } from './components/Header';
 import { Hero } from './components/Hero';
 import { ProjectGallery } from './components/ProjectGallery';
 import { Projects } from './components/Projects';
-import { WorkSamples } from './components/WorkSamples';
+import { Recognition } from './components/Recognition';
 import { ui } from './content/ui';
 import { useLang } from './i18n/LanguageContext';
 
-// Proof first (projects, work samples), then history, method and skills.
-// Sections are numbered in this order.
-const sections: ComponentType<{ index: string }>[] = [
-  Projects,
-  WorkSamples,
-  Experience,
-  Approach,
-  Skills,
-  Awards,
-  Education,
-  Contact,
-];
+// Proof first (selected projects, a real QA document), then experience, recognition, education
+// and contact. Sections are numbered in this order.
+const sections: ComponentType<{ index: string }>[] = [Projects, Evidence, Experience, Recognition, Education, Contact];
 
 export function App() {
   const { page, t } = useLang();
