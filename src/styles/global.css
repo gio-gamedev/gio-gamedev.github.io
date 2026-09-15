@@ -127,7 +127,9 @@
 
   --radius: 14px;
   --radius-sm: 8px;
-  --container: 1120px;
+  /* Wide enough for 3 project cards and a 5-column catalog on large screens; running text keeps
+     its own measure (about 65 characters per line) inside it. */
+  --container: 80rem;
   --gutter: clamp(16px, 4vw, 32px);
   --header-h: 64px;
 }
@@ -142,6 +144,21 @@ html {
   scroll-behavior: smooth;
   scroll-padding-top: var(--header-h);
   -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+
+/* Large monitors: text and the container (in rem) grow a little, so the page doesn't look small
+   in the middle of a 2K/4K screen. Laptops and phones keep 16 px. */
+@media (min-width: 1800px) {
+  html {
+    font-size: 106.25%;
+  }
+}
+
+@media (min-width: 2400px) {
+  html {
+    font-size: 112.5%;
+  }
 }
 
 body {
