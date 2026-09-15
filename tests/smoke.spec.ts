@@ -192,7 +192,7 @@ for (const page of pages) {
 
     test('credits the Testathon team, shows the photos and quotes the testimonial exactly', async ({ page: tab }) => {
       await tab.goto(page.path);
-      await expect(tab.locator('#recognition article a[aria-label$="LinkedIn"]')).toHaveCount(5);
+      await expect(tab.locator('#recognition article a[aria-label$="LinkedIn"]')).toHaveCount(6);
       const quote = tab.locator('#recognition blockquote');
       await expect(quote).toHaveAttribute('lang', 'pt-BR');
       await expect(quote).toHaveText(QUOTE);

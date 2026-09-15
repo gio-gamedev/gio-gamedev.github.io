@@ -350,6 +350,7 @@ export const recognition = {
     { name: 'Giovanni Mariano', url: 'https://www.linkedin.com/in/giogamedev/' },
     { name: 'Vinicius Mafra Lopes', url: 'https://www.linkedin.com/in/vinicius-mafra-lopes-8a409219a/' },
     { name: 'Amanda Oliveira', url: 'https://www.linkedin.com/in/amandacoliveira95' },
+    { name: 'Jenifer Silva', url: 'https://www.linkedin.com/in/jenifersilva/' },
   ],
   video: 'https://www.youtube.com/watch?v=nuXAPn1jyfY',
   /** Event photos (public/testathon/<file>-<width>.webp). Nobody is named in the photos. */
