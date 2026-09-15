@@ -587,15 +587,6 @@ export const covers: Record<string, CoverArt> = {
     "height": 215,
     "fit": "contain"
   },
-  "blocky-gate": {
-    "widths": [
-      240,
-      480
-    ],
-    "width": 480,
-    "height": 480,
-    "fit": "contain"
-  },
   "bump-it-up": {
     "widths": [
       240,
@@ -605,25 +596,6 @@ export const covers: Record<string, CoverArt> = {
     "width": 712,
     "height": 400,
     "fit": "cover"
-  },
-  "clickermon": {
-    "widths": [
-      240,
-      480,
-      800
-    ],
-    "width": 800,
-    "height": 800,
-    "fit": "contain"
-  },
-  "colorgrid": {
-    "widths": [
-      240,
-      460
-    ],
-    "width": 460,
-    "height": 215,
-    "fit": "contain"
   },
   "double-bounce": {
     "widths": [
@@ -641,25 +613,6 @@ export const covers: Record<string, CoverArt> = {
     ],
     "width": 400,
     "height": 300,
-    "fit": "contain"
-  },
-  "flip-the-box": {
-    "widths": [
-      240,
-      480,
-      712
-    ],
-    "width": 712,
-    "height": 400,
-    "fit": "cover"
-  },
-  "goroons": {
-    "widths": [
-      240,
-      460
-    ],
-    "width": 460,
-    "height": 215,
     "fit": "contain"
   },
   "guitar-drum-music-run": {
@@ -700,24 +653,6 @@ export const covers: Record<string, CoverArt> = {
     "height": 480,
     "fit": "contain"
   },
-  "hexon": {
-    "widths": [
-      240,
-      460
-    ],
-    "width": 460,
-    "height": 215,
-    "fit": "contain"
-  },
-  "iin": {
-    "widths": [
-      240,
-      460
-    ],
-    "width": 460,
-    "height": 215,
-    "fit": "contain"
-  },
   "knight-swap": {
     "widths": [
       240,
@@ -746,36 +681,6 @@ export const covers: Record<string, CoverArt> = {
     "height": 600,
     "fit": "contain"
   },
-  "ladder-stacker": {
-    "widths": [
-      240,
-      480,
-      800
-    ],
-    "width": 800,
-    "height": 600,
-    "fit": "contain"
-  },
-  "milky-way-coliseum": {
-    "widths": [
-      240,
-      480,
-      800
-    ],
-    "width": 800,
-    "height": 800,
-    "fit": "contain"
-  },
-  "minute-bomb": {
-    "widths": [
-      240,
-      480,
-      800
-    ],
-    "width": 800,
-    "height": 500,
-    "fit": "contain"
-  },
   "qubine": {
     "widths": [
       240,
@@ -783,24 +688,6 @@ export const covers: Record<string, CoverArt> = {
     ],
     "width": 315,
     "height": 250,
-    "fit": "contain"
-  },
-  "slackline-infinite": {
-    "widths": [
-      240,
-      480
-    ],
-    "width": 480,
-    "height": 480,
-    "fit": "contain"
-  },
-  "sokobalien": {
-    "widths": [
-      240,
-      460
-    ],
-    "width": 460,
-    "height": 215,
     "fit": "contain"
   },
   "spin-football-rush": {
@@ -876,15 +763,6 @@ export const covers: Record<string, CoverArt> = {
     ],
     "width": 460,
     "height": 215,
-    "fit": "contain"
-  },
-  "vacuum-guy": {
-    "widths": [
-      240,
-      332
-    ],
-    "width": 332,
-    "height": 591,
     "fit": "contain"
   },
   "eclub-benefits-platform": {

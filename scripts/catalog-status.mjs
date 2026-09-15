@@ -26,6 +26,13 @@ const withheld = {
     'Retida: a página no Roblox (103709979719238) é de outro grupo (ProSoccerGroup); identidade não confirmada em 15/09/2026.',
 };
 
+// Taken out of the catalog by Giovanni (2026-09-15); kept in the report, without a cover.
+const removed = new Set([
+  'slice-mania', 'sniper-master', 'parkpurr', 'farm-break', 'kite-drop', 'vacuum-guy', 'sokobalien',
+  'slackline-infinite', 'minute-bomb', 'ladder-stacker', 'milky-way-coliseum', 'iin', 'hexon', 'flip-the-box',
+  'goroons', 'blocky-gate', 'clickermon', 'colorgrid', 'vila-do-brasa-sports-land-hub',
+]);
+
 const statusLabel = {
   imagem_externa_selecionada: 'imagem externa selecionada',
   capa_publicada_preservada: 'capa publicada preservada',
@@ -39,6 +46,11 @@ for (const title of manifest.titles) {
   const pending = title.status === 'pendente';
   let note = pending ? title.notes : '';
 
+  if (removed.has(title.slug)) {
+    if (cover) errors.push(`${title.slug}: removed from the catalog, but its cover is still published`);
+    rows.push({ title, cover, note: 'Removido do catálogo (15/09/2026).', removed: true });
+    continue;
+  }
   if (cover && pending) errors.push(`${title.slug}: cover published, but the manifest marks it pending`);
   if (cover && withheld[title.slug]) errors.push(`${title.slug}: cover published, but it is withheld`);
   if (!cover && !pending && !withheld[title.slug]) errors.push(`${title.slug}: approved image without a cover on the site`);
@@ -65,14 +77,16 @@ for (const slug of Object.keys(covers)) {
 if (manifest.titles.length !== 116) errors.push(`expected 116 titles in the manifest, found ${manifest.titles.length}`);
 
 const published = rows.filter((r) => r.cover).length;
+const inCatalog = rows.filter((r) => !r.removed);
 const cell = (text) => String(text ?? '').replace(/\|/g, '\\|');
 const report = [
   '# Status das imagens do catálogo (local, fora do git)',
   '',
   `Gerado por \`npm run catalog\` em ${new Date().toISOString().slice(0, 10)} a partir de images/IMAGENS-PORTFOLIO-AJUSTES-FINAIS/manifesto-imagens.json.`,
   '',
-  `- Títulos: ${rows.length} · com capa no site: ${published} · sem imagem: ${rows.length - published}`,
-  `- Pendentes no pacote: ${rows.filter((r) => r.title.status === 'pendente').length} · retidas após conferência: ${Object.keys(withheld).length}`,
+  `- Títulos no manifesto: ${rows.length} · removidos do catálogo: ${rows.length - inCatalog.length} · no catálogo: ${inCatalog.length}`,
+  `- No catálogo: com capa ${published} · sem imagem ${inCatalog.length - published}`,
+  `- Pendentes no pacote (no catálogo): ${inCatalog.filter((r) => r.title.status === 'pendente').length} · retidas após conferência: ${Object.keys(withheld).length}`,
   `- Problemas: ${errors.length ? errors.join('; ') : 'nenhum'}`,
   '',
   '| Título | Status no pacote | No site | Tamanho original | Larguras publicadas | Enquadramento | Fonte | Observação |',
@@ -96,6 +110,8 @@ const report = [
 
 mkdirSync(path.join(root, 'private'), { recursive: true });
 writeFileSync(path.join(root, 'private', 'catalog-status.md'), report);
-console.log(`catalog-status: ${rows.length} titles, ${published} covers published, ${errors.length} problem(s)`);
+console.log(
+  `catalog-status: ${inCatalog.length} titles in the catalog (${rows.length - inCatalog.length} removed), ${published} covers published, ${errors.length} problem(s)`,
+);
 for (const error of errors) console.error(`  - ${error}`);
 if (errors.length) process.exit(1);

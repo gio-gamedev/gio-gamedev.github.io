@@ -12,7 +12,7 @@ const pages = [
     minutes: '110M+',
     contribution: 'My contribution',
     english: 'English: EF SET B1 — 41/100 (Reading & Listening)',
-    average: '109 games tested over four years in QA, working in teams of four to five people — approximately 27 games per year on average.',
+    average: '90 games tested over four years in QA, working in teams of four to five people — approximately 23 games per year on average.',
     conferral: 'Feb 22, 2019',
     original: 'Original recommendation in Portuguese',
   },
@@ -27,7 +27,7 @@ const pages = [
     contribution: 'Minha contribuição',
     english: 'Inglês: EF SET B1 — 41/100 (leitura e compreensão oral)',
     average:
-      '109 jogos testados em quatro anos de atuação em QA, com equipes de quatro a cinco pessoas — média histórica de aproximadamente 27 jogos por ano.',
+      '90 jogos testados em quatro anos de atuação em QA, com equipes de quatro a cinco pessoas — média histórica de aproximadamente 23 jogos por ano.',
     conferral: '22/02/2019',
     original: null,
   },
@@ -58,8 +58,8 @@ const galleries = [
   },
 ];
 
-/** 116 unique titles: 109 games and 7 web apps (Island Defense is the old name of Coconuts vs Pirates). */
-const TITLES = 116;
+/** 97 unique titles: 90 games and 7 web apps (Island Defense is the old name of Coconuts vs Pirates). */
+const TITLES = 97;
 
 const QUOTE =
   'Trabalho com o Giovanni há anos e posso atestar sobre sua paixão por jogos e qualidade. É uma grande facilidade trabalhar com ele, visto que é solícito, proativo e muito dedicado com o que faz. Me ajudou muito a crescer e trabalhar melhor em equipe, admiro sua organização, responsabilidade e tato com os times.';
@@ -247,7 +247,7 @@ for (const gallery of galleries) {
       expect(total).toBe(TITLES);
       await expect(visibleTiles(tab)).toHaveCount(total);
       // "All" lists a port once, under its main platform; the Publishing filter adds the ports.
-      await expect(tab.locator('section[aria-labelledby="group-publishing"] li:not([hidden])')).toHaveCount(41);
+      await expect(tab.locator('section[aria-labelledby="group-publishing"] li:not([hidden])')).toHaveCount(23);
     });
 
     test('filters by platform and puts the filter in the URL', async ({ page: tab }) => {
@@ -258,7 +258,7 @@ for (const gallery of galleries) {
       await expect(visibleTiles(tab)).toHaveCount(20);
       await expect(tab).toHaveURL(/\?p=fortnite-uefn/);
       await tab.getByRole('button', { name: gallery.publishing }).click();
-      await expect(visibleTiles(tab)).toHaveCount(43);
+      await expect(visibleTiles(tab)).toHaveCount(25);
     });
 
     test('back and forward step through the filters', async ({ page: tab }) => {

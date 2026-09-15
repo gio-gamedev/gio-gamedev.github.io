@@ -288,7 +288,6 @@ export const projects: Project[] = [
   p('The Shebeen', 'The Sandbox'),
   p('The Valley of Belonging II', 'The Sandbox'),
   p('Liberty Legends', 'The Sandbox'),
-  p('Vila do Brasa (Sports Land Hub)', 'The Sandbox'),
   p('Sports Land Stadium', 'The Sandbox'),
   p('Sports Land City Center', 'The Sandbox'),
   p('Sports Land Football Saga', 'The Sandbox'),
@@ -396,39 +395,21 @@ export const projects: Project[] = [
   gameloft('Hello Kitty – Activity Book for Kids', 'Webcore Games'),
 
   // Publishing & ports: Leia Lume Pad 1 and 2 (3D tablets). Original studio only where confirmed.
-  lumePad('Blocky Gate', 'Maqna Interactive'),
   lumePad('Bump it Up'),
-  lumePad('Clickermon'),
-  lumePad('Colorgrid'),
   lumePad('Double Bounce', 'Studica'),
-  lumePad('Farm Break'),
   lumePad('Fire and Ice Run'),
-  lumePad('Flip the Box'),
-  lumePad('Goroons'),
   lumePad('Guitar & Drum: Music & Run'),
   lumePad('Guitar & Drum: Rainbow Band'),
   lumePad('Hang the Kings'),
-  lumePad('Hexon'),
-  lumePad('IIN'),
-  lumePad('Kite Drop'),
   lumePad('Knight Swap'),
   lumePad('Knights Retreat'),
   lumePad('Kukulcan'),
-  lumePad('Ladder Stacker'),
   lumePad('Mesmerized'),
-  lumePad('Milky Way Coliseum'),
-  lumePad('Minute Bomb'),
-  lumePad('Parkpurr'),
   lumePad('Qubine'),
-  lumePad('Slackline Infinite', 'Maqna Interactive'),
-  lumePad('Slice Mania'),
-  lumePad('Sniper Master'),
-  lumePad('Sokobalien'),
   lumePad('Sugar Rush'),
   lumePad('Tinker Racers'),
   lumePad('Tropical Kong Penalty', 'Maqna Interactive'),
   lumePad('Unlock the King'),
-  lumePad('Vacuum Guy'),
 
   // Applications
   p('eClub — Benefits Platform', 'Applications', { links: ['https://hermitcrabstudio.com/portfolio/eclub'] }),
@@ -450,10 +431,13 @@ export const gameProjects = projects.filter((project) => project.category !== 'A
 /** Unique games in the catalog, shown as the exact number. */
 export const gameCount = gameProjects.length;
 
+/** Rounded down to the ten ("90+"), for texts printed once that shouldn't go stale (resume, OG image). */
+export const gameCountRounded = Math.floor(gameCount / 10) * 10;
+
 /** Web applications in the catalog. */
 export const appCount = projects.length - gameCount;
 
-/** Ports to Gameloft (telco) and Lume Pad, rounded down to the ten ("40+"). */
+/** Ports to Gameloft (telco) and Lume Pad, rounded down to the ten ("20+"). */
 export const portCount =
   Math.floor(projects.filter((x) => x.ports?.some((port) => port !== 'CrazyGames')).length / 10) * 10;
 

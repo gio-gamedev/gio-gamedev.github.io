@@ -12,7 +12,7 @@ import {
   skills,
   summary,
 } from '../content/profile';
-import { categoryInfo, featuredProjects, projectName } from '../content/projects';
+import { categoryInfo, featuredProjects, gameCountRounded, projectName } from '../content/projects';
 import { formatReachWithSource } from '../content/reach';
 import { SITE_URL } from '../content/site';
 import type { L, Lang } from '../content/types';
@@ -43,10 +43,10 @@ const heading = {
   academic: { en: 'Academic Projects', pt: 'Projetos Acadêmicos' },
   certifications: { en: 'Certifications', pt: 'Certificações' },
   languages: { en: 'Languages', pt: 'Idiomas' },
-  // Fixed "100+" so the resume text doesn't go stale as the catalog grows.
+  // Rounded down ("90+") so the printed resume doesn't go stale as the catalog grows.
   projectsLead: {
-    en: '100+ games tested. Selected titles (public figures belong to each product and its whole team):',
-    pt: 'Mais de 100 jogos testados. Títulos selecionados (os números públicos são de cada produto e de todo o time):',
+    en: `${gameCountRounded}+ games tested. Selected titles (public figures belong to each product and its whole team):`,
+    pt: `${gameCountRounded}+ jogos testados. Títulos selecionados (os números públicos são de cada produto e de todo o time):`,
   },
   teamAward: { en: 'team award', pt: 'prêmio de equipe' },
 } satisfies Record<string, L>;

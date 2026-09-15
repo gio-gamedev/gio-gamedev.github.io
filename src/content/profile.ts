@@ -1,4 +1,4 @@
-import { gameCount, portCount } from './projects';
+import { gameCount, gameCountRounded, portCount } from './projects';
 import { numberWord, qaYears, techYears } from './stats';
 import type { L, Lang } from './types';
 
@@ -108,10 +108,10 @@ export const gamesPerYear = Math.round(gameCount / qaYears);
 
 /** Summary for the resume and the machine-readable files. Supports **bold** markers. */
 export const summary = {
-  // The count stays "100+" so the resume text doesn't go stale.
+  // The count is rounded down ("90+") so the printed resume doesn't go stale.
   lead: {
-    en: `QA Analyst specialized in Game QA, with **${qaYears} years** in game studios and **${techYears} years** in technology. I have tested **100+ games** and interactive experiences on Roblox, Fortnite/UEFN, The Sandbox, mobile, PC and Lume Pad 3D, working in QA teams of four to five people.`,
-    pt: `Analista de QA especializado em Game QA, com **${qaYears} anos** em estúdios de jogos e **${techYears} anos** em tecnologia. Já testei **mais de 100 jogos** e experiências interativas em Roblox, Fortnite/UEFN, The Sandbox, mobile, PC e Lume Pad 3D, em times de QA de quatro a cinco pessoas.`,
+    en: `QA Analyst specialized in Game QA, with **${qaYears} years** in game studios and **${techYears} years** in technology. I have tested **${gameCountRounded}+ games** and interactive experiences on Roblox, Fortnite/UEFN, The Sandbox, mobile, PC and Lume Pad 3D, working in QA teams of four to five people.`,
+    pt: `Analista de QA especializado em Game QA, com **${qaYears} anos** em estúdios de jogos e **${techYears} anos** em tecnologia. Já testei **${gameCountRounded}+ jogos** e experiências interativas em Roblox, Fortnite/UEFN, The Sandbox, mobile, PC e Lume Pad 3D, em times de QA de quatro a cinco pessoas.`,
   } as L,
   technical: {
     en: 'Technical background in web and backend development: API testing, analytics validation and technical investigation, weighing technical behavior and player experience.',
