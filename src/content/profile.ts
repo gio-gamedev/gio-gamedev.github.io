@@ -496,7 +496,6 @@ export const testimonial = {
   translation:
     'I have worked with Giovanni for years and I can vouch for his passion for games and for quality. He is very easy to work with: helpful, proactive and deeply dedicated to what he does. He helped me a lot to grow and to work better in a team; I admire his organization, his sense of responsibility and the tact he has with teams.',
   author: 'Karen Farah',
-  url: 'https://www.linkedin.com/in/karen-farah/',
   role: { en: 'QA Lead — Hermit Crab Game Studio', pt: 'QA Lead — Hermit Crab Game Studio' } as L,
   context: {
     en: 'LinkedIn recommendation, Sep 2, 2026 · supervised Giovanni directly',

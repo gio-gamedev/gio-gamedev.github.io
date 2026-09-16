@@ -127,11 +127,7 @@ export function Recognition() {
           </div>
         )}
         <figcaption className={styles.caption}>
-          <a className={styles.author} href={testimonial.url} target="_blank" rel="noopener noreferrer">
-            {testimonial.author}
-            <Icon name="linkedin" size={14} />
-            <span className="sr-only"> — LinkedIn {t(ui.a11y.newTab)}</span>
-          </a>
+          <span className={styles.author}>{testimonial.author}</span>
           <span className={styles.role}>{t(testimonial.role)}</span>
           <span className={styles.context}>{t(testimonial.context)}</span>
         </figcaption>
