@@ -1,19 +1,29 @@
-.skills {
+/*
+ * Blocks, not columns: each one is short enough to read in a glance, and the grid reflows from
+ * three to two to one without ever putting a long list next to a short one.
+ */
+.grid {
   display: grid;
-  gap: var(--space-5);
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: clamp(24px, 3vw, 40px) clamp(24px, 3vw, 48px);
+  list-style: none;
+}
+
+.group {
+  padding-top: var(--space-4);
+  border-top: 2px solid var(--border-strong);
 }
 
 .groupTitle {
-  margin-bottom: var(--space-3);
+  margin-bottom: var(--space-4);
   font-family: var(--font-mono);
-  font-size: 0.7rem;
+  font-size: 0.75rem;
   font-weight: 500;
   letter-spacing: 0.1em;
   text-transform: uppercase;
-  color: var(--text-dim);
+  color: var(--accent);
 }
 
-/* What I test and validate: the first thing to read in the column. */
 .chips {
   display: flex;
   flex-wrap: wrap;
@@ -31,58 +41,14 @@
   font-weight: 500;
 }
 
-/* Platforms are context, not a skill claim, so they carry no accent. */
-.platforms li {
-  border-color: var(--border-strong);
-  background: transparent;
-  color: var(--text-muted);
+@media (max-width: 1000px) {
+  .grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
 }
 
-/* Tools, one line per group. */
-.tools {
-  display: grid;
-  margin: 0;
-  border-top: 1px solid var(--border);
-}
-
-.row {
-  display: grid;
-  gap: var(--space-1);
-  padding: var(--space-3) 0;
-  border-bottom: 1px solid var(--border);
-}
-
-.row dt {
-  font-family: var(--font-mono);
-  font-size: 0.7rem;
-  font-weight: 500;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: var(--text-dim);
-}
-
-.row dd {
-  margin: 0;
-  font-size: 0.9rem;
-  color: var(--text-muted);
-}
-
-/* Complementary knowledge: less weight. */
-.extra {
-  font-size: 0.86rem;
-  color: var(--text-muted);
-}
-
-.extraTitle {
-  font-weight: 600;
-  color: var(--text);
-}
-
-/* One column (phones, and the section before the two-column layout kicks in): rows read wider. */
-@media (min-width: 560px) and (max-width: 999px) {
-  .row {
-    grid-template-columns: 11rem minmax(0, 1fr);
-    gap: var(--space-4);
-    align-items: baseline;
+@media (max-width: 620px) {
+  .grid {
+    grid-template-columns: 1fr;
   }
 }

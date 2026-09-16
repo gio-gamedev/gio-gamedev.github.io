@@ -68,3 +68,17 @@
   max-height: calc(92vh - 110px);
   border-radius: 6px;
 }
+
+/* Text runs from the top left and scrolls inside the dialog instead of overflowing it. */
+.dialog[data-variant='text'] {
+  width: min(92vw, 760px);
+}
+
+.dialog[data-variant='text'] .body {
+  display: block;
+  place-items: initial;
+  max-height: calc(92vh - 70px);
+  padding: clamp(16px, 3vw, 28px);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}

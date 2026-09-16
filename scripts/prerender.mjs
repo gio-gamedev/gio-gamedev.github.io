@@ -10,9 +10,8 @@ const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const dist = path.join(root, 'dist');
 const ssrDir = path.join(root, 'dist-ssr');
 
-const { render, renderCv, headTags, SITE_URL, cvData, cvStyles, cvTitle, resumeJson, llmsTxt } = await import(
-  pathToFileURL(path.join(ssrDir, 'entry-server.js')).href
-);
+const { render, renderCv, headTags, SITE_URL, cvData, cvStyles, cvTitle, resumeJson, llmsTxt, qaYears, titleCount } =
+  await import(pathToFileURL(path.join(ssrDir, 'entry-server.js')).href);
 const template = await readFile(path.join(dist, 'index.html'), 'utf8');
 
 const HEAD = /<!--head:start-->[\s\S]*?<!--head:end-->/;
@@ -133,6 +132,13 @@ for (const { lang } of homes) {
 await writeFile(path.join(dist, 'resume.json'), `${JSON.stringify(resumeJson(), null, 2)}\n`);
 await writeFile(path.join(dist, 'llms.txt'), llmsTxt());
 console.log('wrote cv pages, resume.json and llms.txt');
+
+// The share image is drawn by Chrome from a plain HTML file, which cannot import the content. The
+// build writes the derived numbers next to it, so the card can never disagree with the site.
+await writeFile(
+  path.join(root, 'scripts', 'og-data.json'),
+  `${JSON.stringify({ years: qaYears, titles: titleCount }, null, 2)}\n`,
+);
 
 // Each URL lists its language versions (and the English one as x-default).
 const lastmod = new Date().toISOString().slice(0, 10);

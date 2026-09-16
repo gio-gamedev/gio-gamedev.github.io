@@ -4,11 +4,12 @@ import { Experience } from '../components/Experience';
 import { Hero } from '../components/Hero';
 import { Projects } from '../components/Projects';
 import { Recognition } from '../components/Recognition';
+import { Skills } from '../components/Skills';
 
 /**
  * The home page, in the order a recruiter reads it: who I am, the proof bar, selected projects,
- * experience with the QA toolkit, recognition, education and contact. Loaded on its own (see
- * src/main.tsx), so the catalog page's code never ships with it.
+ * experience, skills, recognition, education and contact. Loaded on its own (see src/main.tsx), so
+ * the catalog page's code never ships with it.
  */
 export default function HomePage() {
   return (
@@ -16,6 +17,7 @@ export default function HomePage() {
       <Hero />
       <Projects />
       <Experience />
+      <Skills />
       <Recognition />
       <Education />
       <Contact />

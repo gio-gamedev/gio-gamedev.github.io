@@ -1,33 +1,38 @@
+import { profile } from './profile';
 import { appCount, gameCount, projects } from './projects';
 import type { L } from './types';
+
+const NAME = profile.name;
 
 /** Interface labels. Long-form content lives in profile.ts and projects.ts. */
 export const ui = {
   meta: {
+    // The job title stays in English on both versions; the Portuguese description carries the local
+    // wording as well, so a search in Portuguese still matches.
     title: {
-      en: 'Giovanni S. Mariano — Game QA Analyst',
-      pt: 'Giovanni S. Mariano — Analista de QA de Jogos',
+      en: `${NAME} | Game QA Analyst`,
+      pt: `${NAME} | Game QA Analyst`,
     },
     description: {
       en: (years: number) =>
-        `Game QA Analyst with ${years} years in game studios: ${gameCount} games tested on Roblox, Fortnite (UEFN), The Sandbox, mobile, PC and 3D tablets. Selected projects, experience, recognition and resume.`,
+        `Game QA Analyst with ${years} years in game studios: ${gameCount} games and ${appCount} web applications tested on Roblox, Fortnite (UEFN), The Sandbox, mobile, PC and 3D tablets. Selected projects, experience, recognition and resume.`,
       pt: (years: number) =>
-        `Analista de QA de Jogos com ${years} anos em estúdios: ${gameCount} jogos testados em Roblox, Fortnite (UEFN), The Sandbox, mobile, PC e tablets 3D. Projetos selecionados, experiência, reconhecimento e currículo.`,
+        `Game QA Analyst (Analista de QA de Jogos) com ${years} anos em estúdios: ${gameCount} jogos e ${appCount} aplicações web testados em Roblox, Fortnite (UEFN), The Sandbox, mobile, PC e tablets 3D. Projetos selecionados, experiência, reconhecimento e currículo.`,
     },
     galleryTitle: {
-      en: 'Game QA catalog — Giovanni S. Mariano',
-      pt: 'Catálogo de QA de jogos — Giovanni S. Mariano',
+      en: `Game QA catalog — ${NAME}`,
+      pt: `Catálogo de QA de jogos — ${NAME}`,
     },
     galleryDescription: {
       en: (n: number) =>
-        `All ${n} titles Giovanni S. Mariano tested as QA (${gameCount} games and ${appCount} web apps), by platform: Roblox, Fortnite (UEFN), The Sandbox, mobile, PC, ports to telco stores and Lume Pad 3D tablets, and web.`,
+        `All ${n} titles ${NAME} tested as QA (${gameCount} games and ${appCount} web apps), by platform: Roblox, Fortnite (UEFN), The Sandbox, mobile, PC, ports to telco stores and Lume Pad 3D tablets, and web.`,
       pt: (n: number) =>
-        `Os ${n} títulos que Giovanni S. Mariano testou como QA (${gameCount} jogos e ${appCount} aplicações web), por plataforma: Roblox, Fortnite (UEFN), The Sandbox, mobile, PC, portes para lojas telco e tablets 3D Lume Pad, e web.`,
+        `Os ${n} títulos que ${NAME} testou como QA (${gameCount} jogos e ${appCount} aplicações web), por plataforma: Roblox, Fortnite (UEFN), The Sandbox, mobile, PC, portes para lojas telco e tablets 3D Lume Pad, e web.`,
     },
-    jobTitle: { en: 'Game QA Analyst', pt: 'Analista de QA de Jogos' },
+    jobTitle: { en: 'Game QA Analyst', pt: 'Game QA Analyst' },
     ogImageAlt: {
-      en: 'Giovanni S. Mariano — Game QA portfolio',
-      pt: 'Giovanni S. Mariano — portfólio de QA de jogos',
+      en: `${NAME} — Game QA portfolio`,
+      pt: `${NAME} — portfólio de QA de jogos`,
     },
   },
   a11y: {
@@ -41,6 +46,7 @@ export const ui = {
   nav: {
     projects: { en: 'Projects', pt: 'Projetos' },
     experience: { en: 'Experience', pt: 'Experiência' },
+    skills: { en: 'Skills', pt: 'Competências' },
     recognition: { en: 'Recognition', pt: 'Reconhecimento' },
     education: { en: 'Education', pt: 'Formação' },
     contact: { en: 'Contact', pt: 'Contato' },
@@ -53,34 +59,37 @@ export const ui = {
     projects: { en: 'View projects', pt: 'Ver projetos' },
     resume: { en: 'Download resume', pt: 'Baixar currículo' },
     resumeLabel: { en: 'Download resume (PDF, English)', pt: 'Baixar currículo (PDF, português)' },
-    photo: { en: 'Photo of Giovanni S. Mariano', pt: 'Foto de Giovanni S. Mariano' },
+    photo: { en: `Photo of ${NAME}`, pt: `Foto de ${NAME}` },
     facts: { en: 'At a glance', pt: 'Em resumo' },
     specialties: { en: 'Areas of QA', pt: 'Áreas de QA' },
   },
+  // The Word version is still built and served at /cv/ for screening tools; it has no button.
   resume: {
     pdf: { en: 'Resume (PDF)', pt: 'Currículo (PDF)' },
-    docx: { en: 'Resume (Word, .docx)', pt: 'Currículo (Word, .docx)' },
   },
   sections: {
     projects: { en: 'Selected QA Projects', pt: 'Projetos de QA em destaque' },
     // The counts live in the catalog block below the cards, so they are not repeated here.
     projectsSubtitle: {
-      en: 'Six games I tested, across platforms. At Hermit Crab Game Studio unless noted.',
-      pt: 'Seis jogos que testei, em plataformas diferentes. Na Hermit Crab Game Studio, salvo indicação.',
+      en: 'Six titles that show the range of the work: platforms, stages of a project and kinds of QA. At Hermit Crab Game Studio unless noted.',
+      pt: 'Seis títulos que mostram a amplitude do trabalho: plataformas, fases de projeto e tipos de QA. Na Hermit Crab Game Studio, salvo indicação.',
     },
     experience: { en: 'Work Experience', pt: 'Experiência profissional' },
+    skills: { en: 'Skills', pt: 'Competências' },
+    skillsSubtitle: {
+      en: 'Practices, tools and platforms used day to day, grouped by area.',
+      pt: 'Práticas, ferramentas e plataformas do dia a dia, agrupadas por área.',
+    },
     recognition: { en: 'Recognition', pt: 'Reconhecimento' },
     education: { en: 'Education & Certificates', pt: 'Formação e certificados' },
   },
   projects: {
     contribution: { en: 'My contribution', pt: 'Minha contribuição' },
     compliance: { en: 'Compliance', pt: 'Compliance' },
-    brands: { en: 'IPs, brands and partners', pt: 'IPs, marcas e parceiros' },
-    // Says plainly what the list is, so nothing suggests a direct contract with each company.
-    brandsNote: {
-      en: 'These appear in the products I tested at Hermit Crab Game Studio, or are the partners those games were published through. They belong to the products, not to a contract of mine with each company.',
-      pt: 'Aparecem nos produtos que testei na Hermit Crab Game Studio, ou são os parceiros por onde esses jogos foram publicados. São dos produtos: não indicam contrato meu com cada empresa.',
-    },
+    details: { en: 'View details', pt: 'Ver detalhes' },
+    scopeFull: { en: 'QA scope', pt: 'Escopo de QA' },
+    product: { en: 'The product', pt: 'O produto' },
+    brands: { en: 'Brands, IPs and platforms', pt: 'Marcas, IPs e plataformas' },
     catalogTitle: { en: 'Full catalog', pt: 'Catálogo completo' },
     // One line that spells out how the two counts add up ("97 titles: 90 games + 7 web apps").
     catalogSummary: {
@@ -101,10 +110,10 @@ export const ui = {
       en: 'Every title includes functional and regression testing; the typical scope beyond that is listed per platform.',
       pt: 'Todos os títulos incluem testes funcionais e de regressão; o escopo típico além disso aparece em cada plataforma.',
     },
-    scope: { en: 'Typical scope', pt: 'Escopo típico' },
+    scope: { en: 'Typical QA scope', pt: 'Escopo típico de QA' },
     publicNote: {
-      en: 'Figures are public product numbers from stores and platforms, with their source and the month checked. They reflect the whole team’s work.',
-      pt: 'Os números são dados públicos do produto nas lojas e plataformas, com a fonte e o mês da consulta. Refletem o trabalho de todo o time.',
+      en: 'Product figures come from the stores and platforms, with their source and the month checked.',
+      pt: 'Os números do produto vêm das lojas e plataformas, com a fonte e o mês da consulta.',
     },
   },
   gallery: {
@@ -114,10 +123,8 @@ export const ui = {
       pt: (n: number) => `Catálogo completo: ${n} títulos — ${gameCount} jogos + ${appCount} aplicações web`,
     },
     intro: {
-      en: () =>
-        'Every title I have tested as QA, by platform. A title can appear under more than one filter, such as a port, but counts once. At Hermit Crab Game Studio unless noted.',
-      pt: () =>
-        'Todos os títulos que testei como QA, por plataforma. Um título pode aparecer em mais de um filtro, como um porte, mas conta uma vez. Na Hermit Crab Game Studio, salvo indicação.',
+      en: () => 'Every title tested in QA, by platform. At Hermit Crab Game Studio unless noted.',
+      pt: () => 'Todos os títulos testados em QA, por plataforma. Na Hermit Crab Game Studio, salvo indicação.',
     },
     back: { en: 'Back to the portfolio', pt: 'Voltar ao portfólio' },
     filters: { en: 'Filter by platform', pt: 'Filtrar por plataforma' },
@@ -137,7 +144,6 @@ export const ui = {
     },
   },
   experience: {
-    skills: { en: 'QA toolkit', pt: 'Toolkit de QA' },
     earlier: {
       en: (range: string) => `Earlier technology roles (${range})`,
       pt: (range: string) => `Cargos anteriores em tecnologia (${range})`,
@@ -150,15 +156,20 @@ export const ui = {
       en: (name: string) => `${name} on LinkedIn`,
       pt: (name: string) => `${name} no LinkedIn`,
     },
-    testimonial: { en: 'Testimonial', pt: 'Depoimento' },
+    testimonial: { en: 'Recommendation', pt: 'Recomendação' },
     original: { en: 'Original recommendation in Portuguese', pt: '' },
     // Shown above the English version, so nobody mistakes it for what was actually written.
     translation: { en: 'Reference translation · the quote above is the original wording', pt: '' },
-    photos: { en: 'Event photos', pt: 'Fotos do evento' },
+    gallery: { en: 'Testathon 2024 photo gallery', pt: 'Galeria de fotos do Testathon 2024' },
+    previous: { en: 'Previous photo', pt: 'Foto anterior' },
+    next: { en: 'Next photo', pt: 'Próxima foto' },
+    photoOf: {
+      en: (i: number, total: number) => `Photo ${i} of ${total}`,
+      pt: (i: number, total: number) => `Foto ${i} de ${total}`,
+    },
   },
   labels: {
     platforms: { en: 'Platforms', pt: 'Plataformas' },
-    tools: { en: 'Tools', pt: 'Ferramentas' },
     education: { en: 'Education', pt: 'Formação' },
     certificates: { en: 'Selected certificates', pt: 'Certificados em destaque' },
     otherCertificates: { en: 'Other courses and certificates', pt: 'Outros cursos e certificados' },
@@ -175,13 +186,11 @@ export const ui = {
     verify: { en: 'Verify at cert.efset.org', pt: 'Verificar em cert.efset.org' },
   },
   contact: {
-    title: { en: "Let's connect", pt: 'Vamos conversar' },
+    title: { en: "Let's connect", pt: 'Entre em contato' },
     text: {
-      en: 'The fastest way to reach me is by email or LinkedIn.',
-      pt: 'O jeito mais rápido de falar comigo é por e-mail ou LinkedIn.',
+      en: 'For professional opportunities, reach me by email or on LinkedIn.',
+      pt: 'Para oportunidades profissionais, entre em contato por e-mail ou LinkedIn.',
     },
-    copy: { en: 'Copy email', pt: 'Copiar e-mail' },
-    copied: { en: 'Email copied', pt: 'E-mail copiado' },
     copyDiscord: { en: 'Copy Discord username', pt: 'Copiar usuário do Discord' },
     discordCopied: { en: 'Discord username copied', pt: 'Usuário do Discord copiado' },
     resume: { en: 'Resume', pt: 'Currículo' },

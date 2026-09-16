@@ -8,6 +8,7 @@ import {
   inCategory,
   isFeatured,
   linkLabel,
+  projectBadges,
   projectKey,
   projectName,
   projectSlug,
@@ -262,6 +263,10 @@ function Tile({ project }: { project: Project }) {
     ...(project.aka ? [t(ui.projects.formerly)(project.aka)] : []),
   ];
 
+  // Only what the platform's typical scope does not already say: a brand, LiveOps, a testing type
+  // this title adds. Everything else is stated once, at the top of the group.
+  const badges = projectBadges(project);
+
   return (
     <article className={styles.tile} id={`p-${projectSlug(project)}`}>
       <div className={styles.media}>
@@ -270,6 +275,13 @@ function Tile({ project }: { project: Project }) {
       <div className={styles.body}>
         <h3 className={styles.name}>{name}</h3>
         {meta.length > 0 && <p className={styles.meta}>{meta.join(' · ')}</p>}
+        {badges.length > 0 && (
+          <ul className={styles.badges}>
+            {badges.map((badge) => (
+              <li key={badge.en}>{t(badge)}</li>
+            ))}
+          </ul>
+        )}
         {project.reach && (
           <>
             <p className={styles.reach}>

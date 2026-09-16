@@ -36,14 +36,13 @@ import {
 } from './content/projects';
 import { formatReachWithSource } from './content/reach';
 import { SITE_URL } from './content/site';
-import { ui } from './content/ui';
 
 const plain = (text: string) => text.replace(/\*\*/g, '');
 const summaryText = () => `${plain(summary.lead.en)} ${summary.technical.en}`;
 const jobs = () => experience.flatMap((group) => group.jobs);
 const efsetLine = `${efset.name.en} — ${efset.score} ${efset.level} (${efset.sections
   .map((s) => `${s.name.en} ${s.score} ${s.level}`)
-  .join('; ')}), ${efset.date.en}. ${efset.scope.en} Verify: ${efset.verify}`;
+  .join('; ')}), ${efset.date.en}. Verify: ${efset.verify}`;
 
 /** "Tetragon (by Cafundó; Gameloft (telco), Lume Pad 3D)" */
 const describe = (p: Project) => {
@@ -217,9 +216,8 @@ export function llmsTxt(): string {
       (item) => `- ${item.name}${item.start && item.end ? ` (${item.start} – ${item.end})` : ''}: ${item.note.en}`,
     ),
     '',
-    '## Brands and IPs in the titles tested',
+    '## Brands, IPs and platforms',
     ...brandGroups.map((group) => `- ${group.title.en}: ${group.items.join(', ')}`),
-    `- ${ui.projects.brandsNote.en}`,
     '',
     '## Languages',
     `- ${languages.en}`,

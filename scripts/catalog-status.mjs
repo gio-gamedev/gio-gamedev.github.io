@@ -4,7 +4,7 @@
 // an identity check; when a title with an approved image has no cover; or when a file is missing.
 // Without the package (as in CI) it skips.
 import { createHash } from 'node:crypto';
-import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
+import { existsSync, mkdirSync, readFileSync, readdirSync, writeFileSync } from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -46,6 +46,8 @@ const removed = new Set([
   // 16/09/2026
   'pro-soccer-simulator', 'slap-tower', 'winter-sports', 'sports-land-stadium', 'sports-land-football-saga',
   'mesmerized', 'uol-eclub', 'flamengo-eclub', 'eclub-benefits-platform',
+  // 16/09/2026
+  'barcelona-card-game', 'sugar-rush', 'cob-sports-legends-collect-merge',
 ]);
 
 const statusLabel = {
@@ -63,7 +65,7 @@ for (const title of manifest.titles) {
 
   if (removed.has(title.slug)) {
     if (cover) errors.push(`${title.slug}: removed from the catalog, but its cover is still published`);
-    rows.push({ title, cover, note: 'Removido do catálogo (15/09/2026).', removed: true });
+    rows.push({ title, cover, note: 'Removido do catálogo pelo Giovanni.', removed: true });
     continue;
   }
   const extra = extras.get(title.slug);
@@ -92,6 +94,15 @@ for (const title of manifest.titles) {
 }
 for (const slug of Object.keys(covers)) {
   if (!manifest.titles.some((t) => t.slug === slug)) errors.push(`${slug}: cover not listed in the manifest`);
+}
+
+// The other direction: a file left behind by an earlier run is shipped but belongs to nothing, so
+// a removed title or an old width can go on being published without anyone noticing.
+const declared = new Set(
+  Object.entries(covers).flatMap(([slug, art]) => art.widths.map((width) => `${slug}-${width}.webp`)),
+);
+for (const file of readdirSync(path.join(root, 'public', 'covers'))) {
+  if (!declared.has(file)) errors.push(`public/covers/${file}: on disk but no cover declares it`);
 }
 if (manifest.titles.length !== 116) errors.push(`expected 116 titles in the manifest, found ${manifest.titles.length}`);
 

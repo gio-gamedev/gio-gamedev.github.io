@@ -2,13 +2,21 @@ import { useEffect, useId, useRef, type ReactNode } from 'react';
 import { Icon } from './Icon';
 import styles from './Lightbox.module.css';
 
-type Props = { open: boolean; title: string; closeLabel: string; onClose: () => void; children: ReactNode };
+type Props = {
+  open: boolean;
+  title: string;
+  closeLabel: string;
+  onClose: () => void;
+  /** 'image' centres the picture and never scrolls; 'text' reads left to right and scrolls. */
+  variant?: 'image' | 'text';
+  children: ReactNode;
+};
 
 /**
  * Native modal dialog: keeps focus inside, closes with Escape, the close button or a click on the
  * backdrop, and hands focus back to the element that opened it.
  */
-export function Lightbox({ open, title, closeLabel, onClose, children }: Props) {
+export function Lightbox({ open, title, closeLabel, onClose, variant = 'image', children }: Props) {
   const ref = useRef<HTMLDialogElement>(null);
   const opener = useRef<HTMLElement | null>(null);
   // One dialog per section, so each title needs its own id.
@@ -30,6 +38,7 @@ export function Lightbox({ open, title, closeLabel, onClose, children }: Props) 
     <dialog
       ref={ref}
       className={styles.dialog}
+      data-variant={variant}
       aria-labelledby={titleId}
       onClose={() => {
         // The close event is queued: ignore a late one that arrives after the dialog was reopened.

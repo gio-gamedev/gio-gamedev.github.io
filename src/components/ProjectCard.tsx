@@ -1,5 +1,13 @@
 import type { CSSProperties } from 'react';
-import { categoryInfo, linkLabel, pageOf, projectName, type Project } from '../content/projects';
+import {
+  categoryInfo,
+  linkLabel,
+  pageOf,
+  projectName,
+  testingLabels,
+  universalTesting,
+  type Project,
+} from '../content/projects';
 import { reachKindLabel, reachSource, reachValue } from '../content/reach';
 import { ui } from '../content/ui';
 import { useLang } from '../i18n/LanguageContext';
@@ -8,14 +16,14 @@ import { Icon } from './Icon';
 import { Tag } from './Tag';
 import styles from './ProjectCard.module.css';
 
-/** The two lead cards run at half the grid; the other four at a quarter (see Projects.module.css). */
-const coverSizes = {
-  lead: '(max-width: 640px) calc(100vw - 32px), (max-width: 1099px) calc(50vw - 40px), 560px',
-  small: '(max-width: 640px) calc(100vw - 32px), (max-width: 1099px) calc(50vw - 40px), 280px',
-};
+/** Three across on a wide screen, two on a tablet, one on a phone (see Projects.module.css). */
+const coverSizes = '(max-width: 640px) calc(100vw - 32px), (max-width: 1099px) calc(50vw - 40px), 380px';
 
-/** Featured project: the product in one line, what Giovanni did, public figures and one link. */
-export function ProjectCard({ project, size = 'small' }: { project: Project; size?: 'lead' | 'small' }) {
+/**
+ * Featured project, all six at the same weight: the product in one line, what Giovanni did, the QA
+ * tags, public figures and one link. The full scope opens in a dialog, so the card stays scannable.
+ */
+export function ProjectCard({ project, onDetails }: { project: Project; onDetails: () => void }) {
   const { lang, t } = useLang();
   const category = categoryInfo[project.category];
   const name = projectName(project, lang);
@@ -28,9 +36,9 @@ export function ProjectCard({ project, size = 'small' }: { project: Project; siz
   ];
 
   return (
-    <article className={styles.card} data-size={size} style={{ '--tone': `var(--${category.tone})` } as CSSProperties}>
+    <article className={styles.card} style={{ '--tone': `var(--${category.tone})` } as CSSProperties}>
       <div className={styles.media}>
-        <Cover project={project} sizes={coverSizes[size]} />
+        <Cover project={project} sizes={coverSizes} />
       </div>
 
       <div className={styles.body}>
@@ -60,6 +68,15 @@ export function ProjectCard({ project, size = 'small' }: { project: Project; siz
           </p>
         )}
 
+        {/* Functional and regression apply to every title and are stated once, in the catalog. */}
+        <ul className={styles.tags}>
+          {project.testing
+            .filter((type) => !universalTesting.includes(type))
+            .map((type) => (
+              <li key={type}>{t(testingLabels[type])}</li>
+            ))}
+        </ul>
+
         {project.reach && (
           <p className={styles.reach}>
             {project.reach.map((r, i) => (
@@ -72,8 +89,13 @@ export function ProjectCard({ project, size = 'small' }: { project: Project; siz
           </p>
         )}
 
-        {url && (
-          <p className={styles.footer}>
+        <p className={styles.footer}>
+          <button type="button" className={styles.details} aria-haspopup="dialog" onClick={onDetails}>
+            {t(ui.projects.details)}
+            <span className="sr-only">: {name}</span>
+            <Icon name="arrowRight" size={15} />
+          </button>
+          {url && (
             <a
               className={styles.link}
               href={url}
@@ -84,8 +106,8 @@ export function ProjectCard({ project, size = 'small' }: { project: Project; siz
               {t(linkLabel(url).short)}
               <Icon name="external" size={15} />
             </a>
-          </p>
-        )}
+          )}
+        </p>
       </div>
     </article>
   );

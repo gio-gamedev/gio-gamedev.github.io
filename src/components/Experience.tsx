@@ -4,7 +4,6 @@ import { ui } from '../content/ui';
 import { useLang } from '../i18n/LanguageContext';
 import { Rich } from './Rich';
 import { Section } from './Section';
-import { SkillList } from './Skills';
 import styles from './Experience.module.css';
 
 function Period({ job }: { job: Job }) {
@@ -25,9 +24,9 @@ const yearRange = (jobs: Job[]) => {
 };
 
 /**
- * Two columns on desktop: the Game QA roles on the left (dates, company and bullets that open with
- * what they are about), the QA toolkit on the right, so what I did and what I work with are read
- * together. Earlier technology roles stay collapsed under the roles.
+ * The Game QA roles, each one with its dates, company and bullets that open with what they are
+ * about, so the list can be scanned. Earlier technology roles stay collapsed underneath; the tools
+ * and skills have their own section right after this one.
  */
 export function Experience() {
   const { t } = useLang();
@@ -94,13 +93,6 @@ export function Experience() {
             </div>
           ))}
         </div>
-
-        <aside className={styles.toolkit} aria-labelledby="toolkit-title">
-          <h3 id="toolkit-title" className={styles.toolkitTitle}>
-            {t(ui.experience.skills)}
-          </h3>
-          <SkillList />
-        </aside>
       </div>
     </Section>
   );

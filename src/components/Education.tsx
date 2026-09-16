@@ -107,7 +107,6 @@ export function Education() {
                 </div>
               ))}
             </dl>
-            <p className={styles.scope}>{t(efset.scope)}</p>
             <p className={styles.efsetLinks}>
               <a href={efset.pdf} type="application/pdf" target="_blank" rel="noopener noreferrer">
                 <Icon name="download" size={16} />

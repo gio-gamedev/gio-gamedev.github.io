@@ -12,7 +12,7 @@ import {
   skills,
   summary,
 } from '../content/profile';
-import { categoryInfo, featuredProjects, gameCountRounded, projectName } from '../content/projects';
+import { categoryInfo, featuredProjects, gameCount, projectName } from '../content/projects';
 import { formatReachWithSource } from '../content/reach';
 import { SITE_URL } from '../content/site';
 import type { L, Lang } from '../content/types';
@@ -50,10 +50,10 @@ const heading = {
   academic: { en: 'Academic Projects', pt: 'Projetos Acadêmicos' },
   certifications: { en: 'Certifications', pt: 'Certificações' },
   languages: { en: 'Languages', pt: 'Idiomas' },
-  // Rounded down ("90+") so the printed resume doesn't go stale as the catalog grows.
+  // The same count as the site and the catalog: one number everywhere.
   projectsLead: {
-    en: `${gameCountRounded}+ games tested. Selected titles (public figures belong to each product and its whole team):`,
-    pt: `${gameCountRounded}+ jogos testados. Títulos selecionados (os números públicos são de cada produto e de todo o time):`,
+    en: `${gameCount} games tested. Selected titles (public figures belong to each product and its whole team):`,
+    pt: `${gameCount} jogos testados. Títulos selecionados (os números públicos são de cada produto e de todo o time):`,
   },
   teamAward: { en: 'team award', pt: 'prêmio de equipe' },
   // The section scores stay on the certificate itself, which the link verifies.
@@ -63,17 +63,38 @@ const heading = {
 const plain = (text: string) => text.replace(/\*\*/g, '');
 const bare = (url: string) => url.replace(/^https?:\/\//, '');
 
+/**
+ * Plain-text extraction of a PDF only sees painted characters, so wherever a page break falls
+ * between two blocks a naive parser joins the last word of one page to the first of the next
+ * ("…dispositivos de redeCOMPETÊNCIAS"). A real full stop at the end of every line gives it a token
+ * boundary there, and reads as ordinary resume punctuation. Lines that end in an address are left
+ * alone, so the full stop is never read as part of the URL.
+ */
+const endsInUrl = /(?:https?:\/\/\S+|\b[\w-]+\.[a-z]{2,}(?:\/\S*)?)$/i;
+const stop = (text: string) => (/[.!?:]$/.test(text) || endsInUrl.test(text) ? text : `${text}.`);
+
+const punctuate = (sections: CvSection[]): CvSection[] =>
+  sections.map((section) => ({
+    ...section,
+    blocks: section.blocks.map((block): CvBlock => {
+      if (block.kind === 'p') return { ...block, text: stop(block.text) };
+      if (block.kind === 'list') return { ...block, items: block.items.map(stop) };
+      return { ...block, bullets: block.bullets.map(stop), notes: block.notes.map(stop) };
+    }),
+  }));
+
 export function cvData(lang: Lang): CvData {
   const t = <T>(value: L<T>) => value[lang];
   const { links } = profile;
   const dates = (job: { start: string; end?: string }) =>
     `${monthYear(job.start, lang)} – ${job.end ? monthYear(job.end, lang) : t(present)}`;
 
-  return {
+  const data = {
     name: profile.name,
-    title: t(profile.title),
+    // The Portuguese resume carries the local job title too, so a search in Portuguese matches.
+    title: lang === 'pt' ? `${t(profile.title)} (${profile.titleLocal.pt})` : t(profile.title),
     contact: [
-      { text: t({ en: 'Brazil (UTC−3) · Remote', pt: 'Brasil (UTC−3) · Remoto' }) },
+      { text: t(profile.location) },
       { text: links.email, href: `mailto:${links.email}` },
       { text: bare(links.linkedin), href: links.linkedin },
       { text: bare(links.github), href: links.github },
@@ -90,15 +111,30 @@ export function cvData(lang: Lang): CvData {
       },
       {
         heading: t(heading.experience),
-        // Game QA roles in full; earlier technology roles with their first line only.
-        blocks: experience.flatMap((group) =>
-          group.jobs.map((job): CvBlock => ({
-            kind: 'job',
-            title: `${t(job.role)} — ${job.company}`,
-            dates: dates(job),
-            bullets: group.compact ? t(job.bullets).slice(0, 1) : t(job.bullets),
-            notes: job.note ? [t(job.note)] : [],
-          })),
+        /*
+         * Game QA roles in full. The earlier technology roles become one bulleted list: they are
+         * context, not the point of the resume, and every line then starts with a real "•" glyph.
+         * That matters because plain-text extraction only sees painted characters: if a page break
+         * falls between two blocks, a naive parser glues the end of one page to the start of the
+         * next ("…JavaScript e ReactDesenvolvedor de Sistemas Web"). The bullet keeps them apart.
+         */
+        blocks: experience.flatMap((group): CvBlock[] =>
+          group.compact
+            ? [
+                {
+                  kind: 'list',
+                  items: group.jobs.map(
+                    (job) => `${t(job.role)} — ${job.company} (${dates(job)}): ${plain(t(job.bullets)[0])}`,
+                  ),
+                },
+              ]
+            : group.jobs.map((job) => ({
+                kind: 'job',
+                title: `${t(job.role)} — ${job.company}`,
+                dates: dates(job),
+                bullets: t(job.bullets),
+                notes: job.note ? [t(job.note)] : [],
+              })),
         ),
       },
       {
@@ -176,6 +212,8 @@ export function cvData(lang: Lang): CvData {
           },
         ],
       },
-    ],
+    ] satisfies CvSection[],
   };
+
+  return { ...data, sections: punctuate(data.sections) };
 }

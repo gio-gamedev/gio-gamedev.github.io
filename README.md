@@ -54,8 +54,8 @@ Todo o texto fica em `src/content/`, separado dos componentes. Cada texto traduz
 
 | Arquivo | O que tem |
 |---|---|
-| `profile.ts` | Nome, título, resumo, experiência (cada bullet abre com o assunto em `**negrito**`), QA toolkit, prêmio (com fotos), depoimento, formação, EF SET e certificados |
-| `projects.ts` | O catálogo, os destaques (contexto, contribuição e página pública) e as categorias |
+| `profile.ts` | Nome, título, resumo, experiência (cada bullet abre com o assunto em `**negrito**`), competências, prêmio (com fotos), depoimento, formação, EF SET e certificados |
+| `projects.ts` | O catálogo, os destaques (contexto, contribuição, escopo completo e página pública), as categorias e o escopo típico de QA de cada uma |
 | `covers.ts` | Gerado: larguras reais e enquadramento de cada capa em `public/covers/` |
 | `reach.ts` | Números públicos por projeto, com fonte e mês da consulta |
 | `ui.ts` | Rótulos da interface e meta tags |
@@ -63,13 +63,17 @@ Todo o texto fica em `src/content/`, separado dos componentes. Cada texto traduz
 
 O site, os currículos, o `resume.json` e o `llms.txt` saem do mesmo conteúdo. Depois de editar, rode `npm run cv` para atualizar os PDFs.
 
-Os currículos são feitos para leitura automática (ATS): uma coluna, títulos padrão e o marcador "•" como texto de verdade, porque a extração de texto de um PDF só enxerga caracteres desenhados. Sem isso, um leitor simples emenda o fim de uma página no começo da outra.
+Os currículos são feitos para leitura automática (ATS): uma coluna, títulos padrão, o marcador "•" como texto de verdade e um ponto final no fim de cada linha. A extração de texto de um PDF só enxerga caracteres desenhados, então, sem esses dois caracteres, um leitor simples emenda o fim de uma página no começo da outra ("…dispositivos de redeCOMPETÊNCIAS"). Linhas que terminam em endereço ficam sem o ponto, para ele não virar parte da URL.
+
+Um número só, em todo lugar: o total de títulos, os jogos e as aplicações saem de `projects.ts` e alimentam o hero, o catálogo, o currículo e a imagem de compartilhamento. Como o `og.html` é HTML puro e não consegue importar o conteúdo, o build escreve `scripts/og-data.json` e o `npm run og` preenche os números ali.
+
+O escopo típico de QA é escrito uma vez por categoria (`categoryScope`). Cada título só carrega um tipo de teste além dessa lista quando isso é confirmado para ele, e o catálogo mostra a diferença como badge — junto com `Marca / IP` e `LiveOps`, que são declarados por título.
 
 Regras de conteúdo:
 
 - Nada de fatos inventados: um dado pendente fica fora do site até ser confirmado.
 - Números públicos aparecem só por projeto, com fonte e data; nunca somados.
-- Um destaque precisa de capa, contexto, contribuição e página pública, ou o build falha.
+- Um destaque precisa de capa, contexto, contribuição, escopo completo e página pública, ou o build falha.
 
 ## Arquivos públicos e locais
 

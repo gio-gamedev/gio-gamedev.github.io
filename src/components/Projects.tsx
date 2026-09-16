@@ -1,15 +1,25 @@
-import { categories, categoryInfo, featuredProjects, projectKey, projects } from '../content/projects';
+import { useState } from 'react';
+import {
+  categories,
+  categoryInfo,
+  featuredProjects,
+  projectKey,
+  projects,
+  type Project,
+} from '../content/projects';
 import { ui } from '../content/ui';
 import { useLang } from '../i18n/LanguageContext';
 import { pagePath } from '../i18n/routes';
 import { BrandStrip } from './BrandStrip';
 import { Icon } from './Icon';
 import { ProjectCard } from './ProjectCard';
+import { ProjectDetails } from './ProjectDetails';
 import { Section } from './Section';
 import styles from './Projects.module.css';
 
 export function Projects() {
   const { lang, t } = useLang();
+  const [detail, setDetail] = useState<Project | null>(null);
   // Each title counted once, under its main platform, so the line adds up to the total above it.
   const counts = categories
     // No-break spaces keep each label and its count together when the line wraps ("PC / Steam 1").
@@ -21,14 +31,16 @@ export function Projects() {
 
   return (
     <Section id="projects" title={t(ui.sections.projects)} subtitle={t(ui.sections.projectsSubtitle)}>
-      {/* Editorial grid: the first two projects run large, the other four at half that width. */}
+      {/* Six cards of equal weight: three across, two on a tablet, one on a phone. */}
       <ul className={styles.featured}>
-        {featuredProjects.map((project, i) => (
-          <li key={projectKey(project)} className={i < 2 ? styles.lead : undefined}>
-            <ProjectCard project={project} size={i < 2 ? 'lead' : 'small'} />
+        {featuredProjects.map((project) => (
+          <li key={projectKey(project)}>
+            <ProjectCard project={project} onDetails={() => setDetail(project)} />
           </li>
         ))}
       </ul>
+
+      <ProjectDetails project={detail} onClose={() => setDetail(null)} />
 
       <p className={styles.note}>
         <Icon name="info" size={15} />

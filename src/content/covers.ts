@@ -503,24 +503,6 @@ export const covers: Record<string, CoverArt> = {
     "height": 450,
     "fit": "cover"
   },
-  "logic-pic": {
-    "widths": [
-      240,
-      512
-    ],
-    "width": 512,
-    "height": 512,
-    "fit": "contain"
-  },
-  "rumble-kong-league": {
-    "widths": [
-      240,
-      526
-    ],
-    "width": 526,
-    "height": 296,
-    "fit": "cover"
-  },
   "psg-football-freestyle": {
     "widths": [
       240,
@@ -759,17 +741,6 @@ export const covers: Record<string, CoverArt> = {
     "height": 450,
     "fit": "cover"
   },
-  "sugar-rush": {
-    "widths": [
-      240,
-      480,
-      640,
-      712
-    ],
-    "width": 712,
-    "height": 400,
-    "fit": "cover"
-  },
   "super-mombo-quest": {
     "widths": [
       240,
@@ -866,5 +837,49 @@ export const covers: Record<string, CoverArt> = {
     "width": 800,
     "height": 450,
     "fit": "cover"
+  },
+  "logic-pic": {
+    "widths": [
+      240,
+      480,
+      640,
+      800
+    ],
+    "width": 800,
+    "height": 1422,
+    "fit": "contain"
+  },
+  "rumble-kong-league": {
+    "widths": [
+      240,
+      480,
+      640,
+      800
+    ],
+    "width": 800,
+    "height": 450,
+    "fit": "cover"
+  },
+  "tetragon-2": {
+    "widths": [
+      240,
+      480,
+      640,
+      800
+    ],
+    "width": 800,
+    "height": 799,
+    "fit": "contain"
+  },
+  "rkl-arcade-slam": {
+    "widths": [
+      240,
+      480,
+      640,
+      800
+    ],
+    "width": 800,
+    "height": 562,
+    "fit": "contain"
   }
 };

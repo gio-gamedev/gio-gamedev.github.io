@@ -7,33 +7,36 @@ const pages = [
     lang: 'en',
     title: 'Game QA Analyst',
     section: 'Selected QA Projects',
+    skills: 'Skills',
     cv: '/cv/Giovanni-Mariano-Game-QA-EN',
     caixa: 'CAIXA Universe',
     minutes: '110M+',
     contribution: 'My contribution',
+    details: 'View details',
     english: 'English — B1 (EF SET: Reading & Listening)',
-    apps: '+ 4 web apps',
-    catalogSummary: '88 titles: 84 games + 4 web apps',
-    partners: 'Publishing partners and platforms',
-    average: '84 games tested over four years in QA, working in teams of four to five people — approximately 21 games per year on average.',
+    apps: 'games and web applications',
+    catalogSummary: '85 titles: 81 games + 4 web apps',
+    partners: 'Platforms, stores and publishing channels',
+    average: 'Four years in Game QA across two studios, in teams of four to five people.',
     conferral: 'Feb 22, 2019',
     original: 'Original recommendation in Portuguese',
   },
   {
     path: '/pt/',
     lang: 'pt-BR',
-    title: 'Analista de QA de Jogos',
+    title: 'Game QA Analyst',
     section: 'Projetos de QA em destaque',
+    skills: 'Competências',
     cv: '/cv/Giovanni-Mariano-Game-QA-PT',
     caixa: 'Universo CAIXA',
     minutes: '110 mi+',
     contribution: 'Minha contribuição',
-    english: 'Inglês — B1 (EF SET: leitura e compreensão oral)',
-    apps: '+ 4 aplicações web',
-    catalogSummary: '88 títulos: 84 jogos + 4 aplicações web',
-    partners: 'Parceiros de publicação e plataformas',
-    average:
-      '84 jogos testados em quatro anos de atuação em QA, com equipes de quatro a cinco pessoas — média histórica de aproximadamente 21 jogos por ano.',
+    details: 'Ver detalhes',
+    english: 'Inglês — B1 (EF SET: Reading & Listening)',
+    apps: 'jogos e aplicações web',
+    catalogSummary: '85 títulos: 81 jogos + 4 aplicações web',
+    partners: 'Plataformas, lojas e canais de publicação',
+    average: 'Quatro anos de atuação em QA de jogos em dois estúdios, em equipes de quatro a cinco pessoas.',
     conferral: '22/02/2019',
     original: null,
   },
@@ -64,8 +67,8 @@ const galleries = [
   },
 ];
 
-/** 88 unique titles: 84 games and 4 web apps (Island Defense is the old name of Coconuts vs Pirates). */
-const TITLES = 88;
+/** 85 unique titles: 81 games and 4 web apps (Island Defense is the old name of Coconuts vs Pirates). */
+const TITLES = 85;
 
 const QUOTE =
   'Trabalho com o Giovanni há anos e posso atestar sobre sua paixão por jogos e qualidade. É uma grande facilidade trabalhar com ele, visto que é solícito, proativo e muito dedicado com o que faz. Me ajudou muito a crescer e trabalhar melhor em equipe, admiro sua organização, responsabilidade e tato com os times.';
@@ -95,6 +98,29 @@ const forbidden = [
   'Translated from Portuguese',
   'English (A2)',
   'Inglês (A2)',
+  // Removed from the catalog on 2026-09-16.
+  'Sugar Rush',
+  'Barcelona Card Game',
+  'COB Sports Legends',
+  // Retired wording: the rounded count, the yearly average, the remote-only location, the defensive
+  // notes, the 3v3 multiplayer claim and the links that were taken out.
+  '90+',
+  '80+',
+  'games per year',
+  'jogos por ano',
+  'Remote from Brazil',
+  'Remoto, do Brasil',
+  'não indicam contrato',
+  'not to a contract',
+  'does not assess speaking',
+  'não avalia fala',
+  '3v3 multiplayer',
+  'multiplayer 3v3',
+  'artstation',
+  'updated live',
+  'atualizada ao vivo',
+  'release planned for 2027',
+  'lançamento previsto para 2027',
 ];
 
 async function expectNoConsoleErrors(tab: Page, path: string, check: () => Promise<void>) {
@@ -140,10 +166,10 @@ for (const page of pages) {
     test('renders the prerendered content without console errors', async ({ page: tab }) => {
       await expectNoConsoleErrors(tab, page.path, async () => {
         await expect(tab.locator('html')).toHaveAttribute('lang', page.lang);
-        // One h1: the job title first, the name right under it.
+        // One h1: the name first, the job title right under it.
         const h1 = tab.getByRole('heading', { level: 1 });
+        await expect(h1).toContainText('Giovanni da Silva Mariano');
         await expect(h1).toContainText(page.title);
-        await expect(h1).toContainText('Giovanni S. Mariano');
         await expect(tab.locator('#top')).toContainText(page.title);
         await expect(tab.getByRole('heading', { name: page.section })).toBeVisible();
       });
@@ -182,7 +208,9 @@ for (const page of pages) {
       await expect(tab.locator('#evidence')).toHaveCount(0);
     });
 
-    test('has 6 featured projects, Sportia first, each with a contribution and one public link', async ({ page: tab }) => {
+    test('has 6 featured projects of equal weight, Sportia first, each with a contribution and one public link', async ({
+      page: tab,
+    }) => {
       await tab.goto(page.path);
       const cards = tab.locator('#projects article');
       await expect(cards).toHaveCount(6);
@@ -194,6 +222,35 @@ for (const page of pages) {
       const football = cards.filter({ hasText: 'Football Tycoon' });
       await expect(football).toContainText(page.minutes);
       await expect(football).toContainText('fortnite.gg');
+      // All six run at the same width: the section no longer has two lead cards.
+      const widths = await cards.evaluateAll((els) => els.map((el) => Math.round(el.getBoundingClientRect().width)));
+      expect(new Set(widths).size).toBe(1);
+    });
+
+    test('opens the full QA scope of a project in a dialog, and closes it with Escape', async ({ page: tab }) => {
+      await tab.goto(page.path);
+      await tab.waitForLoadState('networkidle');
+      const opener = tab.locator('#projects button[aria-haspopup="dialog"]').first();
+      await expect(opener).toContainText(page.details);
+      await opener.focus();
+      await tab.keyboard.press('Enter');
+      const dialog = tab.locator('dialog[open]');
+      await expect(dialog).toHaveCount(1);
+      // Sportia is first: its dialog carries the scope that does not fit on the card.
+      await expect(dialog).toContainText('Sportia');
+      await expect(dialog.getByRole('heading', { level: 3 })).not.toHaveCount(0);
+      await tab.keyboard.press('Escape');
+      await expect(tab.locator('dialog[open]')).toHaveCount(0);
+      await expect(opener).toBeFocused();
+    });
+
+    test('lists the skills in their own section, reachable from the menu', async ({ page: tab }) => {
+      await tab.goto(page.path);
+      await expect(tab.getByRole('heading', { level: 2, name: page.skills })).toBeVisible();
+      // Six blocks, and the toolkit no longer sits inside the experience section.
+      await expect(tab.locator('#skills > div > ul > li')).toHaveCount(6);
+      await expect(tab.locator('header nav[aria-label] a[href="#skills"]').first()).toHaveCount(1);
+      await expect(tab.locator('#experience')).not.toContainText('Jira');
     });
 
     test('links to the full catalog, which still lists CAIXA', async ({ page: tab }) => {
@@ -203,14 +260,17 @@ for (const page of pages) {
       await expect(tab.getByRole('heading', { level: 3, name: page.caixa })).toBeVisible();
     });
 
-    test('states the QA period, team size and yearly average once', async ({ page: tab }) => {
+    test('states the QA period and team size once, without repeating the totals', async ({ page: tab }) => {
       await tab.goto(page.path);
       await expect(tab.locator('#experience')).toContainText(page.average);
     });
 
-    test('states the counts the same way everywhere and separates partners from IPs', async ({ page: tab }) => {
+    test('shows the same total in the hero and in the catalog, and separates brands from platforms', async ({
+      page: tab,
+    }) => {
       await tab.goto(page.path);
-      // "90 games" in the hero and "97 titles" in the catalog never read as conflicting numbers.
+      // One number everywhere: the hero reads "86 titles in QA" and spells out how it splits.
+      await expect(tab.locator('#top')).toContainText(String(TITLES));
       await expect(tab.locator('#top')).toContainText(page.apps);
       await expect(tab.locator('#projects')).toContainText(page.catalogSummary);
       await expect(tab.locator('#projects')).toContainText(page.partners);
@@ -218,15 +278,39 @@ for (const page of pages) {
 
     test('credits the Testathon team, shows the photos and quotes the testimonial exactly', async ({ page: tab }) => {
       await tab.goto(page.path);
+      await tab.waitForLoadState('networkidle');
       await expect(tab.locator('#recognition article a[aria-label*="LinkedIn"]')).toHaveCount(6);
       const quote = tab.locator('#recognition blockquote');
       await expect(quote).toHaveAttribute('lang', 'pt-BR');
       await expect(quote).toHaveText(QUOTE);
       await expect(tab.locator('#recognition figure:has(blockquote) img')).toHaveCount(0);
       if (page.original) await expect(tab.locator('#recognition')).toContainText(page.original);
-      const photos = tab.locator('#recognition button[aria-haspopup="dialog"]');
-      await expect(photos).toHaveCount(3);
-      await expectDialogRoundTrip(tab, photos.first());
+
+      // One gallery: the photo being shown, plus a thumbnail per photo.
+      const opener = tab.locator('#recognition button[aria-haspopup="dialog"]');
+      await expect(opener).toHaveCount(1);
+      const thumbs = tab.locator('#recognition figure ul button');
+      await expect(thumbs).toHaveCount(3);
+      await expectDialogRoundTrip(tab, opener);
+    });
+
+    test('the Testathon gallery steps between the three photos', async ({ page: tab }) => {
+      await tab.goto(page.path);
+      await tab.waitForLoadState('networkidle');
+      const caption = tab.locator('#recognition figure figcaption').first();
+      const first = await caption.textContent();
+      await tab.locator('#recognition figure ul button').nth(1).click();
+      await expect(caption).not.toHaveText(first ?? '');
+
+      // In the dialog, the arrow keys walk the same gallery.
+      await tab.locator('#recognition button[aria-haspopup="dialog"]').click();
+      const dialog = tab.locator('dialog[open]');
+      await expect(dialog).toHaveCount(1);
+      const shown = await dialog.locator('img').getAttribute('src');
+      await tab.keyboard.press('ArrowRight');
+      await expect(dialog.locator('img')).not.toHaveAttribute('src', shown ?? '');
+      await tab.keyboard.press('Escape');
+      await expect(tab.locator('dialog[open]')).toHaveCount(0);
     });
 
     test('shows the EF SET scores, certificate and verification link', async ({ page: tab, request }) => {
@@ -273,7 +357,7 @@ for (const gallery of galleries) {
       expect(total).toBe(TITLES);
       await expect(visibleTiles(tab)).toHaveCount(total);
       // "All" lists a port once, under its main platform; the Publishing filter adds the ports.
-      await expect(tab.locator('section[aria-labelledby="group-publishing"] li:not([hidden])')).toHaveCount(22);
+      await expect(tab.locator('section[aria-labelledby="group-publishing"] > ul > li:not([hidden])')).toHaveCount(21);
     });
 
     test('filters by platform and puts the filter in the URL', async ({ page: tab }) => {
@@ -285,7 +369,7 @@ for (const gallery of galleries) {
       await expect(tab).toHaveURL(/\?p=fortnite-uefn/);
       await tab.getByRole('button', { name: gallery.publishing }).click();
       // The Publishing filter adds the ports of titles listed under their own platform.
-      await expect(visibleTiles(tab)).toHaveCount(24);
+      await expect(visibleTiles(tab)).toHaveCount(23);
     });
 
     test('back and forward step through the filters', async ({ page: tab }) => {
@@ -330,11 +414,14 @@ for (const gallery of galleries) {
       await expect(tab.locator('input[type="search"]')).toHaveValue('tycoon');
     });
 
-    test('titles without a confirmed image show a neutral frame, without their name', async ({ page: tab }) => {
+    test('every title in the catalog shows a real cover, never the neutral frame', async ({ page: tab }) => {
       await tab.goto(gallery.path);
-      const frame = tab.locator('#p-barcelona-card-game span[aria-hidden="true"]').first();
-      await expect(frame).toBeVisible();
-      expect((await frame.textContent())?.trim()).toBe('');
+      // Since 16/09/2026 every title has an image whose source is recorded; the placeholder that
+      // Cover falls back to must not appear. If a title ever loses its cover, this fails.
+      await expect(tab.locator('#gallery article span[aria-hidden="true"]')).toHaveCount(0);
+      // One foreground image per visible tile (art shown whole adds an aria-hidden blurred backdrop,
+      // and a ported title is rendered twice: once under its platform, once hidden under Publishing).
+      await expect(tab.locator('#gallery li:not([hidden]) article img:not([aria-hidden="true"])')).toHaveCount(TITLES);
     });
 
     test('every srcset width matches the real image width', async ({ page: tab }) => {
@@ -453,14 +540,14 @@ test('never ships retired content, unconfirmed figures or the 2022 assessment', 
 
 test('machine-readable files and sitemap are served', async ({ request }) => {
   const resume = await (await request.get('/resume.json')).json();
-  expect(resume.basics.name).toBe('Giovanni S. Mariano');
+  expect(resume.basics.name).toBe('Giovanni da Silva Mariano');
   expect(resume.basics.label).toBe('Game QA Analyst');
   expect(resume.basics.profiles.map((p: { network: string }) => p.network)).toContain('Discord');
   expect(resume.projects).toHaveLength(6);
   expect(resume.projects[0].name).toBe('Sportia');
   expect(JSON.stringify(resume.languages)).toContain('B1 (EF SET: Reading & Listening)');
   const llms = await (await request.get('/llms.txt')).text();
-  expect(llms).toContain('# Giovanni S. Mariano — Game QA Analyst');
+  expect(llms).toContain('# Giovanni da Silva Mariano — Game QA Analyst');
   expect(llms).toContain('Logic Pic (Mobile, Space Bit Games)');
   expect(llms).toContain('fortnite.gg');
   expect(llms).toContain('Discord: giogamedev');

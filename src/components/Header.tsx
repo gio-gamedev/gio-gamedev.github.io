@@ -8,11 +8,12 @@ import { Icon } from './Icon';
 import { ThemeToggle } from './ThemeToggle';
 import styles from './Header.module.css';
 
-// A short bar: the three sections recruiters jump to, plus the resume, the language and the theme.
+// A short bar: the four sections recruiters jump to, plus the resume, the language and the theme.
 // Recognition and education follow in the page, one scroll below.
 const links = [
   ['projects', ui.nav.projects],
   ['experience', ui.nav.experience],
+  ['skills', ui.nav.skills],
   ['contact', ui.nav.contact],
 ] as const;
 
@@ -96,8 +97,9 @@ export function Header() {
   return (
     <header ref={headerRef} className={styles.header} data-solid={scrolled || open || undefined}>
       <div className={`container ${styles.inner}`}>
+        {/* The name first: a recruiter should know whose portfolio this is without scrolling. */}
         <a href={page === 'home' ? '#top' : home} className={styles.brand} onClick={() => setOpen(false)}>
-          <span className={styles.brandMark}>GSM</span>
+          <span className={styles.brandName}>{profile.shortName}</span>
           <span className={styles.brandText}>Game QA</span>
         </a>
 

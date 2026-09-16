@@ -23,13 +23,18 @@ function person(lang: Lang, description: string) {
   return {
     '@type': 'Person',
     name: profile.name,
-    alternateName: 'Giovanni da Silva Mariano',
+    alternateName: [profile.shortName, 'Giovanni S. Mariano'],
     jobTitle: ui.meta.jobTitle[lang],
     description,
     url: pageUrl.home[lang],
     image: `${SITE_URL}/avatar.webp`,
     email: `mailto:${profile.links.email}`,
-    address: { '@type': 'PostalAddress', addressCountry: 'BR' },
+    address: {
+      '@type': 'PostalAddress',
+      addressLocality: 'Santo Antônio da Platina',
+      addressRegion: 'PR',
+      addressCountry: 'BR',
+    },
     worksFor: { '@type': 'Organization', name: 'Hermit Crab Game Studio' },
     hasOccupation: {
       '@type': 'Occupation',

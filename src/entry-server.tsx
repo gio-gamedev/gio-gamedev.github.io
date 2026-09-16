@@ -9,11 +9,13 @@ import GalleryPage from './pages/GalleryPage';
 import HomePage from './pages/HomePage';
 
 export { SITE_URL } from './content/site';
+export { qaYears } from './content/stats';
 export { cvTitle } from './cv/CvDocument';
 export { cvData } from './cv/cvData';
 export { cvStyles } from './cv/cvStyles';
 export { llmsTxt, resumeJson } from './machine';
 export { headTags } from './seo';
+export { titleCount } from './content/projects';
 
 /** Used by scripts/prerender.mjs to write one static page per language and page. */
 export function render(lang: Lang, page: Page): string {

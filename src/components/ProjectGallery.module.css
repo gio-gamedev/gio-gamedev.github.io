@@ -267,6 +267,25 @@
   color: var(--text-dim);
 }
 
+/* What this title adds to the typical scope of its platform: a brand, LiveOps, an extra test type. */
+.badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem;
+  margin-top: 0.15rem;
+  list-style: none;
+}
+
+.badges li {
+  padding: 0.1rem 0.45rem;
+  border: 1px solid var(--tone, var(--border));
+  border-radius: 999px;
+  font-family: var(--font-mono);
+  font-size: 0.64rem;
+  letter-spacing: 0.03em;
+  color: var(--text-muted);
+}
+
 .reach {
   font-size: 0.82rem;
   color: var(--text-muted);

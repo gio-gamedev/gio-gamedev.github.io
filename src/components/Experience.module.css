@@ -1,14 +1,8 @@
-/* Roles on the left, QA toolkit on the right (one column until there is room for both). */
+/* One column, with the measure kept readable on wide screens. */
 .layout {
   display: grid;
   gap: clamp(36px, 5vw, 56px);
-}
-
-@media (min-width: 1000px) {
-  .layout {
-    grid-template-columns: minmax(0, 1.55fr) minmax(0, 1fr);
-    align-items: start;
-  }
+  max-width: 68rem;
 }
 
 .timeline {
@@ -127,22 +121,6 @@
   font-family: var(--font-mono);
   font-size: 0.72rem;
   color: var(--text-dim);
-}
-
-/* QA toolkit column. */
-.toolkit {
-  padding-top: var(--space-5);
-  border-top: 2px solid var(--accent-line);
-}
-
-.toolkitTitle {
-  margin-bottom: var(--space-5);
-  font-family: var(--font-mono);
-  font-size: 0.8rem;
-  font-weight: 500;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  color: var(--accent);
 }
 
 @media (max-width: 720px) {

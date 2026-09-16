@@ -6,9 +6,9 @@ import { Icon } from './Icon';
 import styles from './Hero.module.css';
 
 /**
- * Editorial opening: the job title is the largest thing on the page, the name reads right under it,
- * then two lines of summary, the areas of QA and the three actions. The photo is a small companion,
- * not the subject. The headline numbers live in the proof bar that closes the section.
+ * Editorial opening: the name is the largest thing on the page and the job title reads right under
+ * it, then the summary, the areas of QA and the three actions. The photo is a small companion, not
+ * the subject. The headline numbers live in the proof bar that closes the section.
  */
 export function Hero() {
   const { t } = useLang();
@@ -20,13 +20,14 @@ export function Hero() {
       <div className={`container ${styles.grid}`}>
         <div className={styles.copy}>
           <h1 id="hero-title" className={styles.title}>
-            <span className={styles.role}>{t(profile.title)}</span>
             <span className={styles.name}>{profile.name}</span>
+            <span className={styles.role}>{t(profile.title)}</span>
           </h1>
 
           <p className={styles.headline}>
             <Abbr text={t(profile.headline)} />
           </p>
+          <p className={styles.technical}>{t(profile.headlineTechnical)}</p>
 
           <ul className={styles.specialties} aria-label={t(ui.hero.specialties)}>
             {t(heroSpecialties).map((item) => (
@@ -59,14 +60,10 @@ export function Hero() {
                 {links.email}
               </a>
             </li>
-            <li>
-              <a href={links.github} target="_blank" rel="noopener noreferrer">
-                <Icon name="github" size={16} />
-                GitHub
-                <span className="sr-only"> {t(ui.a11y.newTab)}</span>
-              </a>
+            <li className={styles.location}>
+              <Icon name="pin" size={16} />
+              {t(profile.location)}
             </li>
-            <li className={styles.location}>{t(profile.location)}</li>
           </ul>
         </div>
 

@@ -24,37 +24,42 @@
   gap: 1.25rem;
 }
 
+/* Two stacked lines instead of a monogram: the name, then what the person does. */
 .brand {
-  display: inline-flex;
+  display: inline-grid;
   flex-shrink: 0;
-  align-items: center;
-  gap: 0.6rem;
+  gap: 0.05rem;
+  padding-left: 0.7rem;
+  border-left: 2px solid var(--accent);
   color: var(--text);
   text-decoration: none;
   font-family: var(--font-display);
-  font-weight: 700;
-  letter-spacing: 0.06em;
 }
 
 .brand:hover {
   color: var(--text);
 }
 
-.brandMark {
-  display: grid;
-  place-items: center;
-  width: 38px;
-  height: 38px;
-  border: 1px solid var(--accent-line);
-  border-radius: 8px;
-  background: var(--accent-soft);
+.brand:hover .brandName {
   color: var(--accent);
-  font-size: 0.8rem;
+}
+
+.brandName {
+  font-size: 0.98rem;
+  font-weight: 700;
+  line-height: 1.15;
+  letter-spacing: 0.01em;
+  white-space: nowrap;
 }
 
 .brandText {
-  font-size: 0.95rem;
+  font-family: var(--font-mono);
+  font-size: 0.66rem;
+  font-weight: 500;
+  line-height: 1.2;
+  letter-spacing: 0.16em;
   text-transform: uppercase;
+  color: var(--text-dim);
 }
 
 .nav {
@@ -165,8 +170,8 @@
   }
 }
 
-/* Three links fit down to about 760 px; below that they move into the menu. */
-@media (max-width: 760px) {
+/* The name plus four links fit down to about 900 px; below that they move into the menu. */
+@media (max-width: 900px) {
   .actions {
     margin-left: auto;
   }
@@ -209,8 +214,69 @@
   }
 }
 
+/*
+ * Phones: the brand is a name now, not a three-letter mark, so the row needs the space back. The
+ * gaps close up, the language pill loses its padding and the name steps down a size; below 380 px
+ * the "Game QA" line goes, leaving the name.
+ */
+@media (max-width: 520px) {
+  .inner {
+    gap: 0.6rem;
+  }
+
+  .actions {
+    gap: 0.3rem;
+  }
+
+  .brandName {
+    font-size: 0.88rem;
+  }
+
+  .brand {
+    padding-left: 0.5rem;
+  }
+
+  .lang a {
+    min-width: 32px;
+    padding: 0 0.25rem;
+  }
+}
+
+/*
+ * The narrowest phones (320 px) cannot hold the name plus four controls. The name stays — it is the
+ * point of the header — and the language pill becomes a plain switch to the other language, which
+ * is what the remaining link already is.
+ */
 @media (max-width: 400px) {
   .brandText {
     display: none;
+  }
+
+  .brandName {
+    font-size: 0.8rem;
+  }
+
+  .lang {
+    border: 0;
+    padding: 0;
+    background: none;
+  }
+
+  .lang a[aria-current='page'] {
+    display: none;
+  }
+
+  .lang a {
+    min-width: 36px;
+    min-height: 36px;
+    color: var(--text);
+  }
+
+  .resume,
+  .menuBtn {
+    min-width: 40px;
+    width: 40px;
+    min-height: 40px;
+    height: 40px;
   }
 }

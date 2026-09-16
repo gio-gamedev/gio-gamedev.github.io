@@ -2,12 +2,12 @@
   padding-block: clamp(32px, 6vw, 80px) clamp(32px, 5vw, 56px);
 }
 
-/* Asymmetric: the copy takes the width it needs, the photo sits at the end of the baseline. */
+/* Asymmetric: the copy takes the width it needs, the photo sits beside the top of the copy. */
 .grid {
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto;
   gap: clamp(24px, 5vw, 64px);
-  align-items: end;
+  align-items: start;
 }
 
 .title {
@@ -15,31 +15,42 @@
   gap: var(--space-3);
 }
 
-/* The largest thing on the page: what the reader should take away in one glance. */
-.role {
-  font-size: clamp(2.5rem, 8.5vw, 5.5rem);
+/* The largest thing on the page: whose portfolio this is. */
+.name {
+  font-size: clamp(2.1rem, 6.4vw, 4.2rem);
   font-weight: 700;
-  line-height: 0.92;
-  letter-spacing: -0.005em;
+  line-height: 0.95;
+  letter-spacing: -0.01em;
   text-transform: uppercase;
   text-wrap: balance;
 }
 
-.name {
-  font-family: var(--font-mono);
-  font-size: clamp(0.82rem, 1.5vw, 1rem);
-  font-weight: 500;
-  letter-spacing: 0.22em;
+/* Second in the hierarchy, but still the phrase a recruiter is scanning for. */
+.role {
+  font-family: var(--font-display);
+  font-size: clamp(1.05rem, 2.2vw, 1.5rem);
+  font-weight: 600;
+  line-height: 1.2;
+  letter-spacing: 0.12em;
   text-transform: uppercase;
   color: var(--accent-strong);
 }
 
 .headline {
-  max-width: 46ch;
+  max-width: 52ch;
   margin-top: clamp(20px, 3vw, 32px);
-  font-size: clamp(1.02rem, 1.8vw, 1.18rem);
+  font-size: clamp(1.02rem, 1.8vw, 1.15rem);
   line-height: 1.55;
   color: var(--text-muted);
+  text-wrap: pretty;
+}
+
+.technical {
+  max-width: 52ch;
+  margin-top: var(--space-3);
+  font-size: 0.95rem;
+  line-height: 1.55;
+  color: var(--text-dim);
   text-wrap: pretty;
 }
 
@@ -109,15 +120,19 @@
 .location {
   display: flex;
   align-items: center;
+  gap: 0.45rem;
   min-height: 36px;
 }
 
-/* A companion to the text, not the subject: small, square, aligned to the baseline of the copy. */
+/*
+ * A companion to the text, not the subject: small, square, and lined up with the name rather than
+ * resting on the bottom of the section. The offset lifts it to the cap height of the first line.
+ */
 .photo {
   flex-shrink: 0;
   width: clamp(132px, 16vw, 200px);
   aspect-ratio: 1;
-  margin-bottom: clamp(0px, 1.5vw, 16px);
+  margin-top: clamp(4px, 0.8vw, 12px);
   border: 1px solid var(--border-strong);
   border-radius: var(--radius);
   overflow: hidden;
@@ -189,13 +204,12 @@
 @media (max-width: 860px) {
   .grid {
     grid-template-columns: 1fr;
-    align-items: start;
   }
 
   /* Phones and tablets: the text comes first, then the photo, smaller. */
   .photo {
     width: clamp(110px, 24vw, 150px);
-    margin-bottom: 0;
+    margin-top: 0;
   }
 }
 

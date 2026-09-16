@@ -1,4 +1,4 @@
-/* Award photo + award on the first row, testimonial + the other photos on the second. */
+/* The event gallery on the left, the award itself on the right. */
 .grid {
   display: grid;
   gap: clamp(28px, 4vw, 48px);
@@ -10,24 +10,16 @@
     align-items: start;
   }
 
-  .mainPhoto {
+  .gallery {
     grid-column: span 7;
   }
 
   .award {
     grid-column: span 5;
   }
-
-  .quote {
-    grid-column: span 7;
-  }
-
-  .extraPhotos {
-    grid-column: span 5;
-  }
 }
 
-.mainPhoto {
+.gallery {
   display: grid;
   gap: var(--space-2);
   margin: 0;
@@ -70,10 +62,12 @@
   color: var(--text-dim);
 }
 
-.quote .label,
-.extraPhotos .label {
-  margin-top: 0;
-  font-weight: 400;
+.quoteLabel {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--accent);
 }
 
 .team {
@@ -116,18 +110,22 @@
   text-decoration: underline;
 }
 
-/* The recommendation reads as a pull quote, not as another card. */
+/*
+ * A block of its own, separated from the award above by space and a rule, so the recommendation is
+ * not read as part of the prize. It is a pull quote, not another card.
+ */
 .quote {
   display: flex;
   flex-direction: column;
-  margin: 0;
+  max-width: 62rem;
+  margin: clamp(40px, 6vw, 72px) 0 0;
   padding-top: var(--space-5);
   border-top: 2px solid var(--accent-line);
 }
 
 .quote blockquote {
   margin: var(--space-4) 0 0;
-  font-size: clamp(1.05rem, 1.9vw, 1.25rem);
+  font-size: clamp(1.1rem, 2vw, 1.35rem);
   line-height: 1.6;
   color: var(--text);
   text-wrap: pretty;
@@ -172,6 +170,10 @@
   text-decoration: underline;
 }
 
+.role {
+  color: var(--text);
+}
+
 .context {
   font-size: 0.82rem;
   color: var(--text-dim);
@@ -183,24 +185,84 @@
   color: var(--text-muted);
 }
 
-.photoGrid {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: var(--space-3);
-  margin-top: var(--space-3);
+/* Thumbnails of the same gallery, under the photo being shown. */
+.thumbs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  margin-top: var(--space-2);
   list-style: none;
 }
 
-.photoGrid li {
-  display: flex;
+.thumb {
+  display: block;
+  width: 84px;
+  padding: 0;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--surface-2);
+  overflow: hidden;
+  cursor: pointer;
+  opacity: 0.65;
+  transition: opacity 0.2s ease, border-color 0.2s ease;
 }
 
-.photoGrid figure {
+.thumb img {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 3 / 2;
+  object-fit: cover;
+}
+
+.thumb:hover {
+  opacity: 1;
+}
+
+.thumb[aria-current] {
+  border-color: var(--accent);
+  opacity: 1;
+}
+
+/* Previous and next inside the dialog, so the three photos read as one gallery. */
+.viewer {
   display: flex;
-  flex: 1;
-  flex-direction: column;
-  gap: var(--space-2);
-  margin: 0;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.step {
+  display: inline-grid;
+  flex-shrink: 0;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: var(--surface);
+  color: var(--text);
+  cursor: pointer;
+}
+
+.step:hover {
+  border-color: var(--accent-line);
+  color: var(--accent);
+}
+
+.step svg {
+  transform: rotate(90deg);
+}
+
+.stepNext svg {
+  transform: rotate(-90deg);
+}
+
+.counter {
+  display: block;
+  margin-top: 0.15rem;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  color: var(--text-dim);
 }
 
 .photo {
