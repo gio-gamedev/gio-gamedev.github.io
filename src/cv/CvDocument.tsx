@@ -95,7 +95,9 @@ function Block({ block }: { block: CvBlock }) {
           </div>
           {rest.length > 0 && <Bullets items={rest} className="rest" />}
           {block.notes.map((note) => (
-            <p key={note}>{note}</p>
+            <p key={note}>
+              <Lead text={note} />
+            </p>
           ))}
         </article>
       );

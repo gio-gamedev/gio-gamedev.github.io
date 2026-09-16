@@ -1,3 +1,4 @@
+import { BrandStrip } from '../components/BrandStrip';
 import { Contact } from '../components/Contact';
 import { Education } from '../components/Education';
 import { Experience } from '../components/Experience';
@@ -8,8 +9,8 @@ import { Skills } from '../components/Skills';
 
 /**
  * The home page, in the order a recruiter reads it: who I am, the proof bar, selected projects,
- * experience, skills, recognition, education and contact. Loaded on its own (see src/main.tsx), so
- * the catalog page's code never ships with it.
+ * experience, skills, brands/IPs/platforms, recognition, education and contact. Loaded on its own
+ * (see src/main.tsx), so the catalog page's code never ships with it.
  */
 export default function HomePage() {
   return (
@@ -18,6 +19,7 @@ export default function HomePage() {
       <Projects />
       <Experience />
       <Skills />
+      <BrandStrip />
       <Recognition />
       <Education />
       <Contact />

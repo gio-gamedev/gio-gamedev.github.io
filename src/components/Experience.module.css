@@ -44,6 +44,20 @@
   color: var(--text);
 }
 
+/* A bounded, temporary assignment inside the role — set apart from the bullets, not a new job. */
+.leadNote {
+  margin-top: var(--space-3);
+  padding: var(--space-3) var(--space-4);
+  border-left: 2px solid var(--accent-line);
+  background: var(--accent-soft);
+  font-size: 0.88rem;
+  color: var(--text);
+}
+
+.leadNote strong {
+  color: var(--accent-strong);
+}
+
 .bullets {
   display: grid;
   gap: var(--space-3);

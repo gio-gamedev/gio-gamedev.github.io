@@ -10,7 +10,6 @@ import {
 import { ui } from '../content/ui';
 import { useLang } from '../i18n/LanguageContext';
 import { pagePath } from '../i18n/routes';
-import { BrandStrip } from './BrandStrip';
 import { Icon } from './Icon';
 import { ProjectCard } from './ProjectCard';
 import { ProjectDetails } from './ProjectDetails';
@@ -59,8 +58,6 @@ export function Projects() {
           <Icon name="arrowRight" size={16} />
         </a>
       </div>
-
-      <BrandStrip />
     </Section>
   );
 }

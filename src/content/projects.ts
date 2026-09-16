@@ -59,6 +59,8 @@ export type Project = {
   detail?: L<string[]>;
   /** Featured projects: the platform or store rules checked, on their own line (see ProjectCard). */
   compliance?: L;
+  /** Mini case-study projects only: one line on the QA challenge and one on the outcome. */
+  caseStudy?: { challenge: L; result: L };
   /** Traits the platform's typical scope does not already cover. */
   flags?: Flag[];
   /** Public page of the product for the featured card, when it is not the first store link. */
@@ -96,8 +98,8 @@ export const categoryNote: Partial<Record<Category, L>> = {
     pt: 'Experiências em voxel publicadas no The Sandbox, várias delas de IPs licenciados, em que os requisitos da marca são conferidos junto com os da plataforma.',
   },
   Publishing: {
-    en: 'Games adapted and released through partners: Gameloft on carrier (telco) stores, Leia Inc. on the Lume Pad 1 and 2 3D tablets, and CrazyGames on the web. The work is confirming the game still behaves correctly after the adaptation — parity with the original, performance, controls and the partner’s publishing requirements.',
-    pt: 'Jogos adaptados e lançados por parceiros: Gameloft em lojas de operadoras (telco), Leia Inc. nos tablets 3D Lume Pad 1 e 2, e CrazyGames na web. O trabalho é confirmar que o jogo continua correto depois da adaptação — paridade com o original, performance, controles e os requisitos de publicação do parceiro.',
+    en: 'Games adapted and released through partners: Gameloft on carrier (telco) stores, Leia Inc. on the Lume Pad 1 and 2 3D tablets, and CrazyGames on the web. The work is confirming the game still behaves correctly after the adaptation — parity with the original, performance, controls and the partner’s publishing requirements. Ported titles also appear under their original platform.',
+    pt: 'Jogos adaptados e lançados por parceiros: Gameloft em lojas de operadoras (telco), Leia Inc. nos tablets 3D Lume Pad 1 e 2, e CrazyGames na web. O trabalho é confirmar que o jogo continua correto depois da adaptação — paridade com o original, performance, controles e os requisitos de publicação do parceiro. Jogos portados também aparecem na plataforma original.',
   },
   Applications: {
     en: 'Web products for football clubs and media brands: club editions of the eClub benefits platform, built on a shared base with specifics per club, and prediction pools that run during a tournament.',
@@ -238,11 +240,11 @@ export const projects: Project[] = [
     },
     detail: {
       en: [
-        'Feature testing of new mechanics as they were built, then regression passes over what already worked',
+        'Feature testing of new training mechanics as they were built, then regression passes over what already worked',
         'Progression and in-game economy checked against the design intent',
         'Multiplayer sessions tested with several players in the same server',
-        'Exploratory testing complementing the scripted cases',
-        'UX and FTUE assessed from the first session onwards',
+        'Exploratory testing around training drills and session flow',
+        'UX and FTUE assessed for players new to the training loop',
         'Roblox platform requirements checked before each release',
         'Update and new-content validation during LiveOps',
         'Defects documented with steps, expected and actual results, severity and evidence',
@@ -250,11 +252,11 @@ export const projects: Project[] = [
         'Quality feedback and improvement suggestions shared with development and production',
       ],
       pt: [
-        'Testes de features novas conforme eram construídas, seguidos de regressão sobre o que já funcionava',
+        'Testes de features de novas mecânicas de treino conforme eram construídas, seguidos de regressão sobre o que já funcionava',
         'Progressão e economia do jogo conferidas contra a intenção de design',
         'Sessões multiplayer testadas com vários jogadores no mesmo servidor',
-        'Testes exploratórios complementares aos casos roteirizados',
-        'Avaliação de UX e FTUE na perspectiva do primeiro acesso',
+        'Testes exploratórios em torno dos treinos e do fluxo das sessões',
+        'Avaliação de UX e FTUE para quem chega pela primeira vez ao loop de treino',
         'Requisitos da plataforma Roblox conferidos antes de cada publicação',
         'Validação de atualizações e de novos conteúdos durante a operação (LiveOps)',
         'Defeitos documentados com passos, resultado esperado e obtido, severidade e evidências',
@@ -263,6 +265,16 @@ export const projects: Project[] = [
       ],
     },
     compliance: { en: 'Roblox platform requirements', pt: 'Requisitos da plataforma Roblox' },
+    caseStudy: {
+      challenge: {
+        en: 'A Roblox football training simulator built by the studio from scratch, needing continuous QA from early development through launch and into LiveOps, including issues raised directly by the player community.',
+        pt: 'Simulador de treino de futebol no Roblox, criado pelo estúdio do zero, exigindo QA contínuo do desenvolvimento inicial ao lançamento e à operação em LiveOps, incluindo problemas relatados diretamente pela comunidade de jogadores.',
+      },
+      result: {
+        en: 'The game has reached over 1.1M visits on Roblox, with issues reported by the community fed back into a reproduce-fix-verify cycle at each LiveOps update.',
+        pt: 'O jogo já soma mais de 1,1 milhão de visitas no Roblox, com problemas relatados pela comunidade alimentando um ciclo de reprodução, correção e validação a cada atualização de LiveOps.',
+      },
+    },
   }),
   p('Corrida do Galo', 'Roblox', { links: [roblox('95423176261993')], flags: ['Branded IP'] }),
   p({ en: 'Goal Clash', pt: 'Batalha de Gols' }, 'Roblox', {
@@ -342,6 +354,16 @@ export const projects: Project[] = [
       ],
     },
     compliance: { en: 'Fortnite publishing requirements', pt: 'Requisitos de publicação do Fortnite' },
+    caseStudy: {
+      challenge: {
+        en: 'A football management island built in UEFN, with an active multiplayer population, needing progression and in-game economy to stay stable while content updates kept shipping on a schedule.',
+        pt: 'Ilha de gestão de futebol feita no UEFN, com população multiplayer ativa, exigindo progressão e economia estáveis enquanto atualizações de conteúdo eram publicadas em calendário.',
+      },
+      result: {
+        en: "The island is published on Fortnite and has reached over 110M minutes played, with a peak of 18,000 concurrent players (fortnite.gg), each update checked against Fortnite's publishing requirements before release.",
+        pt: 'A ilha está publicada no Fortnite e já soma mais de 110 milhões de minutos jogados, com pico de 18 mil jogadores simultâneos (fortnite.gg), com cada atualização conferida contra os requisitos de publicação do Fortnite antes do lançamento.',
+      },
+    },
   }),
   p('World Soccer Tycoon', 'Fortnite/UEFN', { links: [fortnite('8861-6784-3687')] }),
   p('Skate Tycoon', 'Fortnite/UEFN', { links: [fortnite('0543-1357-2916')] }),
@@ -599,9 +621,9 @@ export const projects: Project[] = [
         'Testing of each sport, athlete and special as it entered the build',
         'Gameplay and match flow, including the hub, challenges and progression',
         'Regression passes over what already worked after every change',
-        'Exploratory testing complementing the scripted cases',
+        'Exploratory testing around unusual sport, athlete and special combinations',
         'Compatibility and performance checks where they applied',
-        'UX and FTUE assessed from the first session onwards',
+        "UX and FTUE assessed from a player's first match and first visit to the hub",
         'Progression and unlocks checked against the design intent',
         'Defects identified, documented and tracked, and the fixes verified',
         'QA documentation kept up to date with the state of the build',
@@ -611,14 +633,24 @@ export const projects: Project[] = [
         'Testes de cada modalidade, atleta e poder especial à medida que entravam na build',
         'Gameplay e fluxo das partidas, incluindo o hub, os desafios e a progressão',
         'Regressão sobre o que já funcionava depois de cada alteração',
-        'Testes exploratórios complementares aos casos roteirizados',
+        'Testes exploratórios em combinações incomuns de modalidade, atleta e poder especial',
         'Verificações de compatibilidade e de performance quando aplicável',
-        'Avaliação de UX e FTUE na perspectiva do primeiro acesso',
+        'Avaliação de UX e FTUE a partir da primeira partida e da primeira visita ao hub',
         'Progressão e desbloqueios conferidos contra a intenção de design',
         'Defeitos identificados, documentados e acompanhados, com as correções validadas',
         'Documentação de QA mantida atualizada com o estado da build',
         'Validação de builds, apoiando a qualidade das versões disponibilizadas para playtest e demonstração',
       ],
+    },
+    caseStudy: {
+      challenge: {
+        en: 'A PC/Steam competitive arcade multi-sport game, joined while already in development, with several sports, athletes and over-the-top specials entering the build continuously.',
+        pt: 'Jogo arcade competitivo multiesportes para PC/Steam, com entrada no projeto já em andamento, e vários esportes, atletas e poderes especiais exagerados entrando na build continuamente.',
+      },
+      result: {
+        en: 'The game is listed as Coming soon on Steam; QA has covered its features, regression and build validation through the versions used for playtests and demos.',
+        pt: 'O jogo está listado como Em breve na Steam; o QA cobriu suas features, regressão e validação de build nas versões usadas para playtest e demonstração.',
+      },
     },
   }),
 
@@ -779,19 +811,21 @@ export const brandGroups: { title: L; items: string[] }[] = [
       en: 'Brands and intellectual properties in the products I tested',
       pt: 'Marcas e propriedades intelectuais presentes em produtos nos quais atuei em QA',
     },
+    // The first 7 are shown by default; the rest sit behind "View more" in BrandStrip.
     items: [
+      'FC Barcelona',
+      'Manchester City',
+      'PSG',
+      'The Walking Dead',
+      'Hello Kitty',
+      'Benfica',
+      'Arsenal',
       'CAIXA',
       'Atlético Mineiro',
       'Vasco da Gama',
       'Grêmio',
       'UOL',
       'Time Brasil (COB)',
-      'PSG',
-      'FC Barcelona',
-      'Manchester City',
-      'Arsenal',
-      'Benfica',
-      'The Walking Dead',
       'Dungeon Siege',
       'Maradona',
       'Warner Music Group',
@@ -799,7 +833,6 @@ export const brandGroups: { title: L; items: string[] }[] = [
       'Jamiroquai',
       'Deepak Chopra',
       'Metapeace',
-      'Hello Kitty',
     ],
   },
   {

@@ -73,8 +73,11 @@ const haystack = new Map(
   ]),
 );
 
+// Each title counted once, under its main platform: the number a filter chip shows matches the
+// group heading below it. Selecting Publishing still reveals its ported titles too (see inCategory
+// and the note on categoryNote.Publishing) — the chip previews the group, not every click's result.
 const totalFor = (filter: Filter) =>
-  filter === 'all' ? projects.length : projects.filter((p) => inCategory(p, filter)).length;
+  filter === 'all' ? projects.length : projects.filter((p) => p.category === filter).length;
 
 const currentUrl = () => `${location.pathname}${location.search}${location.hash}`;
 const urlFor = (filter: Filter, query: string) => {

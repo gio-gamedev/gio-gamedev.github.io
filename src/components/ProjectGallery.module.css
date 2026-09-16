@@ -195,7 +195,7 @@
 .scopeLabel {
   margin-right: 0.5rem;
   font-family: var(--font-mono);
-  font-size: 0.68rem;
+  font-size: 0.73rem;
   letter-spacing: 0.08em;
   text-transform: uppercase;
   color: var(--text-dim);
@@ -281,7 +281,7 @@
   border: 1px solid var(--tone, var(--border));
   border-radius: 999px;
   font-family: var(--font-mono);
-  font-size: 0.64rem;
+  font-size: 0.7rem;
   letter-spacing: 0.03em;
   color: var(--text-muted);
 }

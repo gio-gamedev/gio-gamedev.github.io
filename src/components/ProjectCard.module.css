@@ -54,7 +54,7 @@
 
 .label {
   font-family: var(--font-mono);
-  font-size: 0.68rem;
+  font-size: 0.73rem;
   letter-spacing: 0.08em;
   text-transform: uppercase;
   color: var(--accent);
@@ -81,7 +81,7 @@
 .complianceLabel {
   margin-right: 0.5rem;
   font-family: var(--font-mono);
-  font-size: 0.68rem;
+  font-size: 0.73rem;
   letter-spacing: 0.08em;
   text-transform: uppercase;
   color: var(--text-dim);
@@ -100,7 +100,7 @@
   border: 1px solid var(--border);
   border-radius: 999px;
   font-family: var(--font-mono);
-  font-size: 0.68rem;
+  font-size: 0.73rem;
   letter-spacing: 0.04em;
   color: var(--text-dim);
 }

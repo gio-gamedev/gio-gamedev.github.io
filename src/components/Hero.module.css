@@ -15,9 +15,10 @@
   gap: var(--space-3);
 }
 
-/* The largest thing on the page: whose portfolio this is. */
+/* The largest thing on the page: whose portfolio this is. Still leaves room for the role below it
+   to read as more than a caption — see .role. */
 .name {
-  font-size: clamp(2.1rem, 6.4vw, 4.2rem);
+  font-size: clamp(2rem, 6vw, 3.8rem);
   font-weight: 700;
   line-height: 0.95;
   letter-spacing: -0.01em;
@@ -25,13 +26,14 @@
   text-wrap: balance;
 }
 
-/* Second in the hierarchy, but still the phrase a recruiter is scanning for. */
+/* Second in the hierarchy, but the phrase a recruiter is scanning for — sized so it reads
+   immediately, not as a subtitle. */
 .role {
   font-family: var(--font-display);
-  font-size: clamp(1.05rem, 2.2vw, 1.5rem);
+  font-size: clamp(1.15rem, 2.6vw, 1.85rem);
   font-weight: 600;
   line-height: 1.2;
-  letter-spacing: 0.12em;
+  letter-spacing: 0.1em;
   text-transform: uppercase;
   color: var(--accent-strong);
 }

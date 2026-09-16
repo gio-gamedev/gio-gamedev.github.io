@@ -89,24 +89,27 @@ export function Education() {
             <p className={styles.certMeta}>
               {efset.issuer} · {t(ui.labels.issued)} <time dateTime={efset.iso}>{t(efset.date)}</time>
             </p>
-            <dl className={styles.scores}>
-              <div>
-                <dt>{t(ui.labels.overall)}</dt>
-                <dd>
-                  <strong>{efset.level}</strong>
-                  <span className={styles.scoreValue}>{efset.score}</span>
-                </dd>
-              </div>
-              {efset.sections.map((section) => (
-                <div key={section.score}>
-                  <dt>{t(section.name)}</dt>
+            <details className={`disclosure ${styles.efsetDetails}`}>
+              <summary>{t(ui.labels.certificateDetails)}</summary>
+              <dl className={`disclosure-body ${styles.scores}`}>
+                <div>
+                  <dt>{t(ui.labels.overall)}</dt>
                   <dd>
-                    <strong>{section.level}</strong>
-                    <span className={styles.scoreValue}>{section.score}</span>
+                    <strong>{efset.level}</strong>
+                    <span className={styles.scoreValue}>{efset.score}</span>
                   </dd>
                 </div>
-              ))}
-            </dl>
+                {efset.sections.map((section) => (
+                  <div key={section.score}>
+                    <dt>{t(section.name)}</dt>
+                    <dd>
+                      <strong>{section.level}</strong>
+                      <span className={styles.scoreValue}>{section.score}</span>
+                    </dd>
+                  </div>
+                ))}
+              </dl>
+            </details>
             <p className={styles.efsetLinks}>
               <a href={efset.pdf} type="application/pdf" target="_blank" rel="noopener noreferrer">
                 <Icon name="download" size={16} />

@@ -45,7 +45,7 @@ export async function buildDocx(data, title) {
         children.push(new Paragraph({ heading: HeadingLevel.HEADING_2, children: [new TextRun(block.title)] }));
         children.push(new Paragraph({ children: [new TextRun({ text: block.dates, italics: true })] }));
         for (const bullet of block.bullets) children.push(new Paragraph({ children: runs(bullet), bullet: { level: 0 } }));
-        for (const note of block.notes) children.push(new Paragraph({ spacing: { after: 40 }, children: [new TextRun(note)] }));
+        for (const note of block.notes) children.push(new Paragraph({ spacing: { after: 40 }, children: runs(note) }));
       }
     }
   }

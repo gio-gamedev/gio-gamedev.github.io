@@ -39,14 +39,39 @@ export function ProjectDetails({ project, onClose }: { project: Project | null; 
             </section>
           )}
 
+          {project.caseStudy && (
+            <section className={styles.block}>
+              <h3 className={styles.blockTitle}>{t(ui.projects.challenge)}</h3>
+              <p className={styles.text}>{t(project.caseStudy.challenge)}</p>
+            </section>
+          )}
+
+          {project.caseStudy && project.contribution && (
+            <section className={styles.block}>
+              <h3 className={styles.blockTitle}>{t(ui.projects.contribution)}</h3>
+              <ul className={styles.points}>
+                {t(project.contribution).map((point) => (
+                  <li key={point}>{point}</li>
+                ))}
+              </ul>
+            </section>
+          )}
+
           {project.detail && (
             <section className={styles.block}>
-              <h3 className={styles.blockTitle}>{t(ui.projects.scopeFull)}</h3>
+              <h3 className={styles.blockTitle}>{t(project.caseStudy ? ui.projects.approach : ui.projects.scopeFull)}</h3>
               <ul className={styles.points}>
                 {t(project.detail).map((point) => (
                   <li key={point}>{point}</li>
                 ))}
               </ul>
+            </section>
+          )}
+
+          {project.caseStudy && (
+            <section className={styles.block}>
+              <h3 className={styles.blockTitle}>{t(ui.projects.result)}</h3>
+              <p className={styles.text}>{t(project.caseStudy.result)}</p>
             </section>
           )}
 

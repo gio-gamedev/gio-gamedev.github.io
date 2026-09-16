@@ -133,7 +133,7 @@ export function cvData(lang: Lang): CvData {
                 title: `${t(job.role)} — ${job.company}`,
                 dates: dates(job),
                 bullets: t(job.bullets),
-                notes: job.note ? [t(job.note)] : [],
+                notes: [...(job.leadNote ? [t(job.leadNote)] : []), ...(job.note ? [t(job.note)] : [])],
               })),
         ),
       },

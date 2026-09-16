@@ -20,6 +20,8 @@ const pages = [
     average: 'Four years in Game QA across two studios, in teams of four to five people.',
     conferral: 'Feb 22, 2019',
     original: 'Original recommendation in Portuguese',
+    leadQA: 'Temporary Lead QA assignment',
+    challenge: 'QA challenge',
   },
   {
     path: '/pt/',
@@ -39,6 +41,8 @@ const pages = [
     average: 'Quatro anos de atuação em QA de jogos em dois estúdios, em equipes de quatro a cinco pessoas.',
     conferral: '22/02/2019',
     original: null,
+    leadQA: 'Atribuição temporária como Lead QA',
+    challenge: 'Desafio de QA',
   },
 ];
 
@@ -265,6 +269,23 @@ for (const page of pages) {
       await expect(tab.locator('#experience')).toContainText(page.average);
     });
 
+    test('sets the temporary Lead QA assignment apart from the regular bullets', async ({ page: tab }) => {
+      await tab.goto(page.path);
+      const job = tab.locator('#experience li').first();
+      await expect(job).toContainText(page.leadQA);
+      // Five reorganized blocks, plus the lead-assignment callout right after them.
+      await expect(job.locator('ul > li')).toHaveCount(5);
+    });
+
+    test('opens a mini case study for Sportia, with a QA challenge and a result', async ({ page: tab }) => {
+      await tab.goto(page.path);
+      await tab.waitForLoadState('networkidle');
+      await tab.locator('#projects article', { hasText: 'Sportia' }).getByRole('button', { name: page.details }).click();
+      const dialog = tab.locator('dialog[open]');
+      await expect(dialog).toContainText(page.challenge);
+      await expect(dialog.getByRole('heading', { level: 3 })).toHaveCount(5);
+    });
+
     test('shows the same total in the hero and in the catalog, and separates brands from platforms', async ({
       page: tab,
     }) => {
@@ -273,13 +294,29 @@ for (const page of pages) {
       await expect(tab.locator('#top')).toContainText(String(TITLES));
       await expect(tab.locator('#top')).toContainText(page.apps);
       await expect(tab.locator('#projects')).toContainText(page.catalogSummary);
-      await expect(tab.locator('#projects')).toContainText(page.partners);
+      // Brands/IPs/platforms is its own section, after Skills — not inside Projects.
+      await expect(tab.locator('#projects')).not.toContainText(page.partners);
+      await expect(tab.locator('#brands')).toContainText(page.partners);
+    });
+
+    test('lists the brands section after skills, with the long tail behind "view more"', async ({ page: tab }) => {
+      await tab.goto(page.path);
+      const order = await tab
+        .locator('#skills, #brands, #recognition')
+        .evaluateAll((els) => els.map((el) => el.id));
+      expect(order).toEqual(['skills', 'brands', 'recognition']);
+      // Only a handful of brands show by default; the rest sit behind a disclosure.
+      await expect(tab.locator('#brands details summary')).toHaveCount(1);
+      await expect(tab.locator('#brands details')).not.toHaveAttribute('open');
     });
 
     test('credits the Testathon team, shows the photos and quotes the testimonial exactly', async ({ page: tab }) => {
       await tab.goto(page.path);
       await tab.waitForLoadState('networkidle');
-      await expect(tab.locator('#recognition article a[aria-label*="LinkedIn"]')).toHaveCount(6);
+      // The team is credited by first name only, with no link out of the page.
+      await expect(tab.locator('#recognition article ul li')).toHaveCount(6);
+      await expect(tab.locator('#recognition article ul li a')).toHaveCount(0);
+      await expect(tab.locator('#recognition article ul')).not.toContainText('Farah');
       const quote = tab.locator('#recognition blockquote');
       await expect(quote).toHaveAttribute('lang', 'pt-BR');
       await expect(quote).toHaveText(QUOTE);

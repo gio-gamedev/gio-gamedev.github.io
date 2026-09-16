@@ -49,6 +49,11 @@ export function Experience() {
                       {t(job.role)} <span className={styles.company}>— {job.company}</span>
                     </h3>
                     {job.scope && <p className={styles.scope}>{t(job.scope)}</p>}
+                    {job.leadNote && (
+                      <p className={styles.leadNote}>
+                        <Rich text={t(job.leadNote)} />
+                      </p>
+                    )}
                     <ul className={styles.bullets}>
                       {t(job.bullets).map((b) => (
                         <li key={b}>

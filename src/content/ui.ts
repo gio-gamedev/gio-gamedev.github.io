@@ -89,7 +89,16 @@ export const ui = {
     details: { en: 'View details', pt: 'Ver detalhes' },
     scopeFull: { en: 'QA scope', pt: 'Escopo de QA' },
     product: { en: 'The product', pt: 'O produto' },
+    // Mini case-study projects only (see caseStudy in projects.ts): Context/Challenge/Contribution/
+    // Approach/Result, in that order, instead of the compact Product/QA-scope pair.
+    challenge: { en: 'QA challenge', pt: 'Desafio de QA' },
+    approach: { en: 'QA approach', pt: 'Abordagem de QA' },
+    result: { en: 'Result', pt: 'Resultado' },
     brands: { en: 'Brands, IPs and platforms', pt: 'Marcas, IPs e plataformas' },
+    moreBrands: {
+      en: (n: number) => `+${n} more`,
+      pt: (n: number) => `+${n} mais`,
+    },
     catalogTitle: { en: 'Full catalog', pt: 'Catálogo completo' },
     // One line that spells out how the two counts add up ("97 titles: 90 games + 7 web apps").
     catalogSummary: {
@@ -152,10 +161,6 @@ export const ui = {
   recognition: {
     team: { en: 'Team', pt: 'Equipe' },
     video: { en: 'Event coverage (video)', pt: 'Cobertura do evento (vídeo)' },
-    linkedin: {
-      en: (name: string) => `${name} on LinkedIn`,
-      pt: (name: string) => `${name} no LinkedIn`,
-    },
     testimonial: { en: 'Recommendation', pt: 'Recomendação' },
     original: { en: 'Original recommendation in Portuguese', pt: '' },
     // Shown above the English version, so nobody mistakes it for what was actually written.
@@ -184,6 +189,7 @@ export const ui = {
     issued: { en: 'Issued', pt: 'Emitido em' },
     certificatePdf: { en: 'EF SET certificate (PDF)', pt: 'Certificado EF SET (PDF)' },
     verify: { en: 'Verify at cert.efset.org', pt: 'Verificar em cert.efset.org' },
+    certificateDetails: { en: 'Certificate details', pt: 'Detalhes do certificado' },
   },
   contact: {
     title: { en: "Let's connect", pt: 'Entre em contato' },

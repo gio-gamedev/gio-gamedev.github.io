@@ -97,16 +97,8 @@ export function Recognition() {
           <p className={styles.label}>{t(ui.recognition.team)}</p>
           <ul className={styles.team}>
             {recognition.team.map((member) => (
-              <li key={member.name}>
-                <a
-                  href={member.url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  aria-label={`${t(ui.recognition.linkedin)(member.name)} ${t(ui.a11y.newTab)}`}
-                >
-                  <Icon name="linkedin" size={14} />
-                  {member.name}
-                </a>
+              <li key={member.name} title={member.name}>
+                {member.name.split(' ')[0]}
               </li>
             ))}
           </ul>

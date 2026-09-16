@@ -85,7 +85,7 @@ export function resumeJson() {
       position: job.role.en,
       startDate: job.start,
       endDate: job.end,
-      summary: job.note?.en,
+      summary: job.leadNote ? plain(job.leadNote.en) : job.note?.en,
       highlights: job.bullets.en.map(plain),
     })),
     education: education.map((item) => ({
@@ -165,6 +165,7 @@ export function llmsTxt(): string {
     ...jobs().flatMap((job) => [
       `### ${job.role.en} — ${job.company} (${job.start} – ${job.end ?? 'present'})`,
       ...job.bullets.en.map((b) => `- ${plain(b)}`),
+      ...(job.leadNote ? [`- ${plain(job.leadNote.en)}`] : []),
       ...(job.note ? [`- ${job.note.en}`] : []),
       ...(job.tools ? [`- Tools: ${job.tools}`] : []),
       '',

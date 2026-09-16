@@ -196,6 +196,8 @@ export type Job = {
   note?: L;
   /** Team size and release responsibility, in one line under the role. */
   scope?: L;
+  /** A bounded, temporary assignment within the same role — not a separate job entry. */
+  leadNote?: L;
   platforms?: string;
   tools?: string;
 };
@@ -210,29 +212,27 @@ export const experience: { title: L; compact?: boolean; jobs: Job[] }[] = [
         company: 'Hermit Crab Game Studio',
         bullets: {
           en: [
-            `**Multiplatform Game QA:** gameplay, functional, regression, smoke and exploratory testing on Roblox, Fortnite (UEFN), The Sandbox, mobile, PC/Steam and Lume Pad 3D — including ${portCount}+ partner-studio ports to carrier (telco) stores through Gameloft and to Leia's Lume Pad 3D tablets, plus web releases on CrazyGames`,
-            '**Test planning and coverage:** test cases, checklists and exploratory scenarios written from requirements and product risk, with test scope and priorities set per milestone',
-            '**Defect lifecycle:** defects identified, reproduced and documented with steps, expected and actual results, severity and evidence, then tracked, verified after the fix and covered by regression',
-            '**Release validation:** build validation, release readiness, risks and a go/no-go recommendation for Production, with platform and store compliance for Roblox, Fortnite, The Sandbox, the App Store and Google Play',
-            '**Player experience:** gameplay, UX/FTUE, progression, in-game economy, accessibility, localization and multiplayer where it applies, with quality feedback and improvement suggestions',
-            '**Technical QA:** investigation with adb/logcat and Firebase Crashlytics, analytics events validated on GameAnalytics, Firebase and Roblox Analytics, and APIs tested with Postman',
-            '**Compatibility and performance:** devices from low-end to reference tiers, different screen sizes and resolutions, frame behavior and gamepad controls on PC',
-            '**Cross-functional work and AI:** day-to-day work with QA, developers, producers and other areas on problems, risks, fixes and feedback; AI used to support test documentation, information organization, research, analysis, test-scenario refinement and defect investigation, including a contribution of small adjustments and improvements to an internal QA tool, with AI and programming as support',
+            `**Multiplatform Game QA:** gameplay, functional, regression, smoke, exploratory, UX/FTUE and multiplayer testing on Roblox, Fortnite (UEFN), The Sandbox, mobile, PC/Steam and Lume Pad 3D — covering progression, in-game economy, accessibility and localization, and including ${portCount}+ partner-studio ports to carrier (telco) stores through Gameloft and to Leia's Lume Pad 3D tablets, plus web releases on CrazyGames`,
+            '**Test Planning, Coverage & Risk:** test cases, checklists and exploratory scenarios written from requirements and product risk, with test scope, coverage and priorities defined per milestone',
+            '**Defect Lifecycle & Technical Investigation:** defects identified, reproduced and documented with steps, expected and actual results, severity and evidence, then tracked, verified after the fix and covered by regression — investigated with adb/logcat and Firebase Crashlytics, with analytics events validated on GameAnalytics, Firebase and Roblox Analytics, and APIs tested with Postman',
+            '**Release / Quality Validation:** build validation, release readiness, risks and a go/no-go recommendation for Production, with platform and store compliance for Roblox, Fortnite, The Sandbox, the App Store and Google Play, plus compatibility and performance checks across devices from low-end to reference tiers, different screen sizes and resolutions, frame behavior and gamepad controls on PC',
+            '**Cross-functional Work, Process & Ownership:** day-to-day work with QA, developers, producers and other areas on problems, risks, fixes and quality feedback, with improvement suggestions shared as the game evolved; AI used to support test documentation, information organization, research, analysis, test-scenario refinement and defect investigation, including a contribution of small adjustments and improvements to an internal QA tool, with AI and programming as support',
           ],
           pt: [
-            `**Game QA multiplataforma:** testes de gameplay, funcionais, de regressão, smoke e exploratórios em Roblox, Fortnite (UEFN), The Sandbox, mobile, PC/Steam e Lume Pad 3D — incluindo mais de ${portCount} portes de jogos de estúdios parceiros para lojas de operadoras (telco) pela Gameloft e para os tablets 3D Lume Pad da Leia, além de lançamentos web no CrazyGames`,
-            '**Planejamento e cobertura:** casos de teste, checklists e cenários exploratórios criados a partir de requisitos e riscos do produto, com escopo e prioridades definidos por milestone',
-            '**Ciclo de vida do defeito:** defeitos identificados, reproduzidos e documentados com passos, resultado esperado e obtido, severidade e evidências, depois acompanhados, validados após a correção e cobertos por regressão',
-            '**Validação de releases:** validação de build, release readiness, riscos e recomendação de go/no-go para a Produção, com compliance de plataforma e loja no Roblox, no Fortnite, no The Sandbox, na App Store e no Google Play',
-            '**Experiência do jogador:** gameplay, UX/FTUE, progressão, economia do jogo, acessibilidade, localização e multiplayer quando aplicável, com feedback de qualidade e sugestões de melhoria',
-            '**QA técnico:** investigação com adb/logcat e Firebase Crashlytics, validação de eventos de analytics no GameAnalytics, no Firebase e no Roblox Analytics, e testes de APIs com Postman',
-            '**Compatibilidade e performance:** aparelhos de entrada até os de referência, diferentes tamanhos de tela e resoluções, comportamento de performance e controles no PC',
-            '**Trabalho entre áreas e IA:** rotina com QA, desenvolvedores, produtores e demais áreas na discussão de problemas, riscos, correções e feedbacks; IA usada como apoio à documentação de testes, organização de informações, pesquisa, análise, refinamento de cenários de teste e investigação de defeitos, incluindo contribuição em pequenos ajustes e melhorias de uma ferramenta interna de QA, com IA e programação como apoio',
+            `**Game QA multiplataforma:** testes de gameplay, funcionais, de regressão, smoke, exploratórios, de UX/FTUE e multiplayer em Roblox, Fortnite (UEFN), The Sandbox, mobile, PC/Steam e Lume Pad 3D — cobrindo progressão, economia do jogo, acessibilidade e localização, além de mais de ${portCount} portes de jogos de estúdios parceiros para lojas de operadoras (telco) pela Gameloft e para os tablets 3D Lume Pad da Leia, e lançamentos web no CrazyGames`,
+            '**Planejamento, Cobertura e Risco:** casos de teste, checklists e cenários exploratórios criados a partir de requisitos e riscos do produto, com escopo, cobertura e prioridades definidos por milestone',
+            '**Ciclo de Vida do Defeito e Investigação Técnica:** defeitos identificados, reproduzidos e documentados com passos, resultado esperado e obtido, severidade e evidências, depois acompanhados, validados após a correção e cobertos por regressão — investigados com adb/logcat e Firebase Crashlytics, com eventos de analytics validados no GameAnalytics, no Firebase e no Roblox Analytics, e testes de APIs com Postman',
+            '**Validação de Release e Qualidade:** validação de build, release readiness, riscos e recomendação de go/no-go para a Produção, com compliance de plataforma e loja no Roblox, no Fortnite, no The Sandbox, na App Store e no Google Play, além de verificações de compatibilidade e performance em aparelhos de entrada até os de referência, diferentes tamanhos de tela e resoluções, comportamento de performance e controles no PC',
+            '**Trabalho entre Áreas, Processo e Ownership:** rotina com QA, desenvolvedores, produtores e demais áreas na discussão de problemas, riscos, correções e feedback de qualidade, com sugestões de melhoria compartilhadas ao longo da evolução do jogo; IA usada como apoio à documentação de testes, organização de informações, pesquisa, análise, refinamento de cenários de teste e investigação de defeitos, incluindo contribuição em pequenos ajustes e melhorias de uma ferramenta interna de QA, com IA e programação como apoio',
           ],
         },
         scope: {
           en: 'QA team of four to five people · test scope and priorities per milestone · go/no-go recommendation for Production',
           pt: 'Equipe de QA de quatro a cinco pessoas · escopo e prioridades de teste por milestone · recomendação de go/no-go para a Produção',
+        },
+        leadNote: {
+          en: '**Temporary Lead QA assignment (since May 2026):** coordinated a QA team of four — three QAs, one of them an intern, and myself — distributing test scope among the team, approving build go/no-go and reporting status and risk directly to Production.',
+          pt: '**Atribuição temporária como Lead QA (desde mai/2026):** coordenação de uma equipe de QA de quatro pessoas — três QAs, sendo um deles estagiário, além de mim —, com distribuição do escopo de teste entre o time, aprovação de go/no-go de build e reporte de status e risco diretamente à Produção.',
         },
         platforms: 'Roblox · Fortnite/UEFN · The Sandbox (Web3) · Mobile · PC · Lume Pad 3D',
         tools:
@@ -433,13 +433,15 @@ export const recognition = {
     en: 'Member of the team that won the Best Team QA award at Testathon World Tour São Paulo 2024.',
     pt: 'Integrante da equipe vencedora do prêmio Best Team QA no Testathon World Tour São Paulo 2024.',
   } as L,
+  // Full names for the resume and the machine-readable files; the page itself shows first names
+  // only, without a link out, so a recruiter reading it has no reason to leave the page.
   team: [
-    { name: 'Karen Farah', url: 'https://www.linkedin.com/in/karen-farah/' },
-    { name: 'Samara Cardoso', url: 'https://www.linkedin.com/in/c-samara/' },
-    { name: 'Giovanni Mariano', url: 'https://www.linkedin.com/in/giogamedev/' },
-    { name: 'Vinicius Mafra Lopes', url: 'https://www.linkedin.com/in/vinicius-mafra-lopes-8a409219a/' },
-    { name: 'Amanda Oliveira', url: 'https://www.linkedin.com/in/amandacoliveira95' },
-    { name: 'Jenifer Silva', url: 'https://www.linkedin.com/in/jenifersilva/' },
+    { name: 'Karen Farah' },
+    { name: 'Samara Cardoso' },
+    { name: 'Giovanni Mariano' },
+    { name: 'Vinicius Mafra Lopes' },
+    { name: 'Amanda Oliveira' },
+    { name: 'Jenifer Silva' },
   ],
   video: 'https://www.youtube.com/watch?v=nuXAPn1jyfY',
   /** Event photos (public/testathon/<file>-<width>.webp). Nobody is named in the photos. */
