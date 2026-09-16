@@ -24,7 +24,7 @@ async function copyText(text: string) {
 }
 
 /** Ways to get in touch on the left; the facts recruiters filter on and the resume files on the right. */
-export function Contact({ index }: { index: string }) {
+export function Contact() {
   const { t } = useLang();
   const { links } = profile;
   const [copied, setCopied] = useState<'email' | 'discord' | null>(null);
@@ -43,9 +43,6 @@ export function Contact({ index }: { index: string }) {
       <div className="container">
         <div className={styles.panel}>
           <div>
-            <p className={styles.index} aria-hidden="true">
-              {index} //
-            </p>
             <h2 id="contact-title" className={styles.title}>
               {t(ui.contact.title)}
             </h2>
@@ -61,13 +58,15 @@ export function Contact({ index }: { index: string }) {
                 <Icon name={copied === 'email' ? 'check' : 'copy'} />
                 {t(copied === 'email' ? ui.contact.copied : ui.contact.copy)}
               </button>
-              <a className="btn btn-ghost" href={links.linkedin} target="_blank" rel="noreferrer">
+              <a className="btn btn-ghost" href={links.linkedin} target="_blank" rel="noopener noreferrer">
                 <Icon name="linkedin" />
                 LinkedIn
+                <span className="sr-only"> {t(ui.a11y.newTab)}</span>
               </a>
-              <a className="btn btn-ghost" href={links.github} target="_blank" rel="noreferrer">
+              <a className="btn btn-ghost" href={links.github} target="_blank" rel="noopener noreferrer">
                 <Icon name="github" />
                 GitHub
+                <span className="sr-only"> {t(ui.a11y.newTab)}</span>
               </a>
               {/* Discord has no public profile URL for usernames, so the button copies it. */}
               <button

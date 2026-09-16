@@ -19,18 +19,25 @@ import type { L, Lang } from '../content/types';
 
 // One source for both resumes: CvDocument renders it to HTML (printed to PDF), scripts/cv-docx.mjs
 // writes it as Word. ATS-friendly: one column, standard headings, plain selectable text, no hidden
-// or repeated keywords.
+// or repeated keywords. Order follows what recruiters read first: what I did, then how, then proof.
 
 export type CvBlock =
   | { kind: 'p'; label?: string; text: string }
   | { kind: 'list'; items: string[] }
   | { kind: 'job'; title: string; dates: string; bullets: string[]; notes: string[] };
 
+export type CvSection = {
+  heading: string;
+  blocks: CvBlock[];
+  /** Starts a new page, so a page break never falls inside a role (PDF only). */
+  break?: boolean;
+};
+
 export type CvData = {
   name: string;
   title: string;
   contact: { text: string; href?: string }[];
-  sections: { heading: string; blocks: CvBlock[] }[];
+  sections: CvSection[];
 };
 
 const heading = {
@@ -49,6 +56,8 @@ const heading = {
     pt: `${gameCountRounded}+ jogos testados. Títulos selecionados (os números públicos são de cada produto e de todo o time):`,
   },
   teamAward: { en: 'team award', pt: 'prêmio de equipe' },
+  // The section scores stay on the certificate itself, which the link verifies.
+  efsetScope: { en: 'reading and listening', pt: 'leitura e compreensão oral' },
 } satisfies Record<string, L>;
 
 const plain = (text: string) => text.replace(/\*\*/g, '');
@@ -80,17 +89,6 @@ export function cvData(lang: Lang): CvData {
         ],
       },
       {
-        heading: t(heading.skills),
-        // Items like "SQL · REST APIs · JSON" use commas here, so one separator runs through the line.
-        blocks: skills.map((group) => ({
-          kind: 'p',
-          label: t(group.title),
-          text: t(group.items)
-            .map((item) => item.replace(/ · /g, ', '))
-            .join(', '),
-        })),
-      },
-      {
         heading: t(heading.experience),
         // Game QA roles in full; earlier technology roles with their first line only.
         blocks: experience.flatMap((group) =>
@@ -102,6 +100,17 @@ export function cvData(lang: Lang): CvData {
             notes: job.note ? [t(job.note)] : [],
           })),
         ),
+      },
+      {
+        heading: t(heading.skills),
+        // Items like "SQL · REST APIs · JSON" use commas here, so one separator runs through the line.
+        blocks: skills.map((group) => ({
+          kind: 'p',
+          label: t(group.title),
+          text: t(group.items)
+            .map((item) => item.replace(/ · /g, ', '))
+            .join(', '),
+        })),
       },
       {
         heading: t(heading.projects),
@@ -141,15 +150,8 @@ export function cvData(lang: Lang): CvData {
         ],
       },
       {
-        heading: t(heading.academic),
-        blocks: [
-          {
-            kind: 'p',
-            text: academicProjects.items
-              .map((item) => `${item.name}${item.start ? ` (${item.start.slice(0, 4)})` : ''}: ${t(item.note)}`)
-              .join('; '),
-          },
-        ],
+        heading: t(heading.languages),
+        blocks: [{ kind: 'p', text: t(languages) }],
       },
       {
         heading: t(heading.certifications),
@@ -157,10 +159,7 @@ export function cvData(lang: Lang): CvData {
           {
             kind: 'list',
             items: [
-              `${t(efset.name)} — ${efset.score} ${efset.level} (${efset.sections
-                // "Leitura (Reading)" → "Leitura": no nested parentheses.
-                .map((s) => `${t(s.name).replace(/ \(.+\)$/, '')} ${s.score} ${s.level}`)
-                .join('; ')}), ${t(efset.date)} — ${bare(efset.verify)}`,
+              `${t(efset.name)} — ${efset.level} (${efset.score}, ${t(heading.efsetScope)}), ${t(efset.date)} — ${bare(efset.verify)}`,
               ...certificates.map((c) => `${t(c.name)}, ${c.issuer}, ${c.year}`),
               t(otherCertificates[0]),
             ],
@@ -168,8 +167,14 @@ export function cvData(lang: Lang): CvData {
         ],
       },
       {
-        heading: t(heading.languages),
-        blocks: [{ kind: 'p', text: t(languages) }],
+        // College work, last and in one line each: it carries less weight than the QA experience above.
+        heading: t(heading.academic),
+        blocks: [
+          {
+            kind: 'p',
+            text: academicProjects.items.map((item) => `${item.name} (${t(item.short)})`).join('; '),
+          },
+        ],
       },
     ],
   };

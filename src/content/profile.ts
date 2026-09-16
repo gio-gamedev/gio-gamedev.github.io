@@ -1,4 +1,4 @@
-import { gameCount, gameCountRounded, portCount } from './projects';
+import { appCount, gameCount, gameCountRounded, portCount } from './projects';
 import { numberWord, qaYears, techYears } from './stats';
 import type { L, Lang } from './types';
 
@@ -9,10 +9,10 @@ export const profile = {
   name: 'Giovanni S. Mariano',
   /** Standard job title: recruiters and screening tools match on it. */
   title: { en: 'Game QA Analyst', pt: 'Analista de QA de Jogos' } as L,
-  /** Two lines under the name. */
+  /** Two lines under the name. The years and the counts belong to the strip below, not here. */
   headline: {
-    en: `${qaYears} years of manual QA on Roblox, Fortnite (UEFN), The Sandbox, mobile and PC games: functional and regression testing, bug reporting and release validation.`,
-    pt: `${qaYears} anos de QA manual em jogos de Roblox, Fortnite (UEFN), The Sandbox, mobile e PC: testes funcionais e de regressão, relato de bugs e validação de releases.`,
+    en: 'Manual QA on Roblox, Fortnite (UEFN), The Sandbox, mobile and PC games: functional and regression testing, bug reporting and release validation.',
+    pt: 'QA manual em jogos de Roblox, Fortnite (UEFN), The Sandbox, mobile e PC: testes funcionais e de regressão, relato de bugs e validação de releases.',
   } as L,
   location: { en: 'Remote from Brazil (UTC−3)', pt: 'Remoto, do Brasil (UTC−3)' } as L,
   availability: {
@@ -27,6 +27,8 @@ export const profile = {
     discord: 'giogamedev',
   },
   avatar: asset('avatar.webp'),
+  /** The same photo at the sizes it is actually shown (never wider than about 200 px). */
+  avatarSrcSet: [`${asset('avatar-240.webp')} 240w`, `${asset('avatar-320.webp')} 320w`, `${asset('avatar.webp')} 480w`].join(', '),
   /** PDF printed by `npm run cv` (scripts/cv-pdf.mjs); DOCX written at build time (scripts/cv-docx.mjs). */
   cv: {
     en: asset('cv/Giovanni-Mariano-Game-QA-EN.pdf'),
@@ -63,19 +65,27 @@ export const efset = {
 export const languageList: { name: L; level: L; code: string }[] = [
   { name: { en: 'Portuguese', pt: 'Português' }, level: { en: 'native', pt: 'nativo' }, code: 'pt' },
   {
+    // The level in one line; the section scores stay in the certificate card and the resume.
     name: { en: 'English', pt: 'Inglês' },
-    level: { en: 'EF SET B1 — 41/100 (Reading & Listening)', pt: 'EF SET B1 — 41/100 (leitura e compreensão oral)' },
+    level: { en: 'B1 (EF SET: Reading & Listening)', pt: 'B1 (EF SET: leitura e compreensão oral)' },
     code: 'en',
   },
   { name: { en: 'French', pt: 'Francês' }, level: { en: 'beginner', pt: 'iniciante' }, code: 'fr' },
 ];
 
-/** "English: EF SET B1 — 41/100 (Reading & Listening)" */
-export const languageLine = (item: (typeof languageList)[number], lang: Lang) => `${item.name[lang]}: ${item.level[lang]}`;
+/** "English — B1 (EF SET: Reading & Listening)" */
+export const languageLine = (item: (typeof languageList)[number], lang: Lang) => `${item.name[lang]} — ${item.level[lang]}`;
 
 export const languages: L = {
   en: languageList.map((l) => languageLine(l, 'en')).join(' · '),
   pt: languageList.map((l) => languageLine(l, 'pt')).join(' · '),
+};
+
+/** Contact card: the working languages only (French stays in Education and on the resume). */
+const working = languageList.filter((l) => l.code !== 'fr');
+export const workingLanguages: L = {
+  en: working.map((l) => languageLine(l, 'en')).join(' · '),
+  pt: working.map((l) => languageLine(l, 'pt')).join(' · '),
 };
 
 /** Game platforms covered, for the hero facts and the contact card. */
@@ -84,10 +94,21 @@ export const platformList: L<string[]> = {
   pt: ['Roblox', 'Fortnite (UEFN)', 'The Sandbox', 'iOS e Android', 'PC / Steam', 'Lume Pad 3D'],
 };
 
-/** The one place with headline numbers: the strip under the hero. */
-export const heroFacts: { value: string; label: L; href?: string }[] = [
+/** What I do, in the words job posts use; read right under the title in the hero. */
+export const heroSpecialties: L<string[]> = {
+  en: ['Manual QA', 'Functional & regression', 'Exploratory', 'Multiplayer', 'Release validation', 'Platform compliance', 'Technical investigation'],
+  pt: ['QA manual', 'Funcional e regressão', 'Exploratório', 'Multiplayer', 'Validação de release', 'Compliance de plataforma', 'Investigação técnica'],
+};
+
+/** The one place with headline numbers: the proof bar under the hero. */
+export const heroFacts: { value: string; label: L; hint?: L; href?: string }[] = [
   { value: String(qaYears), label: { en: 'years in Game QA', pt: 'anos em Game QA' } },
-  { value: String(gameCount), label: { en: 'games tested', pt: 'jogos testados' } },
+  {
+    value: String(gameCount),
+    label: { en: 'games tested', pt: 'jogos testados' },
+    // Spelled out here so the catalog's larger total never reads as a different number.
+    hint: { en: `+ ${appCount} web apps`, pt: `+ ${appCount} aplicações web` },
+  },
   { value: String(platformList.en.length), label: { en: 'game platforms', pt: 'plataformas de jogos' } },
   { value: '2024', label: { en: 'Best Team QA · Testathon', pt: 'Melhor Time de QA · Testathon' }, href: '#recognition' },
 ];
@@ -99,8 +120,8 @@ export const contactFacts: { label: L; value: L }[] = [
     label: { en: 'Work model', pt: 'Contratação' },
     value: { en: 'Full-time, contractor or freelance · open to relocation', pt: 'CLT, PJ ou freelance · aberto a relocação' },
   },
-  { label: { en: 'Languages', pt: 'Idiomas' }, value: languages },
-  { label: { en: 'Platforms', pt: 'Plataformas' }, value: { en: platformList.en.join(' · '), pt: platformList.pt.join(' · ') } },
+  // Platforms are named in the headline, the experience card and the catalog, so they are not repeated here.
+  { label: { en: 'Languages', pt: 'Idiomas' }, value: workingLanguages },
 ];
 
 /** Average over the confirmed QA period; context only, not a productivity measure. */
@@ -132,9 +153,12 @@ export type Job = {
   end?: string;
   role: L;
   company: string;
+  /** Each bullet opens with what it is about, in **bold**, so the list can be scanned. */
   bullets: L<string[]>;
   /** One short line under the bullets, such as the titles tested. */
   note?: L;
+  /** Team size and release responsibility, in one line under the role. */
+  scope?: L;
   platforms?: string;
   tools?: string;
 };
@@ -149,23 +173,29 @@ export const experience: { title: L; compact?: boolean; jobs: Job[] }[] = [
         company: 'Hermit Crab Game Studio',
         bullets: {
           en: [
-            'Manual QA on Roblox, Fortnite (UEFN), The Sandbox, mobile, PC/Steam and Lume Pad 3D: functional, regression, smoke, integration and exploratory testing of gameplay, UX/FTUE and multiplayer',
-            'Write and run test cases and exploratory scenarios from requirements and product risk, set test scope and priorities per milestone, and distribute testing tasks within the QA team',
-            'Reproduce and document defects with steps, expected and actual results, severity and evidence (adb/logcat, Firebase Crashlytics), then verify the fixes',
-            'Validate releases: platform and store compliance (Roblox, Fortnite, The Sandbox, App Store, Google Play), mobile builds through TestFlight and Google Play Console tracks, and QA status, risks and a go/no-go recommendation for Production',
-            'Cover device compatibility (low-end to reference tiers), accessibility, localization and gamepad play on PC; validate analytics events (GameAnalytics, Firebase, Roblox Analytics) and test APIs with Postman',
-            `Test ${portCount}+ partner-studio ports to carrier (telco) stores through Gameloft and to Leia's Lume Pad 1 and 2 3D tablets (3D effect, performance, controls and store requirements), plus web releases on CrazyGames`,
+            '**Multiplatform Game QA:** functional, regression, smoke, integration and exploratory testing of gameplay, UX/FTUE and multiplayer on Roblox, Fortnite (UEFN), The Sandbox, mobile, PC/Steam and Lume Pad 3D',
+            '**Test design and risk:** test cases and exploratory scenarios written from requirements and product risk, with test scope and priorities per milestone and testing tasks distributed within the QA team',
+            '**Bug reporting and investigation:** defects reproduced and documented with steps, expected and actual results, severity and evidence (adb/logcat, Firebase Crashlytics), then the fixes verified',
+            '**Release validation:** platform and store compliance (Roblox, Fortnite, The Sandbox, App Store, Google Play), mobile builds through TestFlight and Google Play Console tracks, and QA status, risks and a go/no-go recommendation for Production',
+            '**Coverage:** device compatibility (low-end to reference tiers), accessibility, localization and gamepad play on PC',
+            '**Technical checks:** analytics events (GameAnalytics, Firebase, Roblox Analytics) validated and APIs tested with Postman',
+            `**Ports and web releases:** ${portCount}+ partner-studio ports to carrier (telco) stores through Gameloft and to Leia's Lume Pad 1 and 2 3D tablets (3D effect, performance, controls and store requirements), plus web releases on CrazyGames`,
             'Use AI to support test documentation, information organization, analysis and market research',
           ],
           pt: [
-            'QA manual em Roblox, Fortnite (UEFN), The Sandbox, mobile, PC/Steam e Lume Pad 3D: testes funcionais, de regressão, smoke, de integração e exploratórios de gameplay, UX/FTUE e multiplayer',
-            'Criação e execução de casos de teste e cenários exploratórios a partir de requisitos e riscos do produto, com escopo e prioridades por milestone e distribuição de tarefas de teste no time de QA',
-            'Reprodução e documentação de defeitos com passos, resultado esperado e obtido, severidade e evidências (adb/logcat, Firebase Crashlytics), seguidas da verificação das correções',
-            'Validação de releases: compliance de plataforma e loja (Roblox, Fortnite, The Sandbox, App Store, Google Play), builds mobile pelas trilhas do TestFlight e do Google Play Console, e status de QA, riscos e recomendação de go/no-go para a Produção',
-            'Compatibilidade de dispositivos (de entrada a referência), acessibilidade, localização e controle no PC; validação de eventos de analytics (GameAnalytics, Firebase, Roblox Analytics) e testes de APIs com Postman',
-            `Testes de mais de ${portCount} portes de jogos de estúdios parceiros para lojas de operadoras (telco) pela Gameloft e para os tablets 3D Lume Pad 1 e 2 da Leia (efeito 3D, performance, controles e requisitos da loja), além de lançamentos web no CrazyGames`,
+            '**Game QA multiplataforma:** testes funcionais, de regressão, smoke, de integração e exploratórios de gameplay, UX/FTUE e multiplayer em Roblox, Fortnite (UEFN), The Sandbox, mobile, PC/Steam e Lume Pad 3D',
+            '**Planejamento e risco:** casos de teste e cenários exploratórios criados a partir de requisitos e riscos do produto, com escopo e prioridades por milestone e distribuição das tarefas de teste no time de QA',
+            '**Relato e investigação de defeitos:** reprodução e documentação com passos, resultado esperado e obtido, severidade e evidências (adb/logcat, Firebase Crashlytics), seguidas da verificação das correções',
+            '**Validação de releases:** compliance de plataforma e loja (Roblox, Fortnite, The Sandbox, App Store, Google Play), builds mobile pelas trilhas do TestFlight e do Google Play Console, e status de QA, riscos e recomendação de go/no-go para a Produção',
+            '**Cobertura:** compatibilidade de dispositivos (de entrada a referência), acessibilidade, localização e controle no PC',
+            '**Verificações técnicas:** validação de eventos de analytics (GameAnalytics, Firebase, Roblox Analytics) e testes de APIs com Postman',
+            `**Portes e lançamentos web:** testes de mais de ${portCount} portes de jogos de estúdios parceiros para lojas de operadoras (telco) pela Gameloft e para os tablets 3D Lume Pad 1 e 2 da Leia (efeito 3D, performance, controles e requisitos da loja), além de lançamentos web no CrazyGames`,
             'Uso de IA como apoio à elaboração de documentação de testes, organização de informações, análise e pesquisa de mercado',
           ],
+        },
+        scope: {
+          en: 'QA team of four to five people · test scope and priorities per milestone · go/no-go recommendation for Production',
+          pt: 'Equipe de QA de quatro a cinco pessoas · escopo e prioridades de teste por milestone · recomendação de go/no-go para a Produção',
         },
         platforms: 'Roblox · Fortnite/UEFN · The Sandbox (Web3) · Mobile · PC · Lume Pad 3D',
         tools:
@@ -178,12 +208,12 @@ export const experience: { title: L; compact?: boolean; jobs: Job[] }[] = [
         company: 'Space Bit Games',
         bullets: {
           en: [
-            'Performed manual QA on mobile games, focusing on functionality, usability, stability and player experience',
-            'Created and executed test scenarios and documented defects with clear reproduction steps',
+            '**Manual QA on mobile games:** functionality, usability, stability and player experience',
+            '**Test scenarios and defects:** scenarios created and run, defects documented with clear reproduction steps',
           ],
           pt: [
-            'QA manual em jogos mobile, com foco em funcionalidade, usabilidade, estabilidade e experiência do jogador',
-            'Criação e execução de cenários de teste e documentação de defeitos com passos claros de reprodução',
+            '**QA manual em jogos mobile:** funcionalidade, usabilidade, estabilidade e experiência do jogador',
+            '**Cenários de teste e defeitos:** cenários criados e executados, defeitos documentados com passos claros de reprodução',
           ],
         },
         note: {
@@ -255,14 +285,14 @@ export const experience: { title: L; compact?: boolean; jobs: Job[] }[] = [
  * Market-standard skill names (what job posts and screening tools search for). The core set comes
  * first; tools are grouped; complementary knowledge carries less weight. No levels or ratings.
  */
-export type SkillGroup = { kind: 'core' | 'tools' | 'extra'; title: L; items: L<string[]> };
+export type SkillGroup = { kind: 'core' | 'platforms' | 'tools' | 'extra'; title: L; items: L<string[]> };
 
 const list = (text: string): L<string[]> => ({ en: text.split(' · '), pt: text.split(' · ') });
 
 export const skills: SkillGroup[] = [
   {
     kind: 'core',
-    title: { en: 'Game QA', pt: 'Game QA' },
+    title: { en: 'Testing', pt: 'Testes' },
     items: {
       en: [
         'Gameplay testing',
@@ -272,10 +302,6 @@ export const skills: SkillGroup[] = [
         'Smoke testing',
         'Compatibility testing',
         'Multiplayer testing',
-        'Bug reporting',
-        'Test planning & test cases',
-        'Release validation & go/no-go',
-        'Platform & store compliance',
       ],
       pt: [
         'Testes de gameplay',
@@ -285,12 +311,21 @@ export const skills: SkillGroup[] = [
         'Smoke tests',
         'Testes de compatibilidade',
         'Testes multiplayer',
-        'Relato de bugs',
-        'Planejamento e casos de teste',
-        'Validação de release e go/no-go',
-        'Compliance de plataforma e loja',
       ],
     },
+  },
+  {
+    kind: 'core',
+    title: { en: 'Release & process', pt: 'Release e processo' },
+    items: {
+      en: ['Bug reporting', 'Test planning & test cases', 'Release validation & go/no-go', 'Platform & store compliance'],
+      pt: ['Relato de bugs', 'Planejamento e casos de teste', 'Validação de release e go/no-go', 'Compliance de plataforma e loja'],
+    },
+  },
+  {
+    kind: 'platforms',
+    title: { en: 'Platforms', pt: 'Plataformas' },
+    items: platformList,
   },
   { kind: 'tools', title: { en: 'QA & tracking', pt: 'QA e gestão' }, items: list('Jira · ClickUp · HacknPlan · Notion · Miro') },
   {
@@ -394,10 +429,16 @@ export const recognition = {
   ] as Photo[],
 };
 
-/** LinkedIn recommendation, quoted exactly as written, in Portuguese on both versions of the site. */
+/**
+ * LinkedIn recommendation, quoted exactly as written, in Portuguese on both versions of the site.
+ * The English page adds `translation` below it, marked as a reference: the quote above stays the
+ * recommendation as Karen wrote it.
+ */
 export const testimonial = {
   quote:
     'Trabalho com o Giovanni há anos e posso atestar sobre sua paixão por jogos e qualidade. É uma grande facilidade trabalhar com ele, visto que é solícito, proativo e muito dedicado com o que faz. Me ajudou muito a crescer e trabalhar melhor em equipe, admiro sua organização, responsabilidade e tato com os times.',
+  translation:
+    'I have worked with Giovanni for years and I can vouch for his passion for games and for quality. He is very easy to work with: helpful, proactive and deeply dedicated to what he does. He helped me a lot to grow and to work better in a team; I admire his organization, his sense of responsibility and the tact he has with teams.',
   author: 'Karen Farah',
   url: 'https://www.linkedin.com/in/karen-farah/',
   role: { en: 'QA Lead at Hermit Crab Game Studio | UX', pt: 'QA Lead na Hermit Crab Game Studio | UX' } as L,
@@ -512,7 +553,8 @@ export const otherCertificates: L[] = [
   },
 ];
 
-export type AcademicItem = { name: string; note: L; start?: string; end?: string; link?: string };
+/** `short` is the one-line version used on the resume, where these come last and stay brief. */
+export type AcademicItem = { name: string; note: L; short: L; start?: string; end?: string; link?: string };
 
 /** College projects, kept apart from employment (the old Wix gallery is not migrated). */
 export const academicProjects = {
@@ -521,12 +563,14 @@ export const academicProjects = {
     {
       name: 'Coração do Inverno',
       note: { en: 'final course project on narrative immersion, FATEC Ourinhos, 2018', pt: 'TCC sobre imersão narrativa, FATEC Ourinhos, 2018' },
+      short: { en: 'final course project, 2018', pt: 'TCC, 2018' },
     },
     {
       name: 'APAM – FATEC Ourinhos',
       start: '2018-01',
       end: '2018-06',
       note: { en: 'extension project: adapted a web game to mobile with Construct 2', pt: 'projeto de extensão: adaptação de um jogo web para mobile com Construct 2' },
+      short: { en: 'extension project, 2018', pt: 'projeto de extensão, 2018' },
     },
     {
       name: 'Projeto Game Office – FATEC Ourinhos',
@@ -536,16 +580,23 @@ export const academicProjects = {
         en: 'study group that simulated a professional game studio; games made with RPG Maker',
         pt: 'grupo de estudos que simulava um estúdio profissional; jogos feitos com RPG Maker',
       },
+      short: { en: 'study group, 2017', pt: 'grupo de estudos, 2017' },
     },
-    { name: 'Mind Buster', note: { en: 'requirements and rules, academic, 2017', pt: 'requisitos e regras, acadêmico, 2017' } },
+    {
+      name: 'Mind Buster',
+      note: { en: 'requirements and rules, academic, 2017', pt: 'requisitos e regras, acadêmico, 2017' },
+      short: { en: 'requirements and rules, 2017', pt: 'requisitos e regras, 2017' },
+    },
     {
       name: 'Game Island — O Herói dos Quatro Reinos',
       note: { en: 'co-authored board game, 2016', pt: 'jogo de tabuleiro em coautoria, 2016' },
+      short: { en: 'board game, 2016', pt: 'jogo de tabuleiro, 2016' },
     },
     {
       name: 'Coffee Rush',
       link: 'https://mateusbomfim.itch.io/coffe-rush',
       note: { en: 'CTRL ALT JAM · producer in a team of 5 · Unity', pt: 'CTRL ALT JAM · producer em um time de 5 · Unity' },
+      short: { en: 'game jam, producer, Unity', pt: 'game jam, producer, Unity' },
     },
   ] as AcademicItem[],
   links: [

@@ -1,9 +1,8 @@
+/* A plain block closing the section: a rule, a label and the names. */
 .strip {
-  margin-top: clamp(40px, 6vw, 64px);
-  padding: 1.1rem 1.25rem 1.25rem;
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  background: var(--bg-elev);
+  margin-top: clamp(44px, 6vw, 72px);
+  padding-top: var(--space-4);
+  border-top: 1px solid var(--border);
 }
 
 .title {
@@ -15,11 +14,34 @@
   color: var(--text-dim);
 }
 
+.note {
+  max-width: 80ch;
+  margin-top: 0.5rem;
+  font-size: 0.84rem;
+  color: var(--text-muted);
+}
+
+.group + .group {
+  margin-top: 1.1rem;
+  padding-top: 1.1rem;
+  border-top: 1px solid var(--border);
+}
+
+.group {
+  margin-top: 1.1rem;
+}
+
+.groupTitle {
+  font-size: 0.82rem;
+  font-weight: 500;
+  color: var(--text-dim);
+}
+
 .list {
   display: flex;
   flex-wrap: wrap;
   gap: 0.5rem 0;
-  margin-top: 0.75rem;
+  margin-top: 0.4rem;
   list-style: none;
   font-family: var(--font-display);
   font-size: clamp(0.95rem, 1.8vw, 1.05rem);

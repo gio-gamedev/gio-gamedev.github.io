@@ -11,6 +11,32 @@ export const cvTitle: L = {
   pt: `${profile.name} — Analista de QA de Jogos — Currículo`,
 };
 
+/** "**Release validation:** …" → bold lead, so the line can be scanned. */
+function Lead({ text }: { text: string }) {
+  const parts = text.split(/\*\*(.+?)\*\*/g);
+  return (
+    <>
+      {parts.map((part, i) => (i % 2 === 1 ? <strong key={i}>{part}</strong> : <Fragment key={i}>{part}</Fragment>))}
+    </>
+  );
+}
+
+/**
+ * A real "•" in the text, not a CSS marker: PDF text extraction only sees painted characters, so
+ * this is what keeps the items apart when a parser reads the file as plain text.
+ */
+function Bullets({ items, className }: { items: string[]; className?: string }) {
+  return (
+    <ul className={className}>
+      {items.map((item) => (
+        <li key={item}>
+          <span className="bullet">•</span> <Lead text={item} />
+        </li>
+      ))}
+    </ul>
+  );
+}
+
 export function CvDocument({ lang }: { lang: Lang }) {
   const data = cvData(lang);
 
@@ -32,7 +58,7 @@ export function CvDocument({ lang }: { lang: Lang }) {
       </header>
 
       {data.sections.map((section) => (
-        <section key={section.heading}>
+        <section key={section.heading} className={section.break ? 'break' : undefined}>
           <h2>{section.heading}</h2>
           {section.blocks.map((block, i) => (
             <Block key={i} block={block} />
@@ -55,13 +81,7 @@ function Block({ block }: { block: CvBlock }) {
       );
 
     case 'list':
-      return (
-        <ul>
-          {block.items.map((item) => (
-            <li key={item}>{item}</li>
-          ))}
-        </ul>
-      );
+      return <Bullets items={block.items} />;
 
     case 'job': {
       const [first, ...rest] = block.bullets;
@@ -71,19 +91,9 @@ function Block({ block }: { block: CvBlock }) {
           <div className="keep">
             <h3>{block.title}</h3>
             <p className="dates">{block.dates}</p>
-            {first && (
-              <ul>
-                <li>{first}</li>
-              </ul>
-            )}
+            {first && <Bullets items={[first]} />}
           </div>
-          {rest.length > 0 && (
-            <ul className="rest">
-              {rest.map((bullet) => (
-                <li key={bullet}>{bullet}</li>
-              ))}
-            </ul>
-          )}
+          {rest.length > 0 && <Bullets items={rest} className="rest" />}
           {block.notes.map((note) => (
             <p key={note}>{note}</p>
           ))}

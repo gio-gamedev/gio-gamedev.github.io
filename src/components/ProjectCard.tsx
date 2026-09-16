@@ -8,8 +8,14 @@ import { Icon } from './Icon';
 import { Tag } from './Tag';
 import styles from './ProjectCard.module.css';
 
+/** The two lead cards run at half the grid; the other four at a quarter (see Projects.module.css). */
+const coverSizes = {
+  lead: '(max-width: 640px) calc(100vw - 32px), (max-width: 1099px) calc(50vw - 40px), 560px',
+  small: '(max-width: 640px) calc(100vw - 32px), (max-width: 1099px) calc(50vw - 40px), 280px',
+};
+
 /** Featured project: the product in one line, what Giovanni did, public figures and one link. */
-export function ProjectCard({ project }: { project: Project }) {
+export function ProjectCard({ project, size = 'small' }: { project: Project; size?: 'lead' | 'small' }) {
   const { lang, t } = useLang();
   const category = categoryInfo[project.category];
   const name = projectName(project, lang);
@@ -22,9 +28,9 @@ export function ProjectCard({ project }: { project: Project }) {
   ];
 
   return (
-    <article className={styles.card} style={{ '--tone': `var(--${category.tone})` } as CSSProperties}>
+    <article className={styles.card} data-size={size} style={{ '--tone': `var(--${category.tone})` } as CSSProperties}>
       <div className={styles.media}>
-        <Cover project={project} sizes="(max-width: 640px) calc(100vw - 32px), (max-width: 980px) calc(50vw - 44px), 344px" />
+        <Cover project={project} sizes={coverSizes[size]} />
       </div>
 
       <div className={styles.body}>
@@ -46,6 +52,14 @@ export function ProjectCard({ project }: { project: Project }) {
           </div>
         )}
 
+        {/* The platform rules checked, on one line: it repeats across cards, so it is not a bullet. */}
+        {project.compliance && (
+          <p className={styles.compliance}>
+            <span className={styles.complianceLabel}>{t(ui.projects.compliance)}</span>
+            {t(project.compliance)}
+          </p>
+        )}
+
         {project.reach && (
           <p className={styles.reach}>
             {project.reach.map((r, i) => (
@@ -64,7 +78,7 @@ export function ProjectCard({ project }: { project: Project }) {
               className={styles.link}
               href={url}
               target="_blank"
-              rel="noreferrer"
+              rel="noopener noreferrer"
               aria-label={`${name} — ${t(linkLabel(url).long)} ${t(ui.a11y.newTab)}`}
             >
               {t(linkLabel(url).short)}

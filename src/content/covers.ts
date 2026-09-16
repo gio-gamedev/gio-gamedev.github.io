@@ -8,6 +8,7 @@ export const covers: Record<string, CoverArt> = {
     "widths": [
       240,
       480,
+      640,
       795
     ],
     "width": 795,
@@ -81,6 +82,7 @@ export const covers: Record<string, CoverArt> = {
     "widths": [
       240,
       480,
+      640,
       800
     ],
     "width": 800,
@@ -100,6 +102,7 @@ export const covers: Record<string, CoverArt> = {
     "widths": [
       240,
       480,
+      640,
       800
     ],
     "width": 800,
@@ -110,6 +113,7 @@ export const covers: Record<string, CoverArt> = {
     "widths": [
       240,
       480,
+      640,
       800
     ],
     "width": 800,
@@ -120,6 +124,7 @@ export const covers: Record<string, CoverArt> = {
     "widths": [
       240,
       480,
+      640,
       800
     ],
     "width": 800,
@@ -130,6 +135,7 @@ export const covers: Record<string, CoverArt> = {
     "widths": [
       240,
       480,
+      640,
       800
     ],
     "width": 800,
@@ -140,6 +146,7 @@ export const covers: Record<string, CoverArt> = {
     "widths": [
       240,
       480,
+      640,
       800
     ],
     "width": 800,
@@ -150,6 +157,7 @@ export const covers: Record<string, CoverArt> = {
     "widths": [
       240,
       480,
+      640,
       800
     ],
     "width": 800,
@@ -160,6 +168,7 @@ export const covers: Record<string, CoverArt> = {
     "widths": [
       240,
       480,
+      640,
       800
     ],
     "width": 800,
@@ -170,6 +179,7 @@ export const covers: Record<string, CoverArt> = {
     "widths": [
       240,
       480,
+      640,
       800
     ],
     "width": 800,
@@ -180,6 +190,7 @@ export const covers: Record<string, CoverArt> = {
     "widths": [
       240,
       480,
+      640,
       800
     ],
     "width": 800,
@@ -190,6 +201,7 @@ export const covers: Record<string, CoverArt> = {
     "widths": [
       240,
       480,
+      640,
       800
     ],
     "width": 800,
@@ -200,6 +212,7 @@ export const covers: Record<string, CoverArt> = {
     "widths": [
       240,
       480,
+      640,
       800
     ],
     "width": 800,
@@ -210,6 +223,7 @@ export const covers: Record<string, CoverArt> = {
     "widths": [
       240,
       480,
+      640,
       800
     ],
     "width": 800,
@@ -220,6 +234,7 @@ export const covers: Record<string, CoverArt> = {
     "widths": [
       240,
       480,
+      640,
       800
     ],
     "width": 800,
@@ -230,6 +245,7 @@ export const covers: Record<string, CoverArt> = {
     "widths": [
       240,
       480,
+      640,
       800
     ],
     "width": 800,
@@ -240,6 +256,7 @@ export const covers: Record<string, CoverArt> = {
     "widths": [
       240,
       480,
+      640,
       800
     ],
     "width": 800,
@@ -250,6 +267,7 @@ export const covers: Record<string, CoverArt> = {
     "widths": [
       240,
       480,
+      640,
       800
     ],
     "width": 800,
@@ -260,6 +278,7 @@ export const covers: Record<string, CoverArt> = {
     "widths": [
       240,
       480,
+      640,
       800
     ],
     "width": 800,
@@ -270,6 +289,7 @@ export const covers: Record<string, CoverArt> = {
     "widths": [
       240,
       480,
+      640,
       800
     ],
     "width": 800,
@@ -280,6 +300,7 @@ export const covers: Record<string, CoverArt> = {
     "widths": [
       240,
       480,
+      640,
       800
     ],
     "width": 800,
@@ -290,6 +311,7 @@ export const covers: Record<string, CoverArt> = {
     "widths": [
       240,
       480,
+      640,
       800
     ],
     "width": 800,
@@ -300,6 +322,7 @@ export const covers: Record<string, CoverArt> = {
     "widths": [
       240,
       480,
+      640,
       800
     ],
     "width": 800,
@@ -310,6 +333,7 @@ export const covers: Record<string, CoverArt> = {
     "widths": [
       240,
       480,
+      640,
       800
     ],
     "width": 800,
@@ -320,6 +344,7 @@ export const covers: Record<string, CoverArt> = {
     "widths": [
       240,
       480,
+      640,
       800
     ],
     "width": 800,
@@ -339,6 +364,7 @@ export const covers: Record<string, CoverArt> = {
     "widths": [
       240,
       480,
+      640,
       800
     ],
     "width": 800,
@@ -349,6 +375,7 @@ export const covers: Record<string, CoverArt> = {
     "widths": [
       240,
       480,
+      640,
       800
     ],
     "width": 800,
@@ -359,6 +386,7 @@ export const covers: Record<string, CoverArt> = {
     "widths": [
       240,
       480,
+      640,
       800
     ],
     "width": 800,
@@ -369,6 +397,7 @@ export const covers: Record<string, CoverArt> = {
     "widths": [
       240,
       480,
+      640,
       800
     ],
     "width": 800,
@@ -379,6 +408,7 @@ export const covers: Record<string, CoverArt> = {
     "widths": [
       240,
       480,
+      640,
       800
     ],
     "width": 800,
@@ -389,6 +419,7 @@ export const covers: Record<string, CoverArt> = {
     "widths": [
       240,
       480,
+      640,
       800
     ],
     "width": 800,
@@ -399,6 +430,7 @@ export const covers: Record<string, CoverArt> = {
     "widths": [
       240,
       480,
+      640,
       800
     ],
     "width": 800,
@@ -409,6 +441,7 @@ export const covers: Record<string, CoverArt> = {
     "widths": [
       240,
       480,
+      640,
       800
     ],
     "width": 800,
@@ -419,6 +452,7 @@ export const covers: Record<string, CoverArt> = {
     "widths": [
       240,
       480,
+      640,
       800
     ],
     "width": 800,
@@ -429,6 +463,7 @@ export const covers: Record<string, CoverArt> = {
     "widths": [
       240,
       480,
+      640,
       800
     ],
     "width": 800,
@@ -439,6 +474,7 @@ export const covers: Record<string, CoverArt> = {
     "widths": [
       240,
       480,
+      640,
       800
     ],
     "width": 800,
@@ -449,6 +485,7 @@ export const covers: Record<string, CoverArt> = {
     "widths": [
       240,
       480,
+      640,
       800
     ],
     "width": 800,
@@ -459,6 +496,7 @@ export const covers: Record<string, CoverArt> = {
     "widths": [
       240,
       480,
+      640,
       800
     ],
     "width": 800,
@@ -477,11 +515,11 @@ export const covers: Record<string, CoverArt> = {
   "rumble-kong-league": {
     "widths": [
       240,
-      512
+      526
     ],
-    "width": 512,
-    "height": 512,
-    "fit": "contain"
+    "width": 526,
+    "height": 296,
+    "fit": "cover"
   },
   "psg-football-freestyle": {
     "widths": [
@@ -514,6 +552,7 @@ export const covers: Record<string, CoverArt> = {
     "widths": [
       240,
       480,
+      640,
       800
     ],
     "width": 800,
@@ -524,6 +563,7 @@ export const covers: Record<string, CoverArt> = {
     "widths": [
       240,
       480,
+      640,
       800
     ],
     "width": 800,
@@ -534,6 +574,7 @@ export const covers: Record<string, CoverArt> = {
     "widths": [
       240,
       480,
+      640,
       800
     ],
     "width": 800,
@@ -553,6 +594,7 @@ export const covers: Record<string, CoverArt> = {
     "widths": [
       240,
       480,
+      640,
       800
     ],
     "width": 800,
@@ -572,6 +614,7 @@ export const covers: Record<string, CoverArt> = {
     "widths": [
       240,
       480,
+      640,
       800
     ],
     "width": 800,
@@ -591,6 +634,7 @@ export const covers: Record<string, CoverArt> = {
     "widths": [
       240,
       480,
+      640,
       712
     ],
     "width": 712,
@@ -619,6 +663,7 @@ export const covers: Record<string, CoverArt> = {
     "widths": [
       240,
       480,
+      640,
       800
     ],
     "width": 800,
@@ -629,6 +674,7 @@ export const covers: Record<string, CoverArt> = {
     "widths": [
       240,
       480,
+      640,
       800
     ],
     "width": 800,
@@ -675,6 +721,7 @@ export const covers: Record<string, CoverArt> = {
     "widths": [
       240,
       480,
+      640,
       800
     ],
     "width": 800,
@@ -694,6 +741,7 @@ export const covers: Record<string, CoverArt> = {
     "widths": [
       240,
       480,
+      640,
       800
     ],
     "width": 800,
@@ -704,6 +752,7 @@ export const covers: Record<string, CoverArt> = {
     "widths": [
       240,
       480,
+      640,
       800
     ],
     "width": 800,
@@ -714,6 +763,7 @@ export const covers: Record<string, CoverArt> = {
     "widths": [
       240,
       480,
+      640,
       712
     ],
     "width": 712,
@@ -765,24 +815,56 @@ export const covers: Record<string, CoverArt> = {
     "height": 215,
     "fit": "contain"
   },
-  "eclub-benefits-platform": {
-    "widths": [
-      240,
-      480,
-      800
-    ],
-    "width": 800,
-    "height": 600,
-    "fit": "contain"
-  },
   "gremio-eclub": {
     "widths": [
       240,
       480,
+      640,
       800
     ],
     "width": 800,
     "height": 599,
     "fit": "contain"
+  },
+  "vasco-eclub": {
+    "widths": [
+      240,
+      480,
+      640,
+      800
+    ],
+    "width": 800,
+    "height": 1000,
+    "fit": "contain"
+  },
+  "bolao-da-uol-2026": {
+    "widths": [
+      240,
+      480,
+      640,
+      750
+    ],
+    "width": 750,
+    "height": 421,
+    "fit": "cover"
+  },
+  "bolao-gre-nal-2026": {
+    "widths": [
+      216
+    ],
+    "width": 216,
+    "height": 219,
+    "fit": "contain"
+  },
+  "manchester-city-freestyle-academy": {
+    "widths": [
+      240,
+      480,
+      640,
+      800
+    ],
+    "width": 800,
+    "height": 450,
+    "fit": "cover"
   }
 };

@@ -6,6 +6,14 @@ import { Document, ExternalHyperlink, HeadingLevel, Packer, Paragraph, TextRun }
 const font = 'Arial';
 const black = '000000';
 
+/** "**Release validation:** …" → a bold run followed by the rest, as on the PDF. */
+function runs(text) {
+  return text
+    .split(/\*\*(.+?)\*\*/g)
+    .filter((part) => part !== '')
+    .map((part, i) => new TextRun({ text: part, bold: i % 2 === 1 }));
+}
+
 export async function buildDocx(data, title) {
   const children = [
     new Paragraph({ heading: HeadingLevel.TITLE, children: [new TextRun(data.name)] }),
@@ -32,11 +40,11 @@ export async function buildDocx(data, title) {
           }),
         );
       } else if (block.kind === 'list') {
-        for (const item of block.items) children.push(new Paragraph({ text: item, bullet: { level: 0 } }));
+        for (const item of block.items) children.push(new Paragraph({ children: runs(item), bullet: { level: 0 } }));
       } else {
         children.push(new Paragraph({ heading: HeadingLevel.HEADING_2, children: [new TextRun(block.title)] }));
         children.push(new Paragraph({ children: [new TextRun({ text: block.dates, italics: true })] }));
-        for (const bullet of block.bullets) children.push(new Paragraph({ text: bullet, bullet: { level: 0 } }));
+        for (const bullet of block.bullets) children.push(new Paragraph({ children: runs(bullet), bullet: { level: 0 } }));
         for (const note of block.notes) children.push(new Paragraph({ spacing: { after: 40 }, children: [new TextRun(note)] }));
       }
     }

@@ -1,18 +1,22 @@
+/* Three compact columns: degrees, languages, certificates. */
 .grid {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(0, 1.4fr);
-  gap: var(--space-6);
-  align-items: start;
+  gap: clamp(28px, 4vw, 44px);
 }
 
-.card {
-  padding: var(--space-5) var(--space-5) var(--space-6);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  background: var(--surface);
+@media (min-width: 900px) {
+  .grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    align-items: start;
+  }
 }
 
-.cardTitle {
+.col {
+  padding-top: var(--space-4);
+  border-top: 2px solid var(--border-strong);
+}
+
+.colTitle {
   margin-bottom: var(--space-4);
   font-family: var(--font-mono);
   font-size: 0.75rem;
@@ -20,10 +24,6 @@
   letter-spacing: 0.1em;
   text-transform: uppercase;
   color: var(--accent);
-}
-
-.spaced {
-  margin-top: var(--space-6);
 }
 
 .degrees {
@@ -59,7 +59,7 @@
   align-items: center;
   gap: 0.4rem;
   min-height: 36px;
-  margin-top: var(--space-1);
+  margin-top: var(--space-2);
   padding: 0.3rem 0.8rem;
   border: 1px solid var(--border-strong);
   border-radius: 999px;
@@ -89,55 +89,45 @@
   color: var(--text);
 }
 
-.certs {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: var(--space-4);
-  list-style: none;
-}
-
-.certs li {
-  display: flex;
-}
-
-/* EF SET: scores as text, full width above the image certificates. */
-.efsetItem {
-  grid-column: 1 / -1;
-}
-
+/* EF SET: the level with its score beside it, then the certificate and the verification link. */
 .efset {
   display: grid;
-  flex: 1;
   gap: var(--space-3);
-  padding: var(--space-5);
-  border: 1px solid var(--accent-line);
-  border-radius: var(--radius-sm);
-  background: var(--surface);
-}
-
-.efsetHead {
-  display: grid;
-  gap: 0.1rem;
+  margin-top: var(--space-5);
+  padding-top: var(--space-4);
+  border-top: 1px solid var(--border);
 }
 
 .efsetName {
   font-family: var(--font-display);
-  font-size: 1.05rem;
+  font-size: 1rem;
   font-weight: 600;
+}
+
+.certMeta {
+  display: block;
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
+
+.efsetName + .certMeta {
+  margin-top: -0.4rem;
 }
 
 .scores {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: var(--space-3);
+  gap: var(--space-2);
   margin: 0;
 }
 
 .scores div {
-  padding: var(--space-3);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-sm);
-  background: var(--bg-elev);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.2rem 0.6rem;
+  justify-content: space-between;
+  padding-bottom: var(--space-2);
+  border-bottom: 1px solid var(--border);
 }
 
 .scores dt {
@@ -149,31 +139,34 @@
 }
 
 .scores dd {
-  margin: 0.2rem 0 0;
-  font-size: 0.86rem;
-  color: var(--text-muted);
+  display: flex;
+  align-items: baseline;
+  gap: 0.5rem;
+  margin: 0;
 }
 
 .scores strong {
-  display: block;
   font-family: var(--font-display);
-  font-size: 1.3rem;
+  font-size: 0.95rem;
   color: var(--text);
 }
 
-.overall {
-  border-color: var(--accent-line) !important;
+/* The number, with less weight than the level it belongs to. */
+.scoreValue {
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  color: var(--text-muted);
 }
 
 .scope {
-  font-size: 0.84rem;
+  font-size: 0.82rem;
   color: var(--text-muted);
 }
 
 .efsetLinks {
   display: flex;
   flex-wrap: wrap;
-  gap: var(--space-2) var(--space-5);
+  gap: var(--space-1) var(--space-4);
 }
 
 .efsetLinks a {
@@ -181,7 +174,7 @@
   align-items: center;
   gap: 0.4rem;
   min-height: 36px;
-  font-size: 0.9rem;
+  font-size: 0.88rem;
   font-weight: 600;
   text-decoration: none;
 }
@@ -190,34 +183,45 @@
   text-decoration: underline;
 }
 
+/* Certificates as rows: a small scan, the name and where it came from. */
+.certs {
+  display: grid;
+  gap: var(--space-3);
+  list-style: none;
+}
+
+.certs li {
+  display: flex;
+}
+
 .cert {
   display: flex;
   flex: 1;
-  flex-direction: column;
-  gap: 0.2rem;
-  padding: 0 0 var(--space-3);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-sm);
-  background: var(--surface);
+  align-items: center;
+  gap: var(--space-3);
+  padding: 0;
+  border: 0;
+  background: transparent;
   color: var(--text);
   font: inherit;
   text-align: left;
   cursor: zoom-in;
-  overflow: hidden;
-  transition: border-color 0.2s ease;
-}
-
-.cert:hover,
-.cert:focus-visible {
-  border-color: var(--accent-line);
 }
 
 .thumb {
   display: block;
-  margin-bottom: var(--space-2);
+  flex-shrink: 0;
+  width: 76px;
   aspect-ratio: 4 / 3;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
   background: #fff;
   overflow: hidden;
+}
+
+.cert:hover .thumb,
+.cert:focus-visible .thumb {
+  border-color: var(--accent-line);
 }
 
 .thumb img {
@@ -227,24 +231,20 @@
 }
 
 .certName {
-  padding-inline: var(--space-3);
-  font-size: 0.9rem;
+  display: block;
+  font-size: 0.92rem;
   font-weight: 600;
   line-height: 1.3;
 }
 
-.certMeta {
-  padding-inline: var(--space-3);
-  font-size: 0.8rem;
-  color: var(--text-muted);
+.cert:hover .certName {
+  color: var(--accent);
 }
 
-.efsetHead .certMeta {
-  padding-inline: 0;
-}
-
-.more {
-  margin-top: var(--space-4);
+.disclosures {
+  display: grid;
+  gap: var(--space-3);
+  margin-top: clamp(28px, 4vw, 40px);
 }
 
 .otherList {
@@ -299,17 +299,4 @@
   margin-top: var(--space-3);
   font-size: 0.88rem;
   color: var(--text-muted);
-}
-
-@media (max-width: 900px) {
-  .grid {
-    grid-template-columns: 1fr;
-  }
-}
-
-@media (max-width: 520px) {
-  .certs,
-  .scores {
-    grid-template-columns: 1fr;
-  }
 }

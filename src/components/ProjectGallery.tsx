@@ -153,7 +153,7 @@ export function ProjectGallery() {
       id="gallery"
       level={1}
       title={t(ui.gallery.title)(projects.length)}
-      subtitle={t(ui.gallery.intro)(projects.length)}
+      subtitle={t(ui.gallery.intro)()}
       lead={
         <a className={styles.back} href={pagePath(lang, 'home')}>
           <Icon name="arrowRight" size={16} />
@@ -291,7 +291,7 @@ function Tile({ project }: { project: Project }) {
                 key={url}
                 href={url}
                 target="_blank"
-                rel="noreferrer"
+                rel="noopener noreferrer"
                 aria-label={`${name} — ${t(linkLabel(url).long)} ${t(ui.a11y.newTab)}`}
               >
                 {t(linkLabel(url).short)}

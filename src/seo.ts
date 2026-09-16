@@ -41,7 +41,7 @@ function person(lang: Lang, description: string) {
     hasCredential: [
       {
         '@type': 'EducationalOccupationalCredential',
-        name: `${efset.name.en} — ${efset.score} ${efset.level} (Reading & Listening)`,
+        name: `${efset.name.en} — ${efset.level} (${efset.score}, Reading & Listening)`,
         recognizedBy: { '@type': 'Organization', name: efset.issuer },
         url: efset.verify,
       },
@@ -116,6 +116,7 @@ export function headTags(lang: Lang, page: Page = 'home'): { htmlLang: string; t
     `<link rel="alternate" hreflang="x-default" href="${pageUrl[page].en}" />`,
     `<link rel="alternate" type="application/json" href="${SITE_URL}/resume.json" title="JSON Resume" />`,
     `<meta property="og:type" content="${page === 'home' ? 'profile' : 'website'}" />`,
+    `<meta property="og:site_name" content="${escapeHtml(profile.name)} — ${escapeHtml(ui.meta.jobTitle[lang])}" />`,
     `<meta property="og:url" content="${url}" />`,
     `<meta property="og:title" content="${title}" />`,
     `<meta property="og:description" content="${escapeHtml(description)}" />`,

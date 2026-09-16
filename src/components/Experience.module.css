@@ -1,73 +1,71 @@
-.groups {
+/* Roles on the left, QA toolkit on the right (one column until there is room for both). */
+.layout {
   display: grid;
-  gap: clamp(36px, 6vw, 56px);
+  gap: clamp(36px, 5vw, 56px);
 }
 
-.groupTitle {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-  margin-bottom: var(--space-5);
-  font-family: var(--font-mono);
-  font-size: 0.8rem;
-  font-weight: 500;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  color: var(--text-dim);
-}
-
-.groupTitle::after {
-  content: '';
-  flex: 1;
-  height: 1px;
-  background: var(--border);
+@media (min-width: 1000px) {
+  .layout {
+    grid-template-columns: minmax(0, 1.55fr) minmax(0, 1fr);
+    align-items: start;
+  }
 }
 
 .timeline {
   display: grid;
-  gap: var(--space-5);
   list-style: none;
 }
 
+/* Entries separated by a rule instead of boxed in cards. */
 .job {
-  display: grid;
-  grid-template-columns: 170px minmax(0, 1fr);
-  gap: var(--space-6);
+  padding-block: clamp(20px, 3vw, 28px);
+  border-top: 1px solid var(--border);
+}
+
+.job:first-child {
+  padding-top: 0;
+  border-top: 0;
 }
 
 .period {
-  padding-top: 1.2rem;
   font-family: var(--font-mono);
-  font-size: 0.82rem;
+  font-size: 0.8rem;
+  letter-spacing: 0.04em;
   color: var(--text-dim);
 }
 
-.card {
-  padding: var(--space-5) var(--space-6) var(--space-6);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  background: var(--surface);
-}
-
 .role {
-  font-size: 1.15rem;
+  margin-top: var(--space-2);
+  font-size: clamp(1.15rem, 2vw, 1.35rem);
 }
 
 .company {
   color: var(--accent);
 }
 
+/* Team size and release responsibility, right under the role. */
+.scope {
+  margin-top: var(--space-2);
+  font-size: 0.9rem;
+  color: var(--text);
+}
+
 .bullets {
   display: grid;
-  gap: var(--space-2);
+  gap: var(--space-3);
   margin-top: var(--space-4);
-  padding-left: 1.1rem;
+  padding-left: 1.05rem;
   font-size: 0.94rem;
   color: var(--text-muted);
 }
 
 .bullets li::marker {
   color: var(--accent);
+}
+
+.bullets strong {
+  font-weight: 600;
+  color: var(--text);
 }
 
 .note {
@@ -78,20 +76,13 @@
 }
 
 .meta {
-  display: grid;
-  gap: var(--space-2);
-  margin: var(--space-4) 0 0;
-  font-size: 0.82rem;
+  margin-top: var(--space-4);
+  font-size: 0.84rem;
+  color: var(--text-muted);
 }
 
-.meta div {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.2rem 0.6rem;
-}
-
-.meta dt {
-  padding-top: 0.12rem;
+.metaLabel {
+  margin-right: 0.5rem;
   font-family: var(--font-mono);
   font-size: 0.7rem;
   letter-spacing: 0.06em;
@@ -99,46 +90,9 @@
   color: var(--text-dim);
 }
 
-.meta dd {
-  margin: 0;
-  color: var(--text-muted);
-}
-
-/* Wide screens: platforms and tools move to a side column, so bullet lines keep a readable length. */
-@media (min-width: 1100px) {
-  .card {
-    display: grid;
-    grid-template-columns: minmax(0, 1fr) 240px;
-    column-gap: var(--space-7);
-    align-items: start;
-  }
-
-  .role {
-    grid-column: 1 / -1;
-  }
-
-  .bullets,
-  .note {
-    grid-column: 1;
-  }
-
-  .meta {
-    grid-column: 2;
-    grid-row: 2 / span 2;
-    gap: var(--space-4);
-    padding-left: var(--space-5);
-    border-left: 1px solid var(--border);
-  }
-
-  .meta div {
-    display: grid;
-    gap: var(--space-1);
-  }
-}
-
-/* Earlier technology roles: collapsed, one line each, aligned with the period column above. */
+/* Earlier technology roles: collapsed, one line each. */
 .earlier {
-  margin-top: var(--space-5);
+  margin-top: var(--space-6);
 }
 
 .compact {
@@ -148,8 +102,8 @@
 
 .compactItem {
   display: grid;
-  grid-template-columns: calc(170px - var(--space-4)) minmax(0, 1fr);
-  gap: var(--space-6);
+  grid-template-columns: 140px minmax(0, 1fr);
+  gap: var(--space-5);
   padding: var(--space-4) 0;
   border-top: 1px solid var(--border);
 }
@@ -175,14 +129,28 @@
   color: var(--text-dim);
 }
 
+/* QA toolkit column. */
+.toolkit {
+  padding-top: var(--space-5);
+  border-top: 2px solid var(--accent-line);
+}
+
+.toolkitTitle {
+  margin-bottom: var(--space-5);
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+
 @media (max-width: 720px) {
-  .job,
   .compactItem {
     grid-template-columns: 1fr;
     gap: var(--space-2);
   }
 
-  .period,
   .compactItem .period {
     padding-top: 0;
   }

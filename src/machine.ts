@@ -22,6 +22,7 @@ import {
 } from './content/profile';
 import {
   appCount,
+  brandGroups,
   categories,
   categoryInfo,
   categoryNote,
@@ -35,6 +36,7 @@ import {
 } from './content/projects';
 import { formatReachWithSource } from './content/reach';
 import { SITE_URL } from './content/site';
+import { ui } from './content/ui';
 
 const plain = (text: string) => text.replace(/\*\*/g, '');
 const summaryText = () => `${plain(summary.lead.en)} ${summary.technical.en}`;
@@ -85,7 +87,7 @@ export function resumeJson() {
       startDate: job.start,
       endDate: job.end,
       summary: job.note?.en,
-      highlights: job.bullets.en,
+      highlights: job.bullets.en.map(plain),
     })),
     education: education.map((item) => ({
       institution: item.institution,
@@ -109,12 +111,14 @@ export function resumeJson() {
     references: [
       {
         name: `${testimonial.author}, ${testimonial.role.en}`,
-        reference: `${testimonial.quote} (original recommendation in Portuguese)`,
+        reference: `${testimonial.quote} (original recommendation, in Portuguese) — reference translation: ${testimonial.translation}`,
       },
     ],
     projects: featuredProjects.map((p) => ({
       name: projectName(p, 'en'),
-      description: [p.context?.en, ...(p.contribution?.en ?? [])].filter(Boolean).join(' · '),
+      description: [p.context?.en, ...(p.contribution?.en ?? []), p.compliance && `Compliance: ${p.compliance.en}`]
+        .filter(Boolean)
+        .join(' · '),
       entity: p.studio ?? DEFAULT_STUDIO,
       url: pageOf(p),
       highlights: p.reach ? [formatReachWithSource(p.reach, 'en')] : [],
@@ -161,7 +165,7 @@ export function llmsTxt(): string {
     '',
     ...jobs().flatMap((job) => [
       `### ${job.role.en} — ${job.company} (${job.start} – ${job.end ?? 'present'})`,
-      ...job.bullets.en.map((b) => `- ${b}`),
+      ...job.bullets.en.map((b) => `- ${plain(b)}`),
       ...(job.note ? [`- ${job.note.en}`] : []),
       ...(job.tools ? [`- Tools: ${job.tools}`] : []),
       '',
@@ -178,6 +182,7 @@ export function llmsTxt(): string {
         `- ${projectName(p, 'en')} (${categoryInfo[p.category].label.en}${p.studio ? `, ${p.studio}` : ''})`,
         p.context?.en ?? '',
         p.contribution ? `My contribution: ${p.contribution.en.join('; ')}` : '',
+        p.compliance ? `Compliance: ${p.compliance.en}` : '',
         formatReachWithSource(p.reach, 'en'),
         pageOf(p) ?? '',
       ]
@@ -197,7 +202,7 @@ export function llmsTxt(): string {
     `- ${recognition.result.en} — ${recognition.event} (${recognition.year}). ${recognition.note.en} Team: ${recognition.team
       .map((m) => m.name)
       .join(', ')}. Video: ${recognition.video}`,
-    `- Testimonial from ${testimonial.author} (${testimonial.role.en}; ${testimonial.context.en}), original in Portuguese: "${testimonial.quote}"`,
+    `- Testimonial from ${testimonial.author} (${testimonial.role.en}; ${testimonial.context.en}), original in Portuguese: "${testimonial.quote}" — reference translation: "${testimonial.translation}"`,
     '',
     '## Education',
     ...education.map((item) => `- ${item.degree.en} — ${item.institution} (${educationLine(item)})`),
@@ -211,6 +216,10 @@ export function llmsTxt(): string {
     ...academicProjects.items.map(
       (item) => `- ${item.name}${item.start && item.end ? ` (${item.start} – ${item.end})` : ''}: ${item.note.en}`,
     ),
+    '',
+    '## Brands and IPs in the titles tested',
+    ...brandGroups.map((group) => `- ${group.title.en}: ${group.items.join(', ')}`),
+    `- ${ui.projects.brandsNote.en}`,
     '',
     '## Languages',
     `- ${languages.en}`,

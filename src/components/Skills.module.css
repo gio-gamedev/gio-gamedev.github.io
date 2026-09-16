@@ -3,7 +3,17 @@
   gap: var(--space-5);
 }
 
-/* Core Game QA skills: the first thing to read. */
+.groupTitle {
+  margin-bottom: var(--space-3);
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+}
+
+/* What I test and validate: the first thing to read in the column. */
 .chips {
   display: flex;
   flex-wrap: wrap;
@@ -12,13 +22,20 @@
 }
 
 .chips li {
-  padding: 0.35rem 0.8rem;
+  padding: 0.3rem 0.7rem;
   border: 1px solid var(--accent-line);
   border-radius: 999px;
   background: var(--accent-soft);
   color: var(--text);
-  font-size: 0.9rem;
+  font-size: 0.86rem;
   font-weight: 500;
+}
+
+/* Platforms are context, not a skill claim, so they carry no accent. */
+.platforms li {
+  border-color: var(--border-strong);
+  background: transparent;
+  color: var(--text-muted);
 }
 
 /* Tools, one line per group. */
@@ -30,27 +47,29 @@
 
 .row {
   display: grid;
-  grid-template-columns: 11rem minmax(0, 1fr);
-  gap: var(--space-4);
+  gap: var(--space-1);
   padding: var(--space-3) 0;
   border-bottom: 1px solid var(--border);
 }
 
 .row dt {
-  font-family: var(--font-display);
-  font-weight: 600;
-  color: var(--text);
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text-dim);
 }
 
 .row dd {
   margin: 0;
-  font-size: 0.92rem;
+  font-size: 0.9rem;
   color: var(--text-muted);
 }
 
 /* Complementary knowledge: less weight. */
 .extra {
-  font-size: 0.88rem;
+  font-size: 0.86rem;
   color: var(--text-muted);
 }
 
@@ -59,9 +78,11 @@
   color: var(--text);
 }
 
-@media (max-width: 560px) {
+/* One column (phones, and the section before the two-column layout kicks in): rows read wider. */
+@media (min-width: 560px) and (max-width: 999px) {
   .row {
-    grid-template-columns: 1fr;
-    gap: var(--space-1);
+    grid-template-columns: 11rem minmax(0, 1fr);
+    gap: var(--space-4);
+    align-items: baseline;
   }
 }

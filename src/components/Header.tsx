@@ -8,11 +8,11 @@ import { Icon } from './Icon';
 import { ThemeToggle } from './ThemeToggle';
 import styles from './Header.module.css';
 
+// A short bar: the three sections recruiters jump to, plus the resume, the language and the theme.
+// Recognition and education follow in the page, one scroll below.
 const links = [
   ['projects', ui.nav.projects],
   ['experience', ui.nav.experience],
-  ['recognition', ui.nav.recognition],
-  ['education', ui.nav.education],
   ['contact', ui.nav.contact],
 ] as const;
 

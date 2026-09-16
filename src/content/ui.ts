@@ -1,4 +1,4 @@
-import { appCount, gameCount } from './projects';
+import { appCount, gameCount, projects } from './projects';
 import type { L } from './types';
 
 /** Interface labels. Long-form content lives in profile.ts and projects.ts. */
@@ -55,6 +55,7 @@ export const ui = {
     resumeLabel: { en: 'Download resume (PDF, English)', pt: 'Baixar currículo (PDF, português)' },
     photo: { en: 'Photo of Giovanni S. Mariano', pt: 'Foto de Giovanni S. Mariano' },
     facts: { en: 'At a glance', pt: 'Em resumo' },
+    specialties: { en: 'Areas of QA', pt: 'Áreas de QA' },
   },
   resume: {
     pdf: { en: 'Resume (PDF)', pt: 'Currículo (PDF)' },
@@ -62,9 +63,10 @@ export const ui = {
   },
   sections: {
     projects: { en: 'Selected QA Projects', pt: 'Projetos de QA em destaque' },
+    // The counts live in the catalog block below the cards, so they are not repeated here.
     projectsSubtitle: {
-      en: `Six of the ${gameCount} games I have tested, across platforms. At Hermit Crab Game Studio unless noted.`,
-      pt: `Seis dos ${gameCount} jogos que testei, em plataformas diferentes. Na Hermit Crab Game Studio, salvo indicação.`,
+      en: 'Six games I tested, across platforms. At Hermit Crab Game Studio unless noted.',
+      pt: 'Seis jogos que testei, em plataformas diferentes. Na Hermit Crab Game Studio, salvo indicação.',
     },
     experience: { en: 'Work Experience', pt: 'Experiência profissional' },
     recognition: { en: 'Recognition', pt: 'Reconhecimento' },
@@ -72,12 +74,20 @@ export const ui = {
   },
   projects: {
     contribution: { en: 'My contribution', pt: 'Minha contribuição' },
-    brands: { en: 'Brands, IPs and partners', pt: 'Marcas, IPs e parceiros' },
-    catalogTitle: { en: 'Full catalog', pt: 'Catálogo completo' },
-    seeAll: {
-      en: (n: number) => `See all ${n} titles`,
-      pt: (n: number) => `Ver os ${n} títulos`,
+    compliance: { en: 'Compliance', pt: 'Compliance' },
+    brands: { en: 'IPs, brands and partners', pt: 'IPs, marcas e parceiros' },
+    // Says plainly what the list is, so nothing suggests a direct contract with each company.
+    brandsNote: {
+      en: 'These appear in the products I tested at Hermit Crab Game Studio, or are the partners those games were published through. They belong to the products, not to a contract of mine with each company.',
+      pt: 'Aparecem nos produtos que testei na Hermit Crab Game Studio, ou são os parceiros por onde esses jogos foram publicados. São dos produtos: não indicam contrato meu com cada empresa.',
     },
+    catalogTitle: { en: 'Full catalog', pt: 'Catálogo completo' },
+    // One line that spells out how the two counts add up ("97 titles: 90 games + 7 web apps").
+    catalogSummary: {
+      en: `${projects.length} titles: ${gameCount} games + ${appCount} web apps`,
+      pt: `${projects.length} títulos: ${gameCount} jogos + ${appCount} aplicações web`,
+    },
+    seeAll: { en: 'See the full catalog', pt: 'Ver o catálogo completo' },
     byOrigin: {
       en: (studio: string) => `by ${studio}`,
       pt: (studio: string) => `de ${studio}`,
@@ -98,15 +108,16 @@ export const ui = {
     },
   },
   gallery: {
+    // The heading itself shows how the total splits, so the two counts never look like a contradiction.
     title: {
-      en: (n: number) => `Full catalog: ${n} titles`,
-      pt: (n: number) => `Catálogo completo: ${n} títulos`,
+      en: (n: number) => `Full catalog: ${n} titles — ${gameCount} games + ${appCount} web apps`,
+      pt: (n: number) => `Catálogo completo: ${n} títulos — ${gameCount} jogos + ${appCount} aplicações web`,
     },
     intro: {
-      en: (n: number) =>
-        `${n} unique titles I have tested as QA: ${gameCount} games and ${appCount} web apps, by platform. A title can appear under more than one filter, such as a port, but counts once. At Hermit Crab Game Studio unless noted.`,
-      pt: (n: number) =>
-        `${n} títulos únicos que testei como QA: ${gameCount} jogos e ${appCount} aplicações web, por plataforma. Um título pode aparecer em mais de um filtro, como um porte, mas conta uma vez. Na Hermit Crab Game Studio, salvo indicação.`,
+      en: () =>
+        'Every title I have tested as QA, by platform. A title can appear under more than one filter, such as a port, but counts once. At Hermit Crab Game Studio unless noted.',
+      pt: () =>
+        'Todos os títulos que testei como QA, por plataforma. Um título pode aparecer em mais de um filtro, como um porte, mas conta uma vez. Na Hermit Crab Game Studio, salvo indicação.',
     },
     back: { en: 'Back to the portfolio', pt: 'Voltar ao portfólio' },
     filters: { en: 'Filter by platform', pt: 'Filtrar por plataforma' },
@@ -126,7 +137,7 @@ export const ui = {
     },
   },
   experience: {
-    skills: { en: 'Skills & tools', pt: 'Competências e ferramentas' },
+    skills: { en: 'QA toolkit', pt: 'Toolkit de QA' },
     earlier: {
       en: (range: string) => `Earlier technology roles (${range})`,
       pt: (range: string) => `Cargos anteriores em tecnologia (${range})`,
@@ -141,6 +152,8 @@ export const ui = {
     },
     testimonial: { en: 'Testimonial', pt: 'Depoimento' },
     original: { en: 'Original recommendation in Portuguese', pt: '' },
+    // Shown above the English version, so nobody mistakes it for what was actually written.
+    translation: { en: 'Reference translation · the quote above is the original wording', pt: '' },
     photos: { en: 'Event photos', pt: 'Fotos do evento' },
   },
   labels: {

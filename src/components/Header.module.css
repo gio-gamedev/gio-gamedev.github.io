@@ -155,7 +155,7 @@
 }
 
 /* Icon-only resume button before the nav runs out of room. */
-@media (max-width: 1240px) {
+@media (max-width: 1040px) {
   .resume {
     padding: 0;
   }
@@ -165,8 +165,8 @@
   }
 }
 
-/* Five links fit down to about 960 px (1024 px screens keep the full nav). */
-@media (max-width: 960px) {
+/* Three links fit down to about 760 px; below that they move into the menu. */
+@media (max-width: 760px) {
   .actions {
     margin-left: auto;
   }

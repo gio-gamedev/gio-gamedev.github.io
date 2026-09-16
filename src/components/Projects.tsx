@@ -1,4 +1,4 @@
-import { categories, categoryInfo, featuredProjects, inCategory, projectKey, projects } from '../content/projects';
+import { categories, categoryInfo, featuredProjects, projectKey, projects } from '../content/projects';
 import { ui } from '../content/ui';
 import { useLang } from '../i18n/LanguageContext';
 import { pagePath } from '../i18n/routes';
@@ -8,22 +8,24 @@ import { ProjectCard } from './ProjectCard';
 import { Section } from './Section';
 import styles from './Projects.module.css';
 
-export function Projects({ index }: { index: string }) {
+export function Projects() {
   const { lang, t } = useLang();
+  // Each title counted once, under its main platform, so the line adds up to the total above it.
   const counts = categories
     // No-break spaces keep each label and its count together when the line wraps ("PC / Steam 1").
     .map(
       (category) =>
-        `${t(categoryInfo[category].label).replace(/ /g, ' ')} ${projects.filter((p) => inCategory(p, category)).length}`,
+        `${t(categoryInfo[category].label).replace(/ /g, ' ')} ${projects.filter((p) => p.category === category).length}`,
     )
     .join(' · ');
 
   return (
-    <Section id="projects" index={index} title={t(ui.sections.projects)} subtitle={t(ui.sections.projectsSubtitle)}>
+    <Section id="projects" title={t(ui.sections.projects)} subtitle={t(ui.sections.projectsSubtitle)}>
+      {/* Editorial grid: the first two projects run large, the other four at half that width. */}
       <ul className={styles.featured}>
-        {featuredProjects.map((project) => (
-          <li key={projectKey(project)}>
-            <ProjectCard project={project} />
+        {featuredProjects.map((project, i) => (
+          <li key={projectKey(project)} className={i < 2 ? styles.lead : undefined}>
+            <ProjectCard project={project} size={i < 2 ? 'lead' : 'small'} />
           </li>
         ))}
       </ul>
@@ -37,10 +39,11 @@ export function Projects({ index }: { index: string }) {
       <div className={styles.more}>
         <div>
           <h3 className={styles.moreTitle}>{t(ui.projects.catalogTitle)}</h3>
+          <p className={styles.moreSummary}>{t(ui.projects.catalogSummary)}</p>
           <p className={styles.moreCounts}>{counts}</p>
         </div>
         <a className="btn btn-primary" href={pagePath(lang, 'projects')}>
-          {t(ui.projects.seeAll)(projects.length)}
+          {t(ui.projects.seeAll)}
           <Icon name="arrowRight" size={16} />
         </a>
       </div>

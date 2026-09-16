@@ -5,6 +5,8 @@ import type { Lang } from './content/types';
 import { CvDocument } from './cv/CvDocument';
 import { LanguageProvider } from './i18n/LanguageContext';
 import type { Page } from './i18n/routes';
+import GalleryPage from './pages/GalleryPage';
+import HomePage from './pages/HomePage';
 
 export { SITE_URL } from './content/site';
 export { cvTitle } from './cv/CvDocument';
@@ -18,7 +20,7 @@ export function render(lang: Lang, page: Page): string {
   return renderToString(
     <StrictMode>
       <LanguageProvider lang={lang} page={page}>
-        <App />
+        <App>{page === 'projects' ? <GalleryPage /> : <HomePage />}</App>
       </LanguageProvider>
     </StrictMode>,
   );

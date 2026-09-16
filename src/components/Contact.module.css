@@ -2,28 +2,17 @@
   padding-block: clamp(48px, 7vw, 88px);
 }
 
+/* A plain closing block: a rule at the top, two columns, no panel inside a panel. */
 .panel {
   display: grid;
   grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr);
-  gap: clamp(24px, 4vw, 48px);
+  gap: clamp(24px, 4vw, 56px);
   align-items: start;
-  padding: clamp(24px, 5vw, 48px);
-  border: 1px solid var(--accent-line);
-  border-radius: calc(var(--radius) + 6px);
-  background:
-    radial-gradient(640px 320px at 100% 0%, color-mix(in srgb, var(--accent) 16%, transparent), transparent 70%),
-    var(--surface);
-}
-
-.index {
-  font-family: var(--font-mono);
-  font-size: 0.8rem;
-  letter-spacing: 0.08em;
-  color: var(--accent);
+  padding-top: clamp(20px, 3vw, 32px);
+  border-top: 2px solid var(--accent-line);
 }
 
 .title {
-  margin-top: var(--space-2);
   font-size: clamp(1.9rem, 4.6vw, 3rem);
   text-transform: uppercase;
 }
@@ -50,10 +39,7 @@
 }
 
 .side {
-  padding: var(--space-5);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  background: var(--bg-elev);
+  padding-top: var(--space-2);
 }
 
 .facts {

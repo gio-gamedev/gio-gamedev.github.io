@@ -17,20 +17,35 @@ if (!existsSync(manifestFile)) {
 }
 
 const manifest = JSON.parse(readFileSync(manifestFile, 'utf8'));
+
+// Images collected outside the package, each one with the page it came from (images/extras/, not in
+// git). They answer for titles the package left pending, so they are checked the same way.
+const extraFile = path.join(root, 'images', 'extras', 'covers-extra.json');
+const extras = new Map(
+  (existsSync(extraFile) ? JSON.parse(readFileSync(extraFile, 'utf8')).titles : []).map((item) => [item.slug, item]),
+);
 const coversTs = readFileSync(path.join(root, 'src', 'content', 'covers.ts'), 'utf8');
 const covers = JSON.parse(coversTs.slice(coversTs.indexOf('CoverArt> = {') + 11, coversTs.lastIndexOf('}') + 1));
 
 // Approved in the package but kept off the site after a check (reason shown in the report).
-const withheld = {
-  'pro-soccer-simulator':
-    'Retida: a página no Roblox (103709979719238) é de outro grupo (ProSoccerGroup); identidade não confirmada em 15/09/2026.',
+const withheld = {};
+
+// Cover taken from another file already in the repository after reviewing the framing; the manifest
+// entry and its hash stay as they are, so the size column below still shows the manifest's image.
+const overrides = {
+  'rumble-kong-league':
+    'Capa trocada em 15/09/2026 pelo screenshot 16:9 da mesma página oficial do Google Play (o ícone quadrado ficava com bordas no card).',
 };
 
-// Taken out of the catalog by Giovanni (2026-09-15); kept in the report, without a cover.
+// Taken out of the catalog by Giovanni; kept in the report, without a cover.
 const removed = new Set([
+  // 15/09/2026
   'slice-mania', 'sniper-master', 'parkpurr', 'farm-break', 'kite-drop', 'vacuum-guy', 'sokobalien',
   'slackline-infinite', 'minute-bomb', 'ladder-stacker', 'milky-way-coliseum', 'iin', 'hexon', 'flip-the-box',
   'goroons', 'blocky-gate', 'clickermon', 'colorgrid', 'vila-do-brasa-sports-land-hub',
+  // 16/09/2026
+  'pro-soccer-simulator', 'slap-tower', 'winter-sports', 'sports-land-stadium', 'sports-land-football-saga',
+  'mesmerized', 'uol-eclub', 'flamengo-eclub', 'eclub-benefits-platform',
 ]);
 
 const statusLabel = {
@@ -51,10 +66,14 @@ for (const title of manifest.titles) {
     rows.push({ title, cover, note: 'Removido do catálogo (15/09/2026).', removed: true });
     continue;
   }
-  if (cover && pending) errors.push(`${title.slug}: cover published, but the manifest marks it pending`);
+  const extra = extras.get(title.slug);
+  if (cover && pending && !extra) errors.push(`${title.slug}: cover published, but the manifest marks it pending`);
+  if (extra && !cover) errors.push(`${title.slug}: image collected in images/extras, but no cover on the site`);
   if (cover && withheld[title.slug]) errors.push(`${title.slug}: cover published, but it is withheld`);
   if (!cover && !pending && !withheld[title.slug]) errors.push(`${title.slug}: approved image without a cover on the site`);
   if (withheld[title.slug]) note = withheld[title.slug];
+  if (overrides[title.slug]) note = overrides[title.slug];
+  if (extra) note = extra.notes;
 
   if (title.selected_file) {
     const file = path.join(pkg, title.selected_file);
@@ -69,7 +88,7 @@ for (const title of manifest.titles) {
     }
   }
 
-  rows.push({ title, cover, note });
+  rows.push({ title, cover, note, extra });
 }
 for (const slug of Object.keys(covers)) {
   if (!manifest.titles.some((t) => t.slug === slug)) errors.push(`${slug}: cover not listed in the manifest`);
@@ -91,15 +110,15 @@ const report = [
   '',
   '| Título | Status no pacote | No site | Tamanho original | Larguras publicadas | Enquadramento | Fonte | Observação |',
   '|---|---|---|---|---|---|---|---|',
-  ...rows.map(({ title, cover, note }) =>
+  ...rows.map(({ title, cover, note, extra }) =>
     [
       title.title,
-      statusLabel[title.status] ?? title.status,
+      extra ? 'imagem coletada (images/extras)' : (statusLabel[title.status] ?? title.status),
       cover ? 'sim' : 'não',
-      title.width ? `${title.width}×${title.height}` : '—',
+      (extra ?? title).width ? `${(extra ?? title).width}×${(extra ?? title).height}` : '—',
       cover ? cover.widths.join(', ') : '—',
       cover?.fit ?? '—',
-      title.source_page ?? '—',
+      extra?.source_page ?? title.source_page ?? '—',
       note || title.notes || '',
     ]
       .map(cell)

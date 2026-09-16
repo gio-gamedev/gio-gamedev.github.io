@@ -3,8 +3,6 @@ import styles from './Section.module.css';
 
 type Props = {
   id: string;
-  /** "01" etc. on the home page; omitted on pages with a single section. */
-  index?: string;
   title: string;
   subtitle?: string;
   /** 1 when the section title is the page title. */
@@ -14,7 +12,7 @@ type Props = {
   children: ReactNode;
 };
 
-export function Section({ id, index, title, subtitle, level = 2, lead, children }: Props) {
+export function Section({ id, title, subtitle, level = 2, lead, children }: Props) {
   const Heading = level === 1 ? 'h1' : 'h2';
 
   return (
@@ -22,11 +20,6 @@ export function Section({ id, index, title, subtitle, level = 2, lead, children 
       <div className="container">
         <header className={styles.header}>
           {lead}
-          {index && (
-            <p className={styles.index} aria-hidden="true">
-              {index} //
-            </p>
-          )}
           <Heading id={`${id}-title`} className={styles.title}>
             {title}
           </Heading>

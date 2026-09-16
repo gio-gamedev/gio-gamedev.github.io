@@ -6,6 +6,25 @@
     <meta name="robots" content="noindex" />
     <title>Page not found — Giovanni S. Mariano</title>
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <script>
+      // The site has four real pages: / and /projects/ in English, /pt/ and /pt/projetos/ in
+      // Portuguese. A mistyped address that clearly means one of them goes there instead of showing
+      // this page (scripts/prerender.mjs already writes the common ones as redirect pages).
+      (function () {
+        var path = location.pathname.toLowerCase().replace(/\/index\.html$/, '/');
+        if (path.charAt(path.length - 1) !== '/') path += '/';
+        var target = path
+          .replace(/^\/(en|eng|english)\//, '/')
+          .replace(/^\/(pt-br|ptbr|br|pt_br)\//, '/pt/')
+          .replace(/^\/(projetos|catalogo|catálogo)\//, '/pt/projetos/')
+          .replace(/^\/pt\/(projects|catalog|catalogo)\//, '/pt/projetos/')
+          .replace(/^\/(projects|catalog)\//, '/projects/');
+        var known = ['/', '/pt/', '/projects/', '/pt/projetos/'];
+        if (target !== path && known.indexOf(target) !== -1) {
+          location.replace(target + location.search + location.hash);
+        }
+      })();
+    </script>
     <style>
       :root {
         color-scheme: dark;
@@ -89,6 +108,8 @@
       <div class="links">
         <a class="primary" href="/">Go to the portfolio</a>
         <a href="/pt/" lang="pt-BR">Ir para o portfólio</a>
+        <a href="/projects/">Game QA catalog</a>
+        <a href="/pt/projetos/" lang="pt-BR">Catálogo de jogos</a>
       </div>
     </main>
   </body>

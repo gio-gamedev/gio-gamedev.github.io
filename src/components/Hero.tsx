@@ -1,11 +1,15 @@
-import { heroFacts, profile } from '../content/profile';
+import { heroFacts, heroSpecialties, profile } from '../content/profile';
 import { ui } from '../content/ui';
 import { useLang } from '../i18n/LanguageContext';
 import { Abbr } from './Abbr';
 import { Icon } from './Icon';
 import styles from './Hero.module.css';
 
-/** Name, title and a short summary; the headline numbers live only in the strip below. */
+/**
+ * Editorial opening: the job title is the largest thing on the page, the name reads right under it,
+ * then two lines of summary, the areas of QA and the three actions. The photo is a small companion,
+ * not the subject. The headline numbers live in the proof bar that closes the section.
+ */
 export function Hero() {
   const { t } = useLang();
   const { links } = profile;
@@ -15,17 +19,22 @@ export function Hero() {
     <section id="top" className={styles.hero} aria-labelledby="hero-title">
       <div className={`container ${styles.grid}`}>
         <div className={styles.copy}>
-          <p className={styles.eyebrow}>
+          <h1 id="hero-title" className={styles.title}>
             <span className={styles.role}>{t(profile.title)}</span>
-            <span aria-hidden="true"> · </span>
-            {t(profile.location)}
-          </p>
-          <h1 id="hero-title" className={styles.name}>
-            {profile.name}
+            <span className={styles.name}>{profile.name}</span>
           </h1>
+
           <p className={styles.headline}>
             <Abbr text={t(profile.headline)} />
           </p>
+
+          <ul className={styles.specialties} aria-label={t(ui.hero.specialties)}>
+            {t(heroSpecialties).map((item) => (
+              <li key={item}>
+                <Abbr text={item} />
+              </li>
+            ))}
+          </ul>
 
           <div className={styles.ctas}>
             <a className="btn btn-primary" href="#projects">
@@ -36,35 +45,45 @@ export function Hero() {
               <Icon name="download" size={16} />
               {t(ui.hero.resume)}
             </a>
+            <a className={styles.linkedin} href={links.linkedin} target="_blank" rel="noopener noreferrer">
+              <Icon name="linkedin" size={16} />
+              LinkedIn
+              <span className="sr-only"> {t(ui.a11y.newTab)}</span>
+            </a>
           </div>
 
           <ul className={styles.links}>
             <li>
               <a href={`mailto:${links.email}`}>
-                <Icon name="mail" />
+                <Icon name="mail" size={16} />
                 {links.email}
               </a>
             </li>
             <li>
-              <a href={links.linkedin} target="_blank" rel="noreferrer">
-                <Icon name="linkedin" />
-                LinkedIn
-              </a>
-            </li>
-            <li>
-              <a href={links.github} target="_blank" rel="noreferrer">
-                <Icon name="github" />
+              <a href={links.github} target="_blank" rel="noopener noreferrer">
+                <Icon name="github" size={16} />
                 GitHub
+                <span className="sr-only"> {t(ui.a11y.newTab)}</span>
               </a>
             </li>
+            <li className={styles.location}>{t(profile.location)}</li>
           </ul>
         </div>
 
         <div className={styles.photo}>
-          <img src={profile.avatar} alt={t(ui.hero.photo)} width={480} height={480} fetchPriority="high" />
+          <img
+            src={profile.avatar}
+            srcSet={profile.avatarSrcSet}
+            sizes="(max-width: 860px) 150px, 200px"
+            alt={t(ui.hero.photo)}
+            width={480}
+            height={480}
+            fetchPriority="high"
+          />
         </div>
       </div>
 
+      {/* Proof bar: the four facts a recruiter checks first, on one line. */}
       <div className="container">
         <ul className={styles.facts} aria-label={t(ui.hero.facts)}>
           {heroFacts.map((fact) => {
@@ -72,6 +91,7 @@ export function Hero() {
               <>
                 <strong className={styles.factValue}>{fact.value}</strong>
                 <span className={styles.factLabel}>{t(fact.label)}</span>
+                {fact.hint && <span className={styles.factHint}>{t(fact.hint)}</span>}
               </>
             );
             return (

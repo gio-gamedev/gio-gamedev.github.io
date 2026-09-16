@@ -44,6 +44,8 @@ export type Project = {
   context?: L;
   /** Featured projects: two or three short points on what Giovanni did, from confirmed facts only. */
   contribution?: L<string[]>;
+  /** Featured projects: the platform or store rules checked, on their own line (see ProjectCard). */
+  compliance?: L;
   /** Public page of the product for the featured card, when it is not the first store link. */
   page?: string;
   /** Release status, such as a demo. */
@@ -154,7 +156,9 @@ const p = (name: string | L, category: Category, extra: Partial<Project> = {}): 
 const roblox = (id: string) => `https://www.roblox.com/games/${id}`;
 const fortnite = (code: string) => `https://www.fortnite.com/@hermitcrab/${code}`;
 const play = (id: string) => `https://play.google.com/store/apps/details?id=${id}`;
-const appStore = (id: string) => `https://apps.apple.com/app/id${id}`;
+// Apple sends a plain /app/id… to the visitor's own store; two titles are published only in Brazil,
+// and for those the generic address answers 404, so they carry the /br/ path (checked 2026-09-15).
+const appStore = (id: string, region = '') => `https://apps.apple.com/${region}app/id${id}`;
 
 const portTesting: Testing[] = ['Functional', 'Regression', 'Compatibility', 'Compliance'];
 const lumePadTesting: Testing[] = ['Functional', 'Regression', 'Stereo3D', 'Performance', 'UX', 'Compliance'];
@@ -190,15 +194,14 @@ export const projects: Project[] = [
     contribution: {
       en: [
         'Functional and regression testing of gameplay mechanics, progression and multiplayer sessions',
-        'Roblox platform requirements',
-        'Defects reported with steps and evidence; fixes verified',
+        'Defects reported with steps and evidence, and the fixes verified',
       ],
       pt: [
         'Testes funcionais e de regressão das mecânicas, da progressão e das sessões multiplayer',
-        'Requisitos da plataforma Roblox',
-        'Defeitos relatados com passos e evidências; correções verificadas',
+        'Defeitos relatados com passos e evidências, e correções verificadas',
       ],
     },
+    compliance: { en: 'Roblox platform requirements', pt: 'Requisitos da plataforma Roblox' },
   }),
   p('Corrida do Galo', 'Roblox', { links: [roblox('95423176261993')] }),
   p({ en: 'Goal Clash', pt: 'Batalha de Gols' }, 'Roblox', { links: [roblox('81332944567096')] }),
@@ -209,8 +212,6 @@ export const projects: Project[] = [
   p('Obby Difícil Sports Land – Parkour do Ginga', 'Roblox', { links: [roblox('18220182918')] }),
   p('Sports Land: Parque do Ginga', 'Roblox'),
   p('Os Chocolix', 'Roblox'),
-  p('Slap Tower', 'Roblox'),
-  p({ en: 'Pro Soccer Simulator', pt: 'Simulador de Futebol Profissional' }, 'Roblox'),
   p('Push Players for a Pet', 'Roblox'),
   // Launch announcement by the partner (the image comes from the same post).
   p("Mimi's Dream Builders!", 'Roblox', {
@@ -228,9 +229,10 @@ export const projects: Project[] = [
       pt: 'Ilha de tycoon de futebol no Fortnite, feita no UEFN e atualizada ao vivo.',
     },
     contribution: {
-      en: ['Progression, economy and multiplayer sessions', 'Regression passes on live updates', 'Fortnite publishing requirements'],
-      pt: ['Progressão, economia e sessões multiplayer', 'Regressão nas atualizações live', 'Requisitos de publicação do Fortnite'],
+      en: ['Testing of progression, economy and multiplayer sessions', 'Regression passes on every live update'],
+      pt: ['Testes de progressão, economia e sessões multiplayer', 'Regressão a cada atualização live'],
     },
+    compliance: { en: 'Fortnite publishing requirements', pt: 'Requisitos de publicação do Fortnite' },
   }),
   p('World Soccer Tycoon', 'Fortnite/UEFN', { links: [fortnite('8861-6784-3687')] }),
   p('Skate Tycoon', 'Fortnite/UEFN', { links: [fortnite('0543-1357-2916')] }),
@@ -250,7 +252,6 @@ export const projects: Project[] = [
   p('Prop Hunt - Rio', 'Fortnite/UEFN', { links: [fortnite('9234-4701-5715')] }),
   // Same island as the former "Island Defense" (confirmed by Giovanni).
   p('Coconuts vs Pirates', 'Fortnite/UEFN', { aka: 'Island Defense', links: [fortnite('0534-2548-0763')] }),
-  p('Winter Sports', 'Fortnite/UEFN'),
 
   // The Sandbox
   p('The Walking Dead: Through the Tower', 'The Sandbox', {
@@ -259,9 +260,10 @@ export const projects: Project[] = [
       pt: 'Experiência licenciada de The Walking Dead no The Sandbox (Web3).',
     },
     contribution: {
-      en: ['Gameplay flow, UX and multiplayer of a licensed IP experience', 'The Sandbox platform requirements'],
-      pt: ['Fluxo de gameplay, UX e multiplayer de uma experiência de IP licenciada', 'Requisitos da plataforma The Sandbox'],
+      en: ['Testing of gameplay flow, UX and multiplayer on a licensed IP experience'],
+      pt: ['Testes do fluxo de gameplay, da UX e do multiplayer em uma experiência de IP licenciada'],
     },
+    compliance: { en: 'The Sandbox platform requirements', pt: 'Requisitos da plataforma The Sandbox' },
     // The experience is no longer live; the game's wiki documents it.
     page: 'https://walkingdead.fandom.com/wiki/The_Walking_Dead:_The_Sandbox',
   }),
@@ -288,9 +290,7 @@ export const projects: Project[] = [
   p('The Shebeen', 'The Sandbox'),
   p('The Valley of Belonging II', 'The Sandbox'),
   p('Liberty Legends', 'The Sandbox'),
-  p('Sports Land Stadium', 'The Sandbox'),
   p('Sports Land City Center', 'The Sandbox'),
-  p('Sports Land Football Saga', 'The Sandbox'),
   p('Sports Land Manager Legends', 'The Sandbox'),
   p('Sportsland Halloween', 'The Sandbox'),
 
@@ -322,16 +322,15 @@ export const projects: Project[] = [
       pt: 'Jogo de basquete 3v3 para iOS e Android.',
     },
     contribution: {
-      en: [
-        '3v3 multiplayer matches',
-        'Compatibility on low-end, mid-range and reference devices',
-        'App Store and Google Play release requirements',
-      ],
+      en: ['Testing of 3v3 multiplayer matches', 'Compatibility testing on low-end, mid-range and reference devices'],
       pt: [
-        'Partidas multiplayer 3v3',
-        'Compatibilidade em aparelhos de entrada, intermediários e de referência',
-        'Requisitos de lançamento na App Store e no Google Play',
+        'Testes das partidas multiplayer 3v3',
+        'Testes de compatibilidade em aparelhos de entrada, intermediários e de referência',
       ],
+    },
+    compliance: {
+      en: 'App Store and Google Play release requirements',
+      pt: 'Requisitos de lançamento na App Store e no Google Play',
     },
   }),
   p('Arcane Merge – Fantasy Mix', 'Mobile', {
@@ -344,7 +343,7 @@ export const projects: Project[] = [
     ports: ['CrazyGames'],
     links: [
       play('com.hermitcrabstudio.f2p.footballstrikers'),
-      appStore('6768308307'),
+      appStore('6768308307', 'br/'),
       'https://www.crazygames.com/game/sportia-football-cup',
     ],
     status: { en: 'Rated 9.1/10 on CrazyGames', pt: 'Nota 9,1/10 no CrazyGames' },
@@ -356,13 +355,16 @@ export const projects: Project[] = [
   p('FuntasticTeam Football Manager', 'Mobile', {
     links: [play('com.hermitcrabstudio.f2p.footballmanager'), appStore('6475968065')],
   }),
-  p('Time Brasil .gameplay', 'Mobile', { links: [appStore('6479170787')] }),
+  p('Time Brasil .gameplay', 'Mobile', { links: [appStore('6479170787', 'br/')] }),
   // No longer listed in the stores.
   p('COB Sports Legends – Collect & Merge', 'Mobile', { platforms: ['Android'] }),
+  // The app left Google Play in Dec 2025 (package com.hermitcrabstudio.f2p.mancityfreestyleacademy);
+  // the trailer on the studio's own channel documents it.
   p('Manchester City Freestyle Academy', 'Mobile', {
     platforms: ['iOS', 'Android', 'Lume Pad 3D'],
     ports: ['Lume Pad'],
     testing: [...defaults.Mobile.testing, 'Stereo3D'],
+    links: ['https://www.youtube.com/watch?v=IjUoiVVePZg'],
   }),
   p('Benfica Football Merge', 'Mobile'),
   p('Barcelona Card Game', 'Mobile'),
@@ -379,8 +381,8 @@ export const projects: Project[] = [
       pt: 'Jogo de esportes para PC, com demo na Steam; diferente do jogo mobile Sportia Football Cup.',
     },
     contribution: {
-      en: ['QA on the PC version for Steam: functional and regression testing'],
-      pt: ['QA na versão para PC da Steam: testes funcionais e de regressão'],
+      en: ['QA on the PC version published on Steam', 'Functional and regression testing'],
+      pt: ['QA na versão para PC publicada na Steam', 'Testes funcionais e de regressão'],
     },
   }),
 
@@ -404,21 +406,25 @@ export const projects: Project[] = [
   lumePad('Knight Swap'),
   lumePad('Knights Retreat'),
   lumePad('Kukulcan'),
-  lumePad('Mesmerized'),
   lumePad('Qubine'),
   lumePad('Sugar Rush'),
   lumePad('Tinker Racers'),
   lumePad('Tropical Kong Penalty', 'Maqna Interactive'),
   lumePad('Unlock the King'),
 
-  // Applications
-  p('eClub — Benefits Platform', 'Applications', { links: ['https://hermitcrabstudio.com/portfolio/eclub'] }),
-  p('Flamengo (eClub)', 'Applications'),
+  // Applications: club editions of the eClub benefits platform and the prediction pools.
   p('Grêmio (eClub)', 'Applications'),
-  p('Vasco (eClub)', 'Applications'),
-  p('UOL (eClub)', 'Applications'),
-  p('Bolão da UOL 2026', 'Applications'),
-  p('Bolão GRE-NAL 2026', 'Applications'),
+  // Announced by the club's press as "Gigante XP" inside the official Vasco app (Feb 2, 2026).
+  p('Vasco (eClub)', 'Applications', {
+    links: ['https://www.netvasco.com.br/n/378103/vasco-cria-jogo-gigante-xp-no-aplicativo-oficial'],
+    status: { en: 'In the official Vasco app, as Gigante XP', pt: 'No app oficial do Vasco, como Gigante XP' },
+  }),
+  p('Bolão da UOL 2026', 'Applications', {
+    links: ['https://www.uol.com.br/esporte/futebol/copa-do-mundo/jogos/bolao-do-uol.htm'],
+  }),
+  p('Bolão GRE-NAL 2026', 'Applications', {
+    links: ['https://gauchazh.clicrbs.com.br/esportes/bolao/grenal-26'],
+  }),
 ];
 
 /** Primary category, or Publishing for games ported or released through a partner. */
@@ -460,8 +466,12 @@ export function linkLabel(url: string): { short: L; long: L } {
   if (host.includes('joaofelipe')) {
     return { short: { en: 'Project page', pt: 'Página do projeto' }, long: { en: 'Project page', pt: 'Página do projeto' } };
   }
-  if (/medium\.com|businesswire|getprosperouskids/.test(host)) {
+  if (/medium\.com|businesswire|getprosperouskids|netvasco/.test(host)) {
     return { short: { en: 'Announcement', pt: 'Anúncio' }, long: { en: 'Read the announcement', pt: 'Ver o anúncio' } };
+  }
+  // The prediction pools are the product itself: the link is where people play them.
+  if (/uol\.com\.br|gauchazh/.test(host)) {
+    return { short: { en: 'Official page', pt: 'Página oficial' }, long: { en: 'Open the official page', pt: 'Abrir a página oficial' } };
   }
   return { short: { en: 'Link', pt: 'Link' }, long: { en: 'Open link', pt: 'Abrir link' } };
 }
@@ -469,11 +479,14 @@ export function linkLabel(url: string): { short: L; long: L } {
 /** The public page linked from a featured card: an explicit one, or the main store link. */
 export const pageOf = (project: Project): string | undefined => project.page ?? project.links?.[0];
 
-/** Mixed platforms, each card with real cover art. */
+/**
+ * Mixed platforms, each card with real cover art. The first two run as the large cards on the home
+ * page, so they are the two with full 16:9 art (see Projects.module.css).
+ */
 const featuredOrder = [
   'Sportia',
-  'Pro Kick Simulator',
   'Football Tycoon (Soccer Tycoon)',
+  'Pro Kick Simulator',
   'Logic Pic',
   'Rumble Kong League',
   'The Walking Dead: Through the Tower',
@@ -511,9 +524,16 @@ export const coverUrl = (slug: string, width: number) => `${import.meta.env.BASE
 /** Every generated width, with its real pixel width as the descriptor. */
 export const coverSrcSet = (slug: string, art: CoverArt) => art.widths.map((w) => `${coverUrl(slug, w)} ${w}w`).join(', ');
 
-/** Brands, IPs and partners from the projects above, for the brand strip. */
-export const brands = [
-  'CAIXA',
+/**
+ * Brands and IPs that appear in the titles above, kept apart from the partners those games were
+ * published through. They belong to the products: none of them means a direct contract of Giovanni's
+ * with the company.
+ */
+export const brandGroups: { title: L; items: string[] }[] = [
+  {
+    title: { en: 'IPs and brands in the titles tested', pt: 'IPs e marcas presentes nos títulos testados' },
+    items: [
+      'CAIXA',
   'Atlético Mineiro',
   'Vasco da Gama',
   'Grêmio',
@@ -532,9 +552,14 @@ export const brands = [
   "Spinnin' Records",
   'Jamiroquai',
   'Deepak Chopra',
-  'Metapeace',
-  'Hello Kitty',
-  'Gameloft',
-  'Leia Inc.',
-  'CrazyGames',
+      'Metapeace',
+      'Hello Kitty',
+    ],
+  },
+  {
+    title: { en: 'Publishing partners and platforms', pt: 'Parceiros de publicação e plataformas' },
+    items: ['Gameloft', 'Leia Inc.', 'CrazyGames'],
+  },
 ];
+
+export const brands = brandGroups.flatMap((group) => group.items);
