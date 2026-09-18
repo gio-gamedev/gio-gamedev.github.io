@@ -65,6 +65,8 @@ export const ui = {
   },
   resume: {
     pdf: { en: 'Resume (PDF)', pt: 'Currículo (PDF)' },
+    view: { en: 'View', pt: 'Ver' },
+    viewLabel: { en: 'View resume (PDF, opens in a new tab)', pt: 'Ver currículo (PDF, abre em nova aba)' },
   },
   sections: {
     projects: { en: 'Selected QA Projects', pt: 'Projetos de QA em destaque' },

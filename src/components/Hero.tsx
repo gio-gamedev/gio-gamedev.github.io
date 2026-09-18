@@ -47,6 +47,10 @@ export function Hero() {
               <Icon name="download" size={16} />
               {t(ui.hero.resume)}
             </a>
+            <a className={styles.viewResume} href={cvHref} target="_blank" rel="noopener noreferrer" aria-label={t(ui.resume.viewLabel)}>
+              <Icon name="external" size={15} />
+              {t(ui.resume.view)}
+            </a>
             <a className={styles.linkedin} href={links.linkedin} target="_blank" rel="noopener noreferrer">
               <Icon name="linkedin" size={16} />
               LinkedIn

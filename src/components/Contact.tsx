@@ -87,6 +87,10 @@ export function Contact() {
                 <Icon name="download" />
                 {t(ui.resume.pdf)}
               </a>
+              <a className="btn btn-ghost" href={cvHref} target="_blank" rel="noopener noreferrer" aria-label={t(ui.resume.viewLabel)}>
+                <Icon name="external" />
+                {t(ui.resume.view)}
+              </a>
             </div>
           </div>
 
