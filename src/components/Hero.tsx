@@ -3,6 +3,7 @@ import { ui } from '../content/ui';
 import { useLang } from '../i18n/LanguageContext';
 import { Abbr } from './Abbr';
 import { Icon } from './Icon';
+import { ResumeViewButton } from './ResumeDialog';
 import styles from './Hero.module.css';
 
 /**
@@ -47,6 +48,7 @@ export function Hero() {
               <Icon name="download" size={16} />
               {t(ui.hero.resume)}
             </a>
+            <ResumeViewButton className={styles.viewResume} />
             <a className={styles.linkedin} href={links.linkedin} target="_blank" rel="noopener noreferrer">
               <Icon name="linkedin" size={16} />
               LinkedIn

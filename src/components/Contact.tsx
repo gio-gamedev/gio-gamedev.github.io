@@ -4,6 +4,7 @@ import { ui } from '../content/ui';
 import { useLang } from '../i18n/LanguageContext';
 import { Abbr } from './Abbr';
 import { Icon } from './Icon';
+import { ResumeViewButton } from './ResumeDialog';
 import styles from './Contact.module.css';
 
 async function copyText(text: string) {
@@ -87,6 +88,7 @@ export function Contact() {
                 <Icon name="download" />
                 {t(ui.resume.pdf)}
               </a>
+              <ResumeViewButton className="btn btn-ghost" />
             </div>
           </div>
 
