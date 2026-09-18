@@ -41,14 +41,14 @@
 .leadNote {
   margin-top: var(--space-2);
   padding: var(--space-3) var(--space-4);
-  border-left: 2px solid var(--accent-line);
-  background: var(--accent-soft);
+  border-left: 2px solid color-mix(in srgb, var(--yellow) 42%, transparent);
+  background: color-mix(in srgb, var(--yellow) 12%, transparent);
   font-size: 0.88rem;
   color: var(--text);
 }
 
 .leadNote strong {
-  color: var(--accent-strong);
+  color: var(--yellow);
 }
 
 .bullets {
