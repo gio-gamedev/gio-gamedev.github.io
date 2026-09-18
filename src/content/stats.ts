@@ -10,7 +10,10 @@ function yearsSince(start: string): number {
 /** First Game QA role: Space Bit Games, Sep 2022. */
 export const qaYears = yearsSince('2022-09');
 
-/** Technology roles before QA add about three years (7 in total as of 2026, per the Notion portfolio). */
+/**
+ * Technology roles before QA add about three years (7 in total as of 2026). Source: the old Notion
+ * portfolio, retired on 18/09/2026; the export is archived in private/notion-export/, not in git.
+ */
 export const techYears = qaYears + 3;
 
 export const buildYear = buildDate.getUTCFullYear();
