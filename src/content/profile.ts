@@ -39,6 +39,8 @@ export const profile = {
   } as L,
   links: {
     email: 'giovannis.mariano@gmail.com',
+    /** As shown on the résumé; the tel: href strips the formatting. */
+    phone: '+55 43 99975-2743',
     linkedin: 'https://linkedin.com/in/giogamedev',
     github: 'https://github.com/gio-gamedev',
     /** Discord username (Discord has no public profile URL for usernames). */
@@ -165,8 +167,8 @@ export const contactFacts: { label: L; value: L }[] = [
 /** Summary for the resume and the machine-readable files. Supports **bold** markers. */
 export const summary = {
   lead: {
-    en: `Game QA Analyst with **${qaYears} years** in game studios and **${techYears} years** in technology. QA on **${gameCount} games** and interactive experiences across Roblox, Fortnite/UEFN, The Sandbox, mobile, PC and Lume Pad 3D, in teams of four to five people. **Temporary Lead QA since May 2026**, coordinating a team of four.`,
-    pt: `Analista de QA de Jogos com **${qaYears} anos** em estúdios de jogos e **${techYears} anos** em tecnologia. Atuação em QA de **${gameCount} jogos** e experiências interativas em Roblox, Fortnite/UEFN, The Sandbox, mobile, PC e Lume Pad 3D, em times de quatro a cinco pessoas. **Atribuição temporária como Lead QA desde maio de 2026**, coordenando uma equipe de quatro pessoas.`,
+    en: `Game QA Analyst with **${qaYears} years** in game studios and **${techYears} years** in technology. QA on **${gameCount} games** and interactive experiences across Roblox, Fortnite/UEFN, The Sandbox, mobile, PC and Lume Pad 3D, in teams of four to five people. **Acting as Lead QA since May 2026**, coordinating a team of four.`,
+    pt: `Analista de QA de Jogos com **${qaYears} anos** em estúdios de jogos e **${techYears} anos** em tecnologia. Atuação em QA de **${gameCount} jogos** e experiências interativas em Roblox, Fortnite/UEFN, The Sandbox, mobile, PC e Lume Pad 3D, em times de quatro a cinco pessoas. **Atuação como Lead QA desde maio de 2026**, coordenando uma equipe de quatro pessoas.`,
   } as L,
   technical: {
     en: 'Test planning and execution across gameplay, functional, regression, smoke, exploratory, multiplayer, UX/FTUE, compatibility, performance, accessibility and localization testing, with risk-based coverage and release validation supporting go/no-go decisions with Production. Technical background in web/backend development: API testing, SQL and log-based investigation.',
@@ -225,8 +227,8 @@ export const experience: { title: L; compact?: boolean; jobs: Job[] }[] = [
           ],
         },
         leadNote: {
-          en: '**Temporary Lead QA assignment (since May 2026):** coordinated a QA team of four, distributing test scope and activities among the team, tracking coverage, risk and status, approving build go/no-go and reporting directly to Production.',
-          pt: '**Atribuição temporária como Lead QA (desde mai/2026):** coordenação de uma equipe de QA de quatro pessoas, com distribuição de escopo e atividades de teste entre o time, acompanhamento de cobertura, risco e status, aprovação de go/no-go de build e reporte diretamente à Produção.',
+          en: '**Acting as Lead QA (since May 2026):** coordinated a QA team of four, distributing test scope and activities among the team, tracking coverage, risk and status, approving build go/no-go and reporting directly to Production.',
+          pt: '**Atuação como Lead QA (desde mai/2026):** coordenação de uma equipe de QA de quatro pessoas, com distribuição de escopo e atividades de teste entre o time, acompanhamento de cobertura, risco e status, aprovação de go/no-go de build e reporte diretamente à Produção.',
         },
         platforms: 'Roblox · Fortnite/UEFN · The Sandbox (Web3) · Mobile · PC · Lume Pad 3D',
         tools:
@@ -282,7 +284,7 @@ export const experience: { title: L; compact?: boolean; jobs: Job[] }[] = [
         start: '2019-09',
         end: '2020-08',
         role: { en: 'Web Developer — PHP', pt: 'Desenvolvedor Web — PHP' },
-        company: 'Mark Up',
+        company: 'Markup',
         bullets: {
           en: ['Developed and maintained web applications with PHP/CakePHP, JavaScript and React'],
           pt: ['Desenvolvimento e manutenção de aplicações web com PHP/CakePHP, JavaScript e React'],
@@ -441,7 +443,7 @@ export const recognition = {
     { name: 'Amanda Oliveira' },
     { name: 'Jenifer Silva' },
   ],
-  video: 'https://www.youtube.com/watch?v=nuXAPn1jyfY',
+  video: 'https://www.youtube.com/watch?v=7RrugYqfK1k',
   /** Event photos (public/testathon/<file>-<width>.webp). Nobody is named in the photos. */
   photos: [
     {

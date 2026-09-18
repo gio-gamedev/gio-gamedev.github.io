@@ -52,6 +52,10 @@ export function Contact() {
                 <Icon name="mail" />
                 {links.email}
               </a>
+              <a className="btn btn-ghost" href={`tel:${links.phone.replace(/[^\d+]/g, '')}`}>
+                <Icon name="phone" />
+                {links.phone}
+              </a>
               <a className="btn btn-ghost" href={links.linkedin} target="_blank" rel="noopener noreferrer">
                 <Icon name="linkedin" />
                 LinkedIn

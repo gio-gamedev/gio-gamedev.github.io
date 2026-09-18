@@ -2,6 +2,7 @@ import type { ReactNode } from 'react';
 
 export type IconName =
   | 'mail'
+  | 'phone'
   | 'linkedin'
   | 'github'
   | 'external'
@@ -42,6 +43,9 @@ const strokePaths: Record<Exclude<IconName, 'linkedin' | 'github' | 'discord'>, 
       <path d="M20 4 10 14" />
       <path d="M19 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1h5" />
     </>
+  ),
+  phone: (
+    <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z" />
   ),
   download: (
     <>

@@ -20,7 +20,7 @@ const pages = [
     average: 'Four years in Game QA across two studios, in teams of four to five people.',
     conferral: 'Feb 22, 2019',
     original: 'Original recommendation in Portuguese',
-    leadQA: 'Temporary Lead QA assignment',
+    leadQA: 'Acting as Lead QA',
     challenge: 'QA challenge',
   },
   {
@@ -41,7 +41,7 @@ const pages = [
     average: 'Quatro anos de atuação em QA de jogos em dois estúdios, em equipes de quatro a cinco pessoas.',
     conferral: '22/02/2019',
     original: null,
-    leadQA: 'Atribuição temporária como Lead QA',
+    leadQA: 'Atuação como Lead QA',
     challenge: 'Desafio de QA',
   },
 ];
