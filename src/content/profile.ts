@@ -21,7 +21,7 @@ export const profile = {
    * account — so the English version reads at the same level of formality as the Portuguese one.
    */
   headline: {
-    en: `Game QA with more than ${qaYears} years on projects for Roblox, Fortnite/UEFN, The Sandbox, mobile and PC. Test planning and execution, bug investigation and tracking, release validation, platform compliance and quality feedback focused on the player experience.`,
+    en: `Game QA with more than ${qaYears} years on projects for Roblox, Fortnite/UEFN, The Sandbox, mobile and PC. Experience with test planning and execution, bug investigation and tracking, release validation, platform compliance and quality feedback focused on the player experience.`,
     pt: `Game QA com mais de ${qaYears} anos de experiência em projetos para Roblox, Fortnite/UEFN, The Sandbox, mobile e PC. Atuação em planejamento e execução de testes, investigação e acompanhamento de bugs, validação de releases, compliance de plataforma e feedback de qualidade focado na experiência do jogador.`,
   } as L,
   /** One short line after the headline: where the technical side of the work comes from. */
