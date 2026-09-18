@@ -1,17 +1,17 @@
 // Writes one static HTML page per language and page after `vite build` and `vite build --ssr`,
-// plus the resume pages, the machine-readable files and sitemap.xml. The client bundle then
-// hydrates the prerendered markup.
+// plus the machine-readable files and sitemap.xml. The client bundle then hydrates the
+// prerendered markup. The résumé PDF is a ready-made file (public/curriculo/), not generated here.
 import { mkdir, readdir, readFile, rm, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
-import { buildDocx } from './cv-docx.mjs';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const dist = path.join(root, 'dist');
 const ssrDir = path.join(root, 'dist-ssr');
 
-const { render, renderCv, headTags, SITE_URL, cvData, cvStyles, cvTitle, resumeJson, llmsTxt, qaYears, titleCount } =
-  await import(pathToFileURL(path.join(ssrDir, 'entry-server.js')).href);
+const { render, headTags, SITE_URL, resumeJson, llmsTxt, qaYears, titleCount } = await import(
+  pathToFileURL(path.join(ssrDir, 'entry-server.js')).href
+);
 const template = await readFile(path.join(dist, 'index.html'), 'utf8');
 
 const HEAD = /<!--head:start-->[\s\S]*?<!--head:end-->/;
@@ -101,37 +101,10 @@ for (const [from, to] of aliases) {
 }
 console.log(`redirects: ${aliases.map(([from, to]) => `/${from}/ → ${to}`).join(', ')}`);
 
-const homes = pages.filter((p) => p.page === 'home');
-
-// Resume pages (one column, no JavaScript) that scripts/cv-pdf.mjs prints to PDF.
-for (const { lang, dir } of homes) {
-  const cvDir = path.join(dir, 'cv');
-  const html = `<!doctype html>
-<html lang="${lang === 'pt' ? 'pt-BR' : 'en'}">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="robots" content="noindex" />
-    <title>${cvTitle[lang]}</title>
-    <style>${cvStyles}</style>
-  </head>
-  <body>${renderCv(lang)}</body>
-</html>
-`;
-  await mkdir(cvDir, { recursive: true });
-  await writeFile(path.join(cvDir, 'index.html'), html);
-}
-
-// Word resumes, served from /cv/ next to the PDFs (public/cv/).
-for (const { lang } of homes) {
-  const file = `Giovanni-Mariano-Game-QA-${lang.toUpperCase()}.docx`;
-  await writeFile(path.join(dist, 'cv', file), await buildDocx(cvData(lang), cvTitle[lang]));
-}
-
 // Machine-readable copies for screening tools and LLMs.
 await writeFile(path.join(dist, 'resume.json'), `${JSON.stringify(resumeJson(), null, 2)}\n`);
 await writeFile(path.join(dist, 'llms.txt'), llmsTxt());
-console.log('wrote cv pages, resume.json and llms.txt');
+console.log('wrote resume.json and llms.txt');
 
 // The share image is drawn by Chrome from a plain HTML file, which cannot import the content. The
 // build writes the derived numbers next to it, so the card can never disagree with the site.

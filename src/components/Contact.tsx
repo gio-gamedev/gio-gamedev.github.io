@@ -29,6 +29,7 @@ export function Contact() {
   const { links } = profile;
   const [copied, setCopied] = useState(false);
   const cv = t(profile.cv);
+  const cvHref = encodeURI(cv);
 
   useEffect(() => {
     if (!copied) return;
@@ -82,7 +83,7 @@ export function Contact() {
             </dl>
             <p className={styles.resumeLabel}>{t(ui.contact.resume)}</p>
             <div className={styles.downloads}>
-              <a className="btn btn-ghost" href={cv} download={cv.split('/').pop()}>
+              <a className="btn btn-ghost" href={cvHref} download={cv.split('/').pop()}>
                 <Icon name="download" />
                 {t(ui.resume.pdf)}
               </a>

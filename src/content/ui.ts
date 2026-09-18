@@ -63,7 +63,6 @@ export const ui = {
     facts: { en: 'At a glance', pt: 'Em resumo' },
     specialties: { en: 'Areas of QA', pt: 'Áreas de QA' },
   },
-  // The Word version is still built and served at /cv/ for screening tools; it has no button.
   resume: {
     pdf: { en: 'Resume (PDF)', pt: 'Currículo (PDF)' },
   },
@@ -71,8 +70,8 @@ export const ui = {
     projects: { en: 'Selected QA Projects', pt: 'Projetos de QA em destaque' },
     // The counts live in the catalog block below the cards, so they are not repeated here.
     projectsSubtitle: {
-      en: 'Six titles that show the range of the work: platforms, stages of a project and kinds of QA. At Hermit Crab Game Studio unless noted.',
-      pt: 'Seis títulos que mostram a amplitude do trabalho: plataformas, fases de projeto e tipos de QA. Na Hermit Crab Game Studio, salvo indicação.',
+      en: 'Selected projects that demonstrate experience across different platforms, project stages and kinds of QA.',
+      pt: 'Projetos selecionados para demonstrar a atuação em diferentes plataformas, fases de projeto e tipos de QA.',
     },
     experience: { en: 'Work Experience', pt: 'Experiência profissional' },
     skills: { en: 'Skills', pt: 'Competências' },

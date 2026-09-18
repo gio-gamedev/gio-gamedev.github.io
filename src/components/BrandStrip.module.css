@@ -45,6 +45,9 @@
   color: var(--accent);
 }
 
-.more[open] summary {
-  margin-bottom: 0.2rem;
+/* Same left indent as the summary's own text (icon width + gap), and no extra margin on top of the
+   summary's own padding — matches the density of the rest of the section. */
+.more .list {
+  margin-top: 0;
+  padding: 0 1rem 0.85rem 2.2rem;
 }

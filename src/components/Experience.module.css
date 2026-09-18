@@ -37,16 +37,9 @@
   color: var(--accent);
 }
 
-/* Team size and release responsibility, right under the role. */
-.scope {
-  margin-top: var(--space-2);
-  font-size: 0.9rem;
-  color: var(--text);
-}
-
 /* A bounded, temporary assignment inside the role — set apart from the bullets, not a new job. */
 .leadNote {
-  margin-top: var(--space-3);
+  margin-top: var(--space-2);
   padding: var(--space-3) var(--space-4);
   border-left: 2px solid var(--accent-line);
   background: var(--accent-soft);

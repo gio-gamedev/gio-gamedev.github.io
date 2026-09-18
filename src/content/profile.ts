@@ -21,8 +21,8 @@ export const profile = {
    * account — so the English version reads at the same level of formality as the Portuguese one.
    */
   headline: {
-    en: `Game QA with more than ${qaYears} years on projects for Roblox, Fortnite/UEFN, The Sandbox, mobile and PC. Test planning and execution, defect investigation and tracking, release validation, platform compliance and quality feedback focused on the player experience.`,
-    pt: `Game QA com mais de ${qaYears} anos de experiência em projetos para Roblox, Fortnite/UEFN, The Sandbox, mobile e PC. Atuação em planejamento e execução de testes, investigação e acompanhamento de defeitos, validação de releases, compliance de plataforma e feedback de qualidade focado na experiência do jogador.`,
+    en: `Game QA with more than ${qaYears} years on projects for Roblox, Fortnite/UEFN, The Sandbox, mobile and PC. Test planning and execution, bug investigation and tracking, release validation, platform compliance and quality feedback focused on the player experience.`,
+    pt: `Game QA com mais de ${qaYears} anos de experiência em projetos para Roblox, Fortnite/UEFN, The Sandbox, mobile e PC. Atuação em planejamento e execução de testes, investigação e acompanhamento de bugs, validação de releases, compliance de plataforma e feedback de qualidade focado na experiência do jogador.`,
   } as L,
   /** One short line after the headline: where the technical side of the work comes from. */
   headlineTechnical: {
@@ -47,14 +47,14 @@ export const profile = {
   avatar: asset('avatar.webp'),
   /** The same photo at the sizes it is actually shown (never wider than about 200 px). */
   avatarSrcSet: [`${asset('avatar-240.webp')} 240w`, `${asset('avatar-320.webp')} 320w`, `${asset('avatar.webp')} 480w`].join(', '),
-  /** PDF printed by `npm run cv` (scripts/cv-pdf.mjs); DOCX written at build time (scripts/cv-docx.mjs). */
+  /**
+   * A ready-made PDF, not built from this content — kept in sync by hand. Source file lives in
+   * images/curriculo/ (outside git); this is the published copy in public/curriculo/. The name has
+   * spaces, so callers wrap it in encodeURI() for the href and keep it as-is for the download name.
+   */
   cv: {
-    en: asset('cv/Giovanni-Mariano-Game-QA-EN.pdf'),
-    pt: asset('cv/Giovanni-Mariano-Game-QA-PT.pdf'),
-  } as L,
-  cvDocx: {
-    en: asset('cv/Giovanni-Mariano-Game-QA-EN.docx'),
-    pt: asset('cv/Giovanni-Mariano-Game-QA-PT.docx'),
+    en: asset('curriculo/Giovanni Mariano - Game QA - Resume EN.pdf'),
+    pt: asset('curriculo/Giovanni Mariano - Game QA - Curriculo PT.pdf'),
   } as L,
 };
 
@@ -165,12 +165,12 @@ export const contactFacts: { label: L; value: L }[] = [
 /** Summary for the resume and the machine-readable files. Supports **bold** markers. */
 export const summary = {
   lead: {
-    en: `Game QA Analyst with **${qaYears} years** in game studios and **${techYears} years** in technology. QA on **${gameCount} games** and interactive experiences across Roblox, Fortnite/UEFN, The Sandbox, mobile, PC and Lume Pad 3D, in teams of four to five people.`,
-    pt: `Analista de QA de Jogos com **${qaYears} anos** em estúdios de jogos e **${techYears} anos** em tecnologia. Atuação em QA de **${gameCount} jogos** e experiências interativas em Roblox, Fortnite/UEFN, The Sandbox, mobile, PC e Lume Pad 3D, em times de quatro a cinco pessoas.`,
+    en: `Game QA Analyst with **${qaYears} years** in game studios and **${techYears} years** in technology. QA on **${gameCount} games** and interactive experiences across Roblox, Fortnite/UEFN, The Sandbox, mobile, PC and Lume Pad 3D, in teams of four to five people. **Temporary Lead QA since May 2026**, coordinating a team of four.`,
+    pt: `Analista de QA de Jogos com **${qaYears} anos** em estúdios de jogos e **${techYears} anos** em tecnologia. Atuação em QA de **${gameCount} jogos** e experiências interativas em Roblox, Fortnite/UEFN, The Sandbox, mobile, PC e Lume Pad 3D, em times de quatro a cinco pessoas. **Atribuição temporária como Lead QA desde maio de 2026**, coordenando uma equipe de quatro pessoas.`,
   } as L,
   technical: {
-    en: 'Technical background in web and backend development: API testing, analytics validation and technical investigation, weighing technical behavior and player experience.',
-    pt: 'Background técnico em desenvolvimento web e backend: testes de API, validação de analytics e investigação técnica, considerando o comportamento técnico e a experiência do jogador.',
+    en: 'Test planning and execution across gameplay, functional, regression, smoke, exploratory, multiplayer, UX/FTUE, compatibility, performance, accessibility and localization testing, with risk-based coverage and release validation supporting go/no-go decisions with Production. Technical background in web/backend development: API testing, SQL and log-based investigation.',
+    pt: 'Planejamento e execução de testes de gameplay, funcionais, de regressão, smoke, exploratórios, multiplayer, UX/FTUE, compatibilidade, performance, acessibilidade e localização, com cobertura baseada em risco e validação de release apoiando decisões de go/no-go com a Produção. Background técnico em desenvolvimento web/backend: testes de API, SQL e investigação com logs.',
   } as L,
 };
 
@@ -194,8 +194,6 @@ export type Job = {
   bullets: L<string[]>;
   /** One short line under the bullets, such as the titles tested. */
   note?: L;
-  /** Team size and release responsibility, in one line under the role. */
-  scope?: L;
   /** A bounded, temporary assignment within the same role — not a separate job entry. */
   leadNote?: L;
   platforms?: string;
@@ -213,26 +211,22 @@ export const experience: { title: L; compact?: boolean; jobs: Job[] }[] = [
         bullets: {
           en: [
             `**Multiplatform Game QA:** gameplay, functional, regression, smoke, exploratory, UX/FTUE and multiplayer testing on Roblox, Fortnite (UEFN), The Sandbox, mobile, PC/Steam and Lume Pad 3D — covering progression, in-game economy, accessibility and localization, and including ${portCount}+ partner-studio ports to carrier (telco) stores through Gameloft and to Leia's Lume Pad 3D tablets, plus web releases on CrazyGames`,
-            '**Test Planning, Coverage & Risk:** test cases, checklists and exploratory scenarios written from requirements and product risk, with test scope, coverage and priorities defined per milestone',
-            '**Defect Lifecycle & Technical Investigation:** defects identified, reproduced and documented with steps, expected and actual results, severity and evidence, then tracked, verified after the fix and covered by regression — investigated with adb/logcat and Firebase Crashlytics, with analytics events validated on GameAnalytics, Firebase and Roblox Analytics, and APIs tested with Postman',
+            '**Test Planning, Coverage & Risk:** test cases, checklists and exploratory scenarios written from requirements and product risk, with test scope, coverage and priorities',
+            '**Bug Lifecycle & Technical Investigation:** bugs identified, reproduced and documented with steps, expected and actual results, severity and evidence, then tracked, verified after the fix and covered by regression — investigated with adb/logcat and Firebase Crashlytics, with analytics events validated on GameAnalytics, Firebase and Roblox Analytics, and APIs tested with Postman',
             '**Release / Quality Validation:** build validation, release readiness, risks and a go/no-go recommendation for Production, with platform and store compliance for Roblox, Fortnite, The Sandbox, the App Store and Google Play, plus compatibility and performance checks across devices from low-end to reference tiers, different screen sizes and resolutions, frame behavior and gamepad controls on PC',
-            '**Cross-functional Work, Process & Ownership:** day-to-day work with QA, developers, producers and other areas on problems, risks, fixes and quality feedback, with improvement suggestions shared as the game evolved; AI used to support test documentation, information organization, research, analysis, test-scenario refinement and defect investigation, including a contribution of small adjustments and improvements to an internal QA tool, with AI and programming as support',
+            '**Cross-functional Work & Process:** day-to-day work with QA, developers, producers and other areas on problems, risks, fixes and quality feedback, with improvement suggestions shared as the game evolved; AI used to support test documentation, information organization, research, analysis and test-scenario refinement, including a contribution of small adjustments and improvements to an internal QA tool, with AI and programming as support',
           ],
           pt: [
             `**Game QA multiplataforma:** testes de gameplay, funcionais, de regressão, smoke, exploratórios, de UX/FTUE e multiplayer em Roblox, Fortnite (UEFN), The Sandbox, mobile, PC/Steam e Lume Pad 3D — cobrindo progressão, economia do jogo, acessibilidade e localização, além de mais de ${portCount} portes de jogos de estúdios parceiros para lojas de operadoras (telco) pela Gameloft e para os tablets 3D Lume Pad da Leia, e lançamentos web no CrazyGames`,
-            '**Planejamento, Cobertura e Risco:** casos de teste, checklists e cenários exploratórios criados a partir de requisitos e riscos do produto, com escopo, cobertura e prioridades definidos por milestone',
-            '**Ciclo de Vida do Defeito e Investigação Técnica:** defeitos identificados, reproduzidos e documentados com passos, resultado esperado e obtido, severidade e evidências, depois acompanhados, validados após a correção e cobertos por regressão — investigados com adb/logcat e Firebase Crashlytics, com eventos de analytics validados no GameAnalytics, no Firebase e no Roblox Analytics, e testes de APIs com Postman',
+            '**Planejamento, Cobertura e Risco:** casos de teste, checklists e cenários exploratórios criados a partir de requisitos e riscos do produto, com escopo, cobertura e prioridades',
+            '**Ciclo de Vida do Bug e Investigação Técnica:** bugs identificados, reproduzidos e documentados com passos, resultado esperado e obtido, severidade e evidências, depois acompanhados, validados após a correção e cobertos por regressão — investigados com adb/logcat e Firebase Crashlytics, com eventos de analytics validados no GameAnalytics, no Firebase e no Roblox Analytics, e testes de APIs com Postman',
             '**Validação de Release e Qualidade:** validação de build, release readiness, riscos e recomendação de go/no-go para a Produção, com compliance de plataforma e loja no Roblox, no Fortnite, no The Sandbox, na App Store e no Google Play, além de verificações de compatibilidade e performance em aparelhos de entrada até os de referência, diferentes tamanhos de tela e resoluções, comportamento de performance e controles no PC',
-            '**Trabalho entre Áreas, Processo e Ownership:** rotina com QA, desenvolvedores, produtores e demais áreas na discussão de problemas, riscos, correções e feedback de qualidade, com sugestões de melhoria compartilhadas ao longo da evolução do jogo; IA usada como apoio à documentação de testes, organização de informações, pesquisa, análise, refinamento de cenários de teste e investigação de defeitos, incluindo contribuição em pequenos ajustes e melhorias de uma ferramenta interna de QA, com IA e programação como apoio',
+            '**Trabalho entre Áreas e Processo:** rotina com QA, desenvolvedores, produtores e demais áreas na discussão de problemas, riscos, correções e feedback de qualidade, com sugestões de melhoria compartilhadas ao longo da evolução do jogo; IA usada como apoio à documentação de testes, organização de informações, pesquisa, análise e refinamento de cenários de teste, incluindo contribuição em pequenos ajustes e melhorias de uma ferramenta interna de QA, com IA e programação como apoio',
           ],
         },
-        scope: {
-          en: 'QA team of four to five people · test scope and priorities per milestone · go/no-go recommendation for Production',
-          pt: 'Equipe de QA de quatro a cinco pessoas · escopo e prioridades de teste por milestone · recomendação de go/no-go para a Produção',
-        },
         leadNote: {
-          en: '**Temporary Lead QA assignment (since May 2026):** coordinated a QA team of four — three QAs, one of them an intern, and myself — distributing test scope among the team, approving build go/no-go and reporting status and risk directly to Production.',
-          pt: '**Atribuição temporária como Lead QA (desde mai/2026):** coordenação de uma equipe de QA de quatro pessoas — três QAs, sendo um deles estagiário, além de mim —, com distribuição do escopo de teste entre o time, aprovação de go/no-go de build e reporte de status e risco diretamente à Produção.',
+          en: '**Temporary Lead QA assignment (since May 2026):** coordinated a QA team of four, distributing test scope and activities among the team, tracking coverage, risk and status, approving build go/no-go and reporting directly to Production.',
+          pt: '**Atribuição temporária como Lead QA (desde mai/2026):** coordenação de uma equipe de QA de quatro pessoas, com distribuição de escopo e atividades de teste entre o time, acompanhamento de cobertura, risco e status, aprovação de go/no-go de build e reporte diretamente à Produção.',
         },
         platforms: 'Roblox · Fortnite/UEFN · The Sandbox (Web3) · Mobile · PC · Lume Pad 3D',
         tools:
@@ -246,13 +240,13 @@ export const experience: { title: L; compact?: boolean; jobs: Job[] }[] = [
         bullets: {
           en: [
             '**Logic Pic, a product already in LiveOps:** new levels and updates tested through frequent release cycles, with test scenarios created and run for functionality, usability and stability',
-            '**Defect tracking:** defects documented, followed on the backlog and re-tested after the fix, in day-to-day communication with the team',
-            '**Arcane Merge – Fantasy Mix:** a shorter involvement, focused on running tests, documenting defects and verifying fixes',
+            '**Bug tracking:** bugs documented, followed on the backlog and re-tested after the fix, in day-to-day communication with the team',
+            '**Arcane Merge – Fantasy Mix:** focused on running tests, documenting bugs and verifying fixes',
           ],
           pt: [
             '**Logic Pic, produto já em LiveOps:** novas fases e atualizações testadas em ciclos frequentes de entrega, com cenários de teste criados e executados para funcionalidade, usabilidade e estabilidade',
-            '**Acompanhamento de defeitos:** defeitos documentados, acompanhados no backlog e retestados após a correção, em comunicação diária com a equipe',
-            '**Arcane Merge – Fantasy Mix:** participação mais curta, focada em execução de testes, documentação de defeitos e validação de correções',
+            '**Acompanhamento de bugs:** bugs documentados, acompanhados no backlog e retestados após a correção, em comunicação diária com a equipe',
+            '**Arcane Merge – Fantasy Mix:** focada em execução de testes, documentação de bugs e validação de correções',
           ],
         },
         note: {
@@ -321,7 +315,7 @@ export const experience: { title: L; compact?: boolean; jobs: Job[] }[] = [
 ];
 
 /**
- * Market-standard skill names (what job posts and screening tools search for), in six blocks that
+ * Market-standard skill names (what job posts and screening tools search for), in seven blocks that
  * can be scanned one at a time. Everything here is backed by the experience and the catalog; there
  * are no levels, no ratings and nothing repeated to pad the list.
  */
@@ -372,8 +366,8 @@ export const skills: SkillGroup[] = [
         'Test cases',
         'Checklists',
         'Risk-based testing',
-        'Bug reporting / defect tracking',
-        'Defect investigation',
+        'Bug reporting / tracking',
+        'Bug investigation',
         'Fix verification',
         'Release validation',
         'Platform / store compliance',
@@ -385,8 +379,8 @@ export const skills: SkillGroup[] = [
         'Casos de teste',
         'Checklists',
         'Testes baseados em risco',
-        'Documentação e acompanhamento de defeitos',
-        'Investigação de defeitos',
+        'Documentação e acompanhamento de bugs',
+        'Investigação de bugs',
         'Validação de correções',
         'Validação de release',
         'Compliance de plataforma e loja',
@@ -397,7 +391,11 @@ export const skills: SkillGroup[] = [
   },
   {
     title: { en: 'Technical QA', pt: 'QA técnico' },
-    items: list('adb / logcat · Firebase Crashlytics · Chrome DevTools · Postman · REST APIs · SQL · JSON · Analytics validation'),
+    items: list('adb / logcat · Firebase Crashlytics · Chrome DevTools · Postman · REST APIs · SQL · JSON'),
+  },
+  {
+    title: { en: 'Analytics', pt: 'Analytics' },
+    items: list('GameAnalytics · Firebase · Roblox Analytics'),
   },
   {
     title: { en: 'Tools', pt: 'Ferramentas' },
@@ -575,10 +573,6 @@ export const certificates: Certificate[] = [
 /** Everything else, text only, with institution and date. */
 export const otherCertificates: L[] = [
   {
-    en: 'Automated Tests + Complete Software Testing Course — 5 hours — Udemy — Dec 2021',
-    pt: 'Testes Automáticos + Curso Completo de Teste de Software — 5 h — Udemy — dez/2021',
-  },
-  {
     en: 'Remote Work and Virtual Collaboration (RWVCPC) — CertiProf — Sep 2021; expired Sep 2023 (historical)',
     pt: 'Remote Work and Virtual Collaboration (RWVCPC) — CertiProf — set/2021; expirou em set/2023 (histórico)',
   },
@@ -608,51 +602,3 @@ export const otherCertificates: L[] = [
   },
 ];
 
-/** `short` is the one-line version used on the resume, where these come last and stay brief. */
-export type AcademicItem = { name: string; note: L; short: L; start?: string; end?: string; link?: string };
-
-/** College projects, kept apart from employment (the old Wix gallery is not migrated). */
-export const academicProjects = {
-  title: { en: 'Academic projects', pt: 'Projetos acadêmicos' } as L,
-  items: [
-    {
-      name: 'Coração do Inverno',
-      note: { en: 'final course project on narrative immersion, FATEC Ourinhos, 2018', pt: 'TCC sobre imersão narrativa, FATEC Ourinhos, 2018' },
-      short: { en: 'final course project, 2018', pt: 'TCC, 2018' },
-    },
-    {
-      name: 'APAM – FATEC Ourinhos',
-      start: '2018-01',
-      end: '2018-06',
-      note: { en: 'extension project: adapted a web game to mobile with Construct 2', pt: 'projeto de extensão: adaptação de um jogo web para mobile com Construct 2' },
-      short: { en: 'extension project, 2018', pt: 'projeto de extensão, 2018' },
-    },
-    {
-      name: 'Projeto Game Office – FATEC Ourinhos',
-      start: '2017-06',
-      end: '2017-12',
-      note: {
-        en: 'study group that simulated a professional game studio; games made with RPG Maker',
-        pt: 'grupo de estudos que simulava um estúdio profissional; jogos feitos com RPG Maker',
-      },
-      short: { en: 'study group, 2017', pt: 'grupo de estudos, 2017' },
-    },
-    {
-      name: 'Mind Buster',
-      note: { en: 'requirements and rules, academic, 2017', pt: 'requisitos e regras, acadêmico, 2017' },
-      short: { en: 'requirements and rules, 2017', pt: 'requisitos e regras, 2017' },
-    },
-    {
-      name: 'Game Island — O Herói dos Quatro Reinos',
-      note: { en: 'co-authored board game, 2016', pt: 'jogo de tabuleiro em coautoria, 2016' },
-      short: { en: 'board game, 2016', pt: 'jogo de tabuleiro, 2016' },
-    },
-    {
-      name: 'Coffee Rush',
-      link: 'https://mateusbomfim.itch.io/coffe-rush',
-      note: { en: 'CTRL ALT JAM · producer in a team of 5 · Unity', pt: 'CTRL ALT JAM · producer em um time de 5 · Unity' },
-      short: { en: 'game jam, producer, Unity', pt: 'game jam, producer, Unity' },
-    },
-  ] as AcademicItem[],
-  links: [{ label: 'itch.io', url: 'https://gio-gamedev.itch.io' }],
-};

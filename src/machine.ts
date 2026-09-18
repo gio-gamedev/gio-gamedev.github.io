@@ -3,7 +3,6 @@
 import { abbreviations } from './content/abbreviations';
 import { fullDate, monthYear } from './content/dates';
 import {
-  academicProjects,
   certificates,
   contactFacts,
   education,
@@ -141,10 +140,8 @@ export function llmsTxt(): string {
     `- Portfolio (English): ${SITE_URL}/`,
     `- Portfolio (Portuguese): ${SITE_URL}/pt/`,
     `- Full catalog (${projects.length} titles): ${SITE_URL}/projects/`,
-    `- Resume PDF (English): ${SITE_URL}${profile.cv.en}`,
-    `- Resume PDF (Portuguese): ${SITE_URL}${profile.cv.pt}`,
-    `- Resume Word (English): ${SITE_URL}${profile.cvDocx.en}`,
-    `- Resume Word (Portuguese): ${SITE_URL}${profile.cvDocx.pt}`,
+    `- Resume PDF (English): ${SITE_URL}${encodeURI(profile.cv.en)}`,
+    `- Resume PDF (Portuguese): ${SITE_URL}${encodeURI(profile.cv.pt)}`,
     `- JSON Resume: ${SITE_URL}/resume.json`,
     `- EF SET English Certificate (PDF): ${SITE_URL}${efset.pdf}`,
     `- Email: ${profile.links.email}`,
@@ -211,11 +208,6 @@ export function llmsTxt(): string {
     `- ${efsetLine}`,
     ...certificates.map((c) => `- ${c.name.en} — ${c.issuer} — ${c.date.en}`),
     ...otherCertificates.map((c) => `- ${c.en}`),
-    '',
-    '## Academic projects',
-    ...academicProjects.items.map(
-      (item) => `- ${item.name}${item.start && item.end ? ` (${item.start} – ${item.end})` : ''}: ${item.note.en}`,
-    ),
     '',
     '## Brands, IPs and platforms',
     ...brandGroups.map((group) => `- ${group.title.en}: ${group.items.join(', ')}`),

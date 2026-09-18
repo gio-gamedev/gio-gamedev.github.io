@@ -14,6 +14,7 @@ export function Hero() {
   const { t } = useLang();
   const { links } = profile;
   const cv = t(profile.cv);
+  const cvHref = encodeURI(cv);
 
   return (
     <section id="top" className={styles.hero} aria-labelledby="hero-title">
@@ -42,7 +43,7 @@ export function Hero() {
               {t(ui.hero.projects)}
               <Icon name="arrowRight" size={16} />
             </a>
-            <a className="btn btn-ghost" href={cv} download={cv.split('/').pop()} aria-label={t(ui.hero.resumeLabel)}>
+            <a className="btn btn-ghost" href={cvHref} download={cv.split('/').pop()} aria-label={t(ui.hero.resumeLabel)}>
               <Icon name="download" size={16} />
               {t(ui.hero.resume)}
             </a>

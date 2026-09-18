@@ -139,7 +139,7 @@ export function Header() {
           <ThemeToggle />
           <a
             className={styles.resume}
-            href={t(profile.cv)}
+            href={encodeURI(t(profile.cv))}
             download={t(profile.cv).split('/').pop()}
             aria-label={t(ui.header.resumeLabel)}
           >

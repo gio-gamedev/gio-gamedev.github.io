@@ -7,7 +7,6 @@
     "dev": "vite",
     "build": "tsc && vite build && vite build --ssr src/entry-server.tsx --outDir dist-ssr && node scripts/prerender.mjs && node scripts/check-colors.mjs",
     "preview": "vite preview",
-    "cv": "npm run build && node scripts/cv-pdf.mjs",
     "catalog": "node scripts/catalog-status.mjs",
     "og": "node scripts/og-image.mjs",
     "test:e2e": "playwright test"
@@ -25,7 +24,6 @@
     "@types/react": "^19.3.0",
     "@types/react-dom": "^19.3.0",
     "@vitejs/plugin-react": "^6.1.1",
-    "docx": "^9.7.1",
     "typescript": "^7.0.2",
     "vite": "^8.3.0"
   }

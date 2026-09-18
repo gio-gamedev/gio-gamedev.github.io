@@ -5,7 +5,7 @@ Portfólio de QA de jogos de Giovanni S. Mariano: bilíngue, com tema claro e es
 - **EN:** https://gio-gamedev.github.io
 - **PT:** https://gio-gamedev.github.io/pt/
 - **Catálogo completo:** `/projects/` e `/pt/projetos/`
-- **Currículos:** `/cv/Giovanni-Mariano-Game-QA-EN.pdf` e `-PT.pdf` (e `.docx`)
+- **Currículo:** `/curriculo/` (PDFs prontos, não gerados pelo build)
 - **Para IAs e ATS:** `/resume.json` (padrão JSON Resume) e `/llms.txt`
 
 ## Comandos
@@ -15,7 +15,6 @@ npm install
 npm run dev            # desenvolvimento em http://localhost:5173 (e /pt/)
 npm run build          # tipos + bundle + pré-renderização + checagem de "sem verde"
 npm run preview        # serve o build localmente
-npm run cv             # build + gera os currículos em PDF em public/cv/ (usa o Chrome local)
 npm run og             # gera public/og-image.png a partir de scripts/og.html
 npm run catalog        # confere as capas contra o manifesto do pacote de imagens (só local; precisa de images/)
 npm run test:e2e       # Playwright + axe no build (rode npm run build antes)
@@ -30,7 +29,6 @@ npm run test:e2e       # Playwright + axe no build (rode npm run build antes)
    O código de cada página fica em `src/pages/` e é carregado sob demanda (`src/main.tsx`): a home não baixa o código do catálogo e vice-versa. Como a página já vem pré-renderizada, o HTML traz um `modulepreload` do próprio pedaço, para a hidratação não esperar uma segunda ida ao servidor. O CSS continua em um arquivo só (`cssCodeSplit: false`), embutido em todas as páginas.
 4. `scripts/prerender.mjs` escreve:
    - as páginas completas por idioma: `/`, `/pt/`, `/projects/` e `/pt/projetos/`;
-   - as páginas de currículo `dist/cv/` e `dist/pt/cv/` e os currículos em Word;
    - `resume.json`, `llms.txt` e `sitemap.xml`;
    - páginas de redirecionamento para os endereços que as pessoas digitam à mão (veja "Rotas").
 
@@ -61,11 +59,19 @@ Todo o texto fica em `src/content/`, separado dos componentes. Cada texto traduz
 | `ui.ts` | Rótulos da interface e meta tags |
 | `stats.ts` | Anos de experiência, calculados pela data do build |
 
-O site, os currículos, o `resume.json` e o `llms.txt` saem do mesmo conteúdo. Depois de editar, rode `npm run cv` para atualizar os PDFs.
+O site, o `resume.json` e o `llms.txt` saem do mesmo conteúdo (`src/content/`). O currículo em PDF **não** — é um arquivo pronto, mantido à mão fora do build.
 
-Os currículos são feitos para leitura automática (ATS): uma coluna, títulos padrão, o marcador "•" como texto de verdade e um ponto final no fim de cada linha. A extração de texto de um PDF só enxerga caracteres desenhados, então, sem esses dois caracteres, um leitor simples emenda o fim de uma página no começo da outra ("…dispositivos de redeCOMPETÊNCIAS"). Linhas que terminam em endereço ficam sem o ponto, para ele não virar parte da URL.
+### Currículo (PDF pronto)
 
-Um número só, em todo lugar: o total de títulos, os jogos e as aplicações saem de `projects.ts` e alimentam o hero, o catálogo, o currículo e a imagem de compartilhamento. Como o `og.html` é HTML puro e não consegue importar o conteúdo, o build escreve `scripts/og-data.json` e o `npm run og` preenche os números ali.
+O currículo não é mais gerado a partir do conteúdo do site. O PDF fica pronto em `images/curriculo/` (pasta de trabalho local, fora do git — mesmo padrão das fotos-fonte) e a cópia publicada, que o site de fato linka, fica em `public/curriculo/`. Para atualizar:
+
+1. Substitua o PDF em `images/curriculo/`.
+2. Copie o arquivo atualizado para `public/curriculo/`, com o mesmo nome.
+3. Comite a nova versão em `public/curriculo/`.
+
+Os nomes de arquivo têm espaços de propósito (são os nomes que Giovanni já usa); `src/content/profile.ts` guarda o caminho puro e os componentes que linkam para ele (`Hero.tsx`, `Header.tsx`, `Contact.tsx`) aplicam `encodeURI()` no `href`.
+
+Um número só, em todo lugar: o total de títulos, os jogos e as aplicações saem de `projects.ts` e alimentam o hero, o catálogo e a imagem de compartilhamento. Como o `og.html` é HTML puro e não consegue importar o conteúdo, o build escreve `scripts/og-data.json` e o `npm run og` preenche os números ali.
 
 O escopo típico de QA é escrito uma vez por categoria (`categoryScope`). Cada título só carrega um tipo de teste além dessa lista quando isso é confirmado para ele, e o catálogo mostra a diferença como badge — junto com `Marca / IP` e `LiveOps`, que são declarados por título.
 
@@ -77,8 +83,8 @@ Regras de conteúdo:
 
 ## Arquivos públicos e locais
 
-- `public/` vai para o site: capas (`covers/<slug>-<largura>.webp`, sem ampliar o original), a foto em três tamanhos (`avatar*.webp`), fotos do Testathon, certificados (data de nascimento mascarada nos diplomas; o PDF do EF SET é o original) e os currículos.
-- `images/` (fotos e pacote de imagens) e `private/` (anotações locais) ficam fora do git. Só o site é público.
+- `public/` vai para o site: capas (`covers/<slug>-<largura>.webp`, sem ampliar o original), a foto em três tamanhos (`avatar*.webp`), fotos do Testathon, certificados (data de nascimento mascarada nos diplomas; o PDF do EF SET é o original) e o currículo (`curriculo/`, PDFs prontos — veja "Currículo (PDF pronto)" acima).
+- `images/` (fotos, pacote de imagens e o currículo-fonte em `images/curriculo/`) e `private/` (anotações locais) ficam fora do git. Só o site é público.
 - Imagem coletada fora do pacote do manifesto vai para `images/extras/<slug>/` e é registrada em `images/extras/covers-extra.json` com a página de origem, a URL, a data e o hash. `npm run catalog` lê esse arquivo junto com o manifesto, então o relatório continua mostrando de onde veio cada capa.
 
 ### Tema

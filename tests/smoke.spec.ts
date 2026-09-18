@@ -8,7 +8,7 @@ const pages = [
     title: 'Game QA Analyst',
     section: 'Selected QA Projects',
     skills: 'Skills',
-    cv: '/cv/Giovanni-Mariano-Game-QA-EN',
+    cv: '/curriculo/Giovanni%20Mariano%20-%20Game%20QA%20-%20Resume%20EN',
     caixa: 'CAIXA Universe',
     minutes: '110M+',
     contribution: 'My contribution',
@@ -29,7 +29,7 @@ const pages = [
     title: 'Game QA Analyst',
     section: 'Projetos de QA em destaque',
     skills: 'Competências',
-    cv: '/cv/Giovanni-Mariano-Game-QA-PT',
+    cv: '/curriculo/Giovanni%20Mariano%20-%20Game%20QA%20-%20Curriculo%20PT',
     caixa: 'Universo CAIXA',
     minutes: '110 mi+',
     contribution: 'Minha contribuição',
@@ -125,6 +125,18 @@ const forbidden = [
   'atualizada ao vivo',
   'release planned for 2027',
   'lançamento previsto para 2027',
+  // Removed on 2026-09-16: a five-hour course that added little to the positioning, and the whole
+  // Academic projects section, now that professional experience carries the résumé on its own.
+  'Automated Tests + Complete Software Testing Course',
+  'Testes Automáticos + Curso Completo',
+  'Academic Projects',
+  'Academic projects',
+  'Projetos Acadêmicos',
+  'Projetos acadêmicos',
+  'Coração do Inverno',
+  'Coffee Rush',
+  'Mind Buster',
+  'Game Island',
 ];
 
 async function expectNoConsoleErrors(tab: Page, path: string, check: () => Promise<void>) {
@@ -188,14 +200,10 @@ for (const page of pages) {
       });
     }
 
-    test('serves its resume as PDF and Word, and the hero downloads it', async ({ page: tab, request }) => {
+    test('serves its resume as a PDF, and the hero downloads it', async ({ page: tab, request }) => {
       const pdf = await request.get(`${page.cv}.pdf`);
       expect(pdf.status()).toBe(200);
       expect(pdf.headers()['content-type']).toContain('pdf');
-      const docx = await request.get(`${page.cv}.docx`);
-      expect(docx.status()).toBe(200);
-      // A .docx is a zip archive: it starts with "PK".
-      expect((await docx.body()).subarray(0, 2).toString()).toBe('PK');
 
       await tab.goto(page.path);
       await expect(tab.locator('#top a[download]')).toHaveAttribute('href', `${page.cv}.pdf`);
@@ -251,8 +259,9 @@ for (const page of pages) {
     test('lists the skills in their own section, reachable from the menu', async ({ page: tab }) => {
       await tab.goto(page.path);
       await expect(tab.getByRole('heading', { level: 2, name: page.skills })).toBeVisible();
-      // Six blocks, and the toolkit no longer sits inside the experience section.
-      await expect(tab.locator('#skills > div > ul > li')).toHaveCount(6);
+      // Seven blocks (Analytics split out of Technical QA), and the toolkit no longer sits inside
+      // the experience section.
+      await expect(tab.locator('#skills > div > ul > li')).toHaveCount(7);
       await expect(tab.locator('header nav[aria-label] a[href="#skills"]').first()).toHaveCount(1);
       await expect(tab.locator('#experience')).not.toContainText('Jira');
     });
@@ -557,7 +566,7 @@ test('first visit follows the system theme', async ({ page }) => {
 });
 
 test('never ships retired content, unconfirmed figures or the 2022 assessment', async ({ page, request }) => {
-  for (const path of ['/', '/pt/', '/projects/', '/pt/projetos/', '/cv/', '/pt/cv/', '/llms.txt', '/resume.json']) {
+  for (const path of ['/', '/pt/', '/projects/', '/pt/projetos/', '/llms.txt', '/resume.json']) {
     const body = await (await request.get(path)).text();
     for (const text of forbidden) expect(body, `${path} contains "${text}"`).not.toContain(text);
   }

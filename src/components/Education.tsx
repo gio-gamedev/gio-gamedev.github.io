@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import { fullDate, monthYear } from '../content/dates';
 import {
-  academicProjects,
   certificates,
   education,
   efset,
@@ -168,45 +167,6 @@ export function Education() {
               <li key={item.en}>{t(item)}</li>
             ))}
           </ul>
-        </details>
-
-        <details className="disclosure">
-          <summary>{t(academicProjects.title)}</summary>
-          <div className="disclosure-body">
-            <ul className={styles.academic}>
-              {academicProjects.items.map((item) => (
-                <li key={item.name}>
-                  {item.link ? (
-                    <a href={item.link} target="_blank" rel="noopener noreferrer">
-                      {item.name}
-                      <span className="sr-only"> {t(ui.a11y.newTab)}</span>
-                    </a>
-                  ) : (
-                    <span className={styles.academicName}>{item.name}</span>
-                  )}
-                  {item.start && item.end && (
-                    <span className={styles.academicDate}>
-                      {' '}
-                      (<time dateTime={item.start}>{monthYear(item.start, lang)}</time> –{' '}
-                      <time dateTime={item.end}>{monthYear(item.end, lang)}</time>)
-                    </span>
-                  )}
-                  <span className={styles.academicNote}> — {t(item.note)}</span>
-                </li>
-              ))}
-            </ul>
-            <ul className={styles.academicLinks}>
-              {academicProjects.links.map((link) => (
-                <li key={link.url}>
-                  <a href={link.url} target="_blank" rel="noopener noreferrer">
-                    {link.label}
-                    <Icon name="external" size={13} />
-                    <span className="sr-only"> {t(ui.a11y.newTab)}</span>
-                  </a>
-                </li>
-              ))}
-            </ul>
-          </div>
         </details>
       </div>
 
