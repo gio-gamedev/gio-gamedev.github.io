@@ -2,11 +2,10 @@ import { covers, type CoverArt } from './covers';
 import { reach, type Reach } from './reach';
 import type { L, Lang, Tone } from './types';
 
-// Sources: the Notion "Project Index" (the old portfolio; retired on 18/09/2026 and now only a
-// signpost to this site — the full export is archived in private/notion-export/, not in git), the
-// Hermit Crab catalog (images/, not in git; FC Barcelona Moments left out on purpose), the public
-// portfolio of Gabriel Budzinski (game designer on the same projects), fortnite.gg, the app stores
-// and Giovanni's own project list.
+// Sources: the Notion "Project Index" (the old portfolio, retired on 18/09/2026 — that page now only
+// signposts this site, so this file is the catalog of record), the Hermit Crab catalog (images/, not
+// in git; FC Barcelona Moments left out on purpose), the public portfolio of Gabriel Budzinski (game
+// designer on the same projects), fortnite.gg, the app stores and Giovanni's own project list.
 
 export type Category = 'Roblox' | 'Fortnite/UEFN' | 'The Sandbox' | 'Mobile' | 'Steam' | 'Publishing' | 'Applications';
 

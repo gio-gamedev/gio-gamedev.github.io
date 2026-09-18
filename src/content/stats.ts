@@ -11,8 +11,9 @@ function yearsSince(start: string): number {
 export const qaYears = yearsSince('2022-09');
 
 /**
- * Technology roles before QA add about three years (7 in total as of 2026). Source: the old Notion
- * portfolio, retired on 18/09/2026; the export is archived in private/notion-export/, not in git.
+ * Technology roles before QA add about three years (7 in total as of 2026). The figure came from the
+ * old Notion portfolio, retired on 18/09/2026; it is no longer checkable there, so treat this line
+ * as the record of it.
  */
 export const techYears = qaYears + 3;
 
